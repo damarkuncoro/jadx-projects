@@ -35,7 +35,34 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$ARTIFACT" ]]; then
-  ARTIFACT="build/jadx/jadx-$TAG.zip"
+  ARTIFACT="build/jadx-$TAG.zip"
+fi
+
+if [[ ! -f "$ARTIFACT" ]]; then
+  if [[ -f "build/jadx-dev.zip" ]]; then
+    echo "Using existing build artifact build/jadx-dev.zip"
+    ARTIFACT="build/jadx-dev.zip"
+  elif [[ -f "build/jadx/jadx-dev.zip" ]]; then
+    echo "Using existing build artifact build/jadx/jadx-dev.zip"
+    ARTIFACT="build/jadx/jadx-dev.zip"
+  elif [[ -d "build/jadx" ]]; then
+    echo "Packaging build/jadx into $ARTIFACT"
+    mkdir -p "$(dirname "$ARTIFACT")"
+    python3 - <<'PY'
+import os
+import zipfile
+import sys
+
+target = sys.argv[1]
+root = 'build/jadx'
+with zipfile.ZipFile(target, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
+    for dirpath, dirnames, filenames in os.walk(root):
+        for filename in filenames:
+            path = os.path.join(dirpath, filename)
+            archive.write(path, os.path.relpath(path, root))
+PY
+ "$ARTIFACT"
+  fi
 fi
 
 if [[ ! -f "$ARTIFACT" ]]; then
@@ -51,6 +78,7 @@ fi
 
 if ! command -v gh >/dev/null 2>&1; then
   echo "GitHub CLI 'gh' is required for release upload"
+  echo "Install GitHub CLI or upload the artifact manually from $ARTIFACT"
   exit 4
 fi
 
