@@ -106,6 +106,7 @@ public class JadxArgs implements Closeable {
 	private UserRenamesMappingsMode userRenamesMappingsMode = UserRenamesMappingsMode.getDefault();
 
 	private boolean deobfuscationOn = false;
+	private boolean excludeZzFiles = false;
 	private UseSourceNameAsClassNameAlias useSourceNameAsClassNameAlias = UseSourceNameAsClassNameAlias.getDefault();
 	private int sourceNameRepeatLimit = 10;
 
@@ -445,6 +446,14 @@ public class JadxArgs implements Closeable {
 
 	public void setDeobfuscationOn(boolean deobfuscationOn) {
 		this.deobfuscationOn = deobfuscationOn;
+	}
+
+	public boolean isExcludeZzFiles() {
+		return excludeZzFiles;
+	}
+
+	public void setExcludeZzFiles(boolean excludeZzFiles) {
+		this.excludeZzFiles = excludeZzFiles;
 	}
 
 	public boolean isDeobfuscationForceSave() {
@@ -855,6 +864,7 @@ public class JadxArgs implements Closeable {
 		String argStr = "args:" + decompilationMode + useImports + showInconsistentCode
 				+ inlineAnonymousClasses + inlineMethods + moveInnerClasses + allowInlineKotlinLambda
 				+ deobfuscationOn + deobfuscationMinLength + deobfuscationMaxLength + deobfuscationWhitelist
+				+ excludeZzFiles
 				+ useSourceNameAsClassNameAlias + sourceNameRepeatLimit
 				+ resourceNameSource + useHeadersForDetectResourceExtensions
 				+ useKotlinMethodsForVarNames
@@ -892,6 +902,7 @@ public class JadxArgs implements Closeable {
 				+ ", userRenamesMappingsPath=" + userRenamesMappingsPath
 				+ ", userRenamesMappingsMode=" + userRenamesMappingsMode
 				+ ", deobfuscationOn=" + deobfuscationOn
+				+ ", excludeZzFiles=" + excludeZzFiles
 				+ ", generatedRenamesMappingFile=" + generatedRenamesMappingFile
 				+ ", generatedRenamesMappingFileMode=" + generatedRenamesMappingFileMode
 				+ ", resourceNameSource=" + resourceNameSource

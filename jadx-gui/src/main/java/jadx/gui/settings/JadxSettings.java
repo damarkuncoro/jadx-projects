@@ -776,6 +776,14 @@ public class JadxSettings {
 		settingsData.setDeobfuscationOn(deobfuscationOn);
 	}
 
+	public boolean isExcludeZzFiles() {
+		return settingsData.isExcludeZzFiles();
+	}
+
+	public void setExcludeZzFiles(boolean excludeZzFiles) {
+		settingsData.setExcludeZzFiles(excludeZzFiles);
+	}
+
 	public boolean isReplaceConsts() {
 		return settingsData.isReplaceConsts();
 	}

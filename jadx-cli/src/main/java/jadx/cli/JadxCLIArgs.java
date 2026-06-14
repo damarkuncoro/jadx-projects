@@ -250,6 +250,12 @@ public class JadxCLIArgs implements IJadxConfig {
 	protected boolean useHeadersForDetectResourceExtensions = false;
 
 	@Parameter(
+			names = { "--exclude-zz" },
+			description = "exclude/ignore classes starting with 'zz' from decompilation and output"
+	)
+	protected boolean excludeZzFiles = false;
+
+	@Parameter(
 			names = { "--rename-flags" },
 			description = "fix options (comma-separated list of):"
 					+ "\n 'case' - fix case sensitivity issues (according to --fs-case-sensitive option),"
@@ -477,6 +483,7 @@ public class JadxCLIArgs implements IJadxConfig {
 		}
 		args.setUserRenamesMappingsMode(userRenamesMappingsMode);
 		args.setDeobfuscationOn(deobfuscationOn);
+		args.setExcludeZzFiles(excludeZzFiles);
 		args.setGeneratedRenamesMappingFile(FileUtils.toFile(generatedRenamesMappingFile));
 		args.setGeneratedRenamesMappingFileMode(generatedRenamesMappingFileMode);
 		args.setDeobfuscationMinLength(deobfuscationMinLength);
@@ -718,6 +725,14 @@ public class JadxCLIArgs implements IJadxConfig {
 
 	public void setDeobfuscationWhitelistStr(String deobfuscationWhitelistStr) {
 		this.deobfuscationWhitelistStr = deobfuscationWhitelistStr;
+	}
+
+	public boolean isExcludeZzFiles() {
+		return excludeZzFiles;
+	}
+
+	public void setExcludeZzFiles(boolean excludeZzFiles) {
+		this.excludeZzFiles = excludeZzFiles;
 	}
 
 	public String getGeneratedRenamesMappingFile() {

@@ -36,6 +36,7 @@ import jadx.api.plugins.pass.types.JadxPreparePass;
 import jadx.core.Jadx;
 import jadx.core.ProcessClass;
 import jadx.core.clsp.ClspGraph;
+import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AttributeStorage;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.ConstStorage;
@@ -223,6 +224,9 @@ public class RootNode {
 	}
 
 	public void addClassNode(ClassNode clsNode) {
+		if (args.isExcludeZzFiles() && clsNode.getClassInfo().getShortName().startsWith("zz")) {
+			clsNode.add(AFlag.DONT_GENERATE);
+		}
 		classes.add(clsNode);
 		clsMap.put(clsNode.getClassInfo(), clsNode);
 		rawClsMap.put(clsNode.getRawName(), clsNode);

@@ -72,6 +72,9 @@ public class DexFileLoader {
 				return Collections.emptyList();
 			}
 			if (isStartWithBytes(magic, DexConsts.DEX_FILE_MAGIC)) {
+				if (fileName.startsWith("assets/") && !fileName.endsWith(".dex")) {
+					return Collections.emptyList();
+				}
 				in.reset();
 				byte[] content = readAllBytes(in);
 				return loadDexReaders(fileName, content);
@@ -93,6 +96,9 @@ public class DexFileLoader {
 	}
 
 	private List<DexReader> loadFromZipEntry(byte[] content, String fileName) {
+		if (fileName.startsWith("assets/") && !fileName.endsWith(".dex")) {
+			return Collections.emptyList();
+		}
 		if (isStartWithBytes(content, DexConsts.DEX_FILE_MAGIC) || fileName.endsWith(".dex")) {
 			return loadDexReaders(fileName, content);
 		}

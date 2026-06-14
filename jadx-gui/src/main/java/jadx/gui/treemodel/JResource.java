@@ -16,6 +16,9 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.jetbrains.annotations.Nullable;
 
 import jadx.api.ICodeInfo;
+import jadx.api.JadxArgs;
+import jadx.api.JadxDecompiler;
+import jadx.api.JavaClass;
 import jadx.api.ResourceFile;
 import jadx.api.ResourceType;
 import jadx.api.ResourcesLoader;
@@ -23,6 +26,7 @@ import jadx.api.impl.SimpleCodeInfo;
 import jadx.api.resources.ResourceContentType;
 import jadx.core.utils.ListUtils;
 import jadx.core.utils.Utils;
+import jadx.core.xmlgen.BinaryXMLParser;
 import jadx.core.xmlgen.ResContainer;
 import jadx.gui.jobs.SimpleTask;
 import jadx.gui.ui.MainWindow;
@@ -77,6 +81,9 @@ public class JResource extends JLoadableNode {
 	private transient volatile boolean loaded;
 	private transient List<JResource> subNodes = Collections.emptyList();
 	private transient ICodeInfo content = ICodeInfo.EMPTY;
+	private transient Boolean isImage;
+	private transient Boolean isElf;
+	private transient Boolean isBinaryXml;
 
 	public JResource(@Nullable ResourceFile resFile, String name, JResType type) {
 		this(resFile, name, name, type);
@@ -215,13 +222,22 @@ public class JResource extends JLoadableNode {
 			return null;
 		}
 		// TODO: allow to register custom viewers
-		switch (resFile.getType()) {
-			case IMG:
-				return new ImagePanel(tabbedPane, this);
-			case FONT:
-				return new FontPanel(tabbedPane, this);
+		if (resFile.getType() == ResourceType.IMG || isImageMagic()) {
+			return new ImagePanel(tabbedPane, this);
+		}
+		if (resFile.getType() == ResourceType.FONT) {
+			return new FontPanel(tabbedPane, this);
+		}
+		if (isDexMagic()) {
+			return new CodeContentPanel(tabbedPane, this);
+		}
+		if (isBinaryXmlMagic()) {
+			return new CodeContentPanel(tabbedPane, this);
 		}
 		if (getContentType() == ResourceContentType.CONTENT_BINARY) {
+			if (isElfMagic()) {
+				return new BinaryContentPanel(tabbedPane, this, true);
+			}
 			return new BinaryContentPanel(tabbedPane, this, false);
 		}
 		if (getSyntaxByExtension(resFile.getDeobfName()) != null) {
@@ -276,6 +292,16 @@ public class JResource extends JLoadableNode {
 	}
 
 	private ICodeInfo loadCurrentSingleRes(ResContainer rc) {
+		if (isDexMagic()) {
+			try {
+				return ResourcesLoader.decodeStream(this.resFile, (size, is) -> {
+					byte[] bytes = is.readAllBytes();
+					return new SimpleCodeInfo(decompileDexBuf(bytes, this.resFile.getOriginalName()));
+				});
+			} catch (Exception e) {
+				return new SimpleCodeInfo("Failed to decompile DEX resource:\n" + Utils.getStackTrace(e));
+			}
+		}
 		switch (rc.getDataType()) {
 			case TEXT:
 			case RES_TABLE:
@@ -284,6 +310,24 @@ public class JResource extends JLoadableNode {
 			case RES_LINK:
 				try {
 					ResourceFile resourceFile = rc.getResLink();
+					if (isElfMagic()) {
+						return ResourcesLoader.decodeStream(resourceFile, (size, is) -> {
+							byte[] bytes = new byte[64];
+							int read = is.readNBytes(bytes, 0, 64);
+							if (read < 64) {
+								byte[] truncated = new byte[read];
+								System.arraycopy(bytes, 0, truncated, 0, read);
+								bytes = truncated;
+							}
+							return new SimpleCodeInfo(parseElfHeader(bytes));
+						});
+					}
+					if (isBinaryXmlMagic()) {
+						return ResourcesLoader.decodeStream(resourceFile, (size, is) -> {
+							BinaryXMLParser parser = new BinaryXMLParser(resourceFile.getDecompiler().getRoot());
+							return parser.parse(is);
+						});
+					}
 					return ResourcesLoader.decodeStream(resourceFile, (size, is) -> {
 						// TODO: check size before loading
 						if (size > 10 * 1024 * 1024L) {
@@ -312,6 +356,12 @@ public class JResource extends JLoadableNode {
 	public String getSyntaxName() {
 		if (resFile == null) {
 			return null;
+		}
+		if (isDexMagic()) {
+			return SyntaxConstants.SYNTAX_STYLE_JAVA;
+		}
+		if (isBinaryXmlMagic()) {
+			return SyntaxConstants.SYNTAX_STYLE_XML;
 		}
 		switch (resFile.getType()) {
 			case CODE:
@@ -364,6 +414,18 @@ public class JResource extends JLoadableNode {
 				return Icons.FOLDER;
 
 			case FILE:
+				if (isImageMagic()) {
+					return IMAGE_ICON;
+				}
+				if (isDexMagic()) {
+					return JAVA_ICON;
+				}
+				if (isElfMagic()) {
+					return SO_ICON;
+				}
+				if (isBinaryXmlMagic()) {
+					return XML_ICON;
+				}
 				ResourceType resType = resFile.getType();
 				switch (resType) {
 					case MANIFEST:
@@ -477,5 +539,387 @@ public class JResource extends JLoadableNode {
 	@Override
 	public int hashCode() {
 		return name.hashCode() + 31 * type.ordinal();
+	}
+
+	public boolean isImageMagic() {
+		if (resFile == null || type != JResType.FILE) {
+			return false;
+		}
+		if (isImage != null) {
+			return isImage;
+		}
+		try {
+			boolean detect = ResourcesLoader.decodeStream(resFile, (size, is) -> {
+				byte[] header = new byte[12];
+				int read = is.readNBytes(header, 0, 12);
+				if (read < 3) {
+					return false;
+				}
+				// PNG: 89 50 4E 47 0D 0A 1A 0A
+				if (read >= 8
+						&& header[0] == (byte) 0x89 && header[1] == (byte) 0x50
+						&& header[2] == (byte) 0x4E && header[3] == (byte) 0x47
+						&& header[4] == (byte) 0x0D && header[5] == (byte) 0x0A
+						&& header[6] == (byte) 0x1A && header[7] == (byte) 0x0A) {
+					return true;
+				}
+				// JPEG: FF D8 FF
+				if (header[0] == (byte) 0xFF && header[1] == (byte) 0xD8 && header[2] == (byte) 0xFF) {
+					return true;
+				}
+				// GIF: GIF89a (47 49 46 38 39 61) / GIF87a (47 49 46 38 37 61)
+				if (read >= 6
+						&& header[0] == (byte) 'G' && header[1] == (byte) 'I' && header[2] == (byte) 'F'
+						&& header[3] == (byte) '8' && (header[4] == (byte) '9' || header[4] == (byte) '7')
+						&& header[5] == (byte) 'a') {
+					return true;
+				}
+				// WebP: RIFF (52 49 46 46) ... WEBP (57 45 42 50)
+				if (read >= 12
+						&& header[0] == (byte) 'R' && header[1] == (byte) 'I' && header[2] == (byte) 'F' && header[3] == (byte) 'F'
+						&& header[8] == (byte) 'W' && header[9] == (byte) 'E' && header[10] == (byte) 'B' && header[11] == (byte) 'P') {
+					return true;
+				}
+				// BMP: BM (42 4D)
+				if (header[0] == (byte) 'B' && header[1] == (byte) 'M') {
+					return true;
+				}
+				return false;
+			});
+			isImage = detect;
+			return detect;
+		} catch (Exception e) {
+			isImage = false;
+			return false;
+		}
+	}
+
+	public boolean isElfMagic() {
+		if (resFile == null || type != JResType.FILE) {
+			return false;
+		}
+		if (isElf != null) {
+			return isElf;
+		}
+		try {
+			boolean detect = ResourcesLoader.decodeStream(resFile, (size, is) -> {
+				byte[] header = new byte[4];
+				int read = is.readNBytes(header, 0, 4);
+				return read == 4 && header[0] == 0x7f && header[1] == 'E' && header[2] == 'L' && header[3] == 'F';
+			});
+			isElf = detect;
+			return detect;
+		} catch (Exception e) {
+			isElf = false;
+			return false;
+		}
+	}
+
+	public boolean isBinaryXmlMagic() {
+		if (resFile == null || type != JResType.FILE) {
+			return false;
+		}
+		if (isBinaryXml != null) {
+			return isBinaryXml;
+		}
+		try {
+			boolean detect = ResourcesLoader.decodeStream(resFile, (size, is) -> {
+				byte[] header = new byte[4];
+				int read = is.readNBytes(header, 0, 4);
+				if (read < 4) {
+					return false;
+				}
+				return (header[2] == 0x08 && header[3] == 0x00)
+						&& (header[1] == 0x00)
+						&& (header[0] == 0x03 || header[0] == 0x00);
+			});
+			isBinaryXml = detect;
+			return detect;
+		} catch (Exception e) {
+			isBinaryXml = false;
+			return false;
+		}
+	}
+
+	public boolean isDexMagic() {
+		if (resFile == null || type != JResType.FILE) {
+			return false;
+		}
+		try {
+			boolean detect = ResourcesLoader.decodeStream(resFile, (size, is) -> {
+				byte[] header = new byte[8];
+				int read = is.readNBytes(header, 0, 8);
+				if (read < 8) {
+					return false;
+				}
+				return header[0] == 'd' && header[1] == 'e' && header[2] == 'x' && header[3] == '\n'
+						&& header[4] >= '0' && header[4] <= '9'
+						&& header[5] >= '0' && header[5] <= '9'
+						&& header[6] >= '0' && header[6] <= '9'
+						&& header[7] == 0;
+			});
+			return detect;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	private String decompileDexBuf(byte[] dexBuf, String name) {
+		JadxArgs jadxArgs = new JadxArgs();
+		jadxArgs.setInputFiles(Collections.emptyList());
+		try {
+			jadxArgs.setSkipSources(false);
+			jadxArgs.setSkipResources(true);
+			jadxArgs.getPluginOptions().put("dex-input.verify-checksum", "false");
+		} catch (Exception e) {
+			// ignore
+		}
+		try (JadxDecompiler decompiler = new JadxDecompiler(jadxArgs)) {
+			try {
+				Class<?> pluginClass = Class.forName("jadx.plugins.input.dex.DexInputPlugin");
+				Object pluginInstance = pluginClass.getConstructor().newInstance();
+				java.lang.reflect.Method loadDexMethod = pluginClass.getMethod("loadDex", byte[].class, String.class);
+				jadx.api.plugins.input.ICodeLoader codeLoader =
+						(jadx.api.plugins.input.ICodeLoader) loadDexMethod.invoke(pluginInstance, dexBuf, name);
+				decompiler.addCustomCodeLoader(codeLoader);
+			} catch (Exception e) {
+				return "Failed to load DEX input plugin: " + Utils.getStackTrace(e);
+			}
+			decompiler.load();
+			StringBuilder sb = new StringBuilder();
+			sb.append("// Decompiled from DEX resource: ").append(name).append("\n\n");
+			List<JavaClass> classes = decompiler.getClasses();
+			if (classes.isEmpty()) {
+				sb.append("// No classes found in this DEX file.\n");
+			} else {
+				for (JavaClass cls : classes) {
+					sb.append("// -----------------------------------------------------\n");
+					sb.append("// Class: ").append(cls.getFullName()).append("\n");
+					sb.append("// -----------------------------------------------------\n");
+					try {
+						sb.append(cls.getCode());
+					} catch (Exception e) {
+						sb.append("// Failed to decompile class: ").append(cls.getFullName()).append("\n");
+						sb.append("// ").append(Utils.getStackTrace(e)).append("\n");
+					}
+					sb.append("\n\n");
+				}
+			}
+			return sb.toString();
+		} catch (Exception e) {
+			return "Failed to decompile DEX resource: " + Utils.getStackTrace(e);
+		}
+	}
+
+	public static String parseElfHeader(byte[] bytes) {
+		if (bytes.length < 52) {
+			return "Invalid ELF file: too short (" + bytes.length + " bytes)";
+		}
+		if (bytes[0] != 0x7f || bytes[1] != 'E' || bytes[2] != 'L' || bytes[3] != 'F') {
+			return "Not an ELF file";
+		}
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("=== ELF File Header Info ===\n\n");
+
+		// Class (32-bit vs 64-bit)
+		int elfClass = bytes[4] & 0xFF;
+		String classStr;
+		if (elfClass == 1) {
+			classStr = "ELF32 (32-bit)";
+		} else if (elfClass == 2) {
+			classStr = "ELF64 (64-bit)";
+		} else {
+			classStr = "Unknown (" + elfClass + ")";
+		}
+		sb.append(String.format("%-30s : %s\n", "Class", classStr));
+
+		// Data (Endianness)
+		int elfData = bytes[5] & 0xFF;
+		boolean isLittleEndian = (elfData == 1);
+		String dataStr;
+		if (elfData == 1) {
+			dataStr = "2's complement, little endian";
+		} else if (elfData == 2) {
+			dataStr = "2's complement, big endian";
+		} else {
+			dataStr = "Unknown (" + elfData + ")";
+		}
+		sb.append(String.format("%-30s : %s\n", "Data Indicator", dataStr));
+
+		// Version
+		int version = bytes[6] & 0xFF;
+		sb.append(String.format("%-30s : %d %s\n", "ELF Version", version, version == 1 ? "(current)" : ""));
+
+		// OS/ABI
+		int osAbi = bytes[7] & 0xFF;
+		String osAbiStr;
+		switch (osAbi) {
+			case 0:
+				osAbiStr = "UNIX - System V";
+				break;
+			case 3:
+				osAbiStr = "UNIX - GNU/Linux";
+				break;
+			case 6:
+				osAbiStr = "UNIX - Solaris";
+				break;
+			case 9:
+				osAbiStr = "UNIX - FreeBSD";
+				break;
+			case 255:
+				osAbiStr = "Standalone (embedded) application";
+				break;
+			default:
+				osAbiStr = "Unknown (" + osAbi + ")";
+				break;
+		}
+		sb.append(String.format("%-30s : %s\n", "OS/ABI", osAbiStr));
+
+		// ABI Version
+		int abiVer = bytes[8] & 0xFF;
+		sb.append(String.format("%-30s : %d\n", "ABI Version", abiVer));
+
+		// Type
+		int type = read2Bytes(bytes, 16, isLittleEndian);
+		String typeStr;
+		switch (type) {
+			case 1:
+				typeStr = "REL (Relocatable file)";
+				break;
+			case 2:
+				typeStr = "EXEC (Executable file)";
+				break;
+			case 3:
+				typeStr = "DYN (Shared object / Shared library)";
+				break;
+			case 4:
+				typeStr = "CORE (Core file)";
+				break;
+			default:
+				typeStr = "Unknown (" + type + ")";
+				break;
+		}
+		sb.append(String.format("%-30s : %s\n", "Type", typeStr));
+
+		// Machine
+		int machine = read2Bytes(bytes, 18, isLittleEndian);
+		String machineStr;
+		switch (machine) {
+			case 0x03:
+				machineStr = "Intel 80386 (x86)";
+				break;
+			case 0x28:
+				machineStr = "ARM (32-bit)";
+				break;
+			case 0x3E:
+				machineStr = "AMD x86-64 (64-bit)";
+				break;
+			case 0xB7:
+				machineStr = "AArch64 (ARM 64-bit)";
+				break;
+			case 0x2F:
+				machineStr = "Intel IA-64";
+				break;
+			case 0x14:
+				machineStr = "PowerPC";
+				break;
+			case 0x2A:
+				machineStr = "SuperH";
+				break;
+			case 0x08:
+				machineStr = "MIPS";
+				break;
+			default:
+				machineStr = "Unknown (" + String.format("0x%02X", machine) + ")";
+				break;
+		}
+		sb.append(String.format("%-30s : %s\n", "Machine Architecture", machineStr));
+
+		// Object Version
+		long objVersion = read4Bytes(bytes, 20, isLittleEndian);
+		sb.append(String.format("%-30s : %d\n", "Object File Version", objVersion));
+
+		// Entry point & Offsets
+		if (elfClass == 1) {
+			long entry = read4Bytes(bytes, 24, isLittleEndian);
+			long phoff = read4Bytes(bytes, 28, isLittleEndian);
+			long shoff = read4Bytes(bytes, 32, isLittleEndian);
+			long flags = read4Bytes(bytes, 36, isLittleEndian);
+			int ehsize = read2Bytes(bytes, 40, isLittleEndian);
+			int phentsize = read2Bytes(bytes, 42, isLittleEndian);
+			int phnum = read2Bytes(bytes, 44, isLittleEndian);
+			int shentsize = read2Bytes(bytes, 46, isLittleEndian);
+			int shnum = read2Bytes(bytes, 48, isLittleEndian);
+			int shstrndx = read2Bytes(bytes, 50, isLittleEndian);
+
+			sb.append(String.format("%-30s : 0x%08X\n", "Entry Point Address", entry));
+			sb.append(String.format("%-30s : %d (bytes from file start)\n", "Start of Program Headers", phoff));
+			sb.append(String.format("%-30s : %d (bytes from file start)\n", "Start of Section Headers", shoff));
+			sb.append(String.format("%-30s : 0x%X\n", "Flags", flags));
+			sb.append(String.format("%-30s : %d (bytes)\n", "Size of this Header", ehsize));
+			sb.append(String.format("%-30s : %d (bytes)\n", "Size of Program Headers", phentsize));
+			sb.append(String.format("%-30s : %d\n", "Number of Program Headers", phnum));
+			sb.append(String.format("%-30s : %d (bytes)\n", "Size of Section Headers", shentsize));
+			sb.append(String.format("%-30s : %d\n", "Number of Section Headers", shnum));
+			sb.append(String.format("%-30s : %d\n", "Section Header String Table Index", shstrndx));
+		} else if (elfClass == 2) {
+			if (bytes.length < 64) {
+				return sb.toString() + "\n[Error: ELF64 file header is truncated]";
+			}
+			long entry = read8Bytes(bytes, 24, isLittleEndian);
+			long phoff = read8Bytes(bytes, 32, isLittleEndian);
+			long shoff = read8Bytes(bytes, 40, isLittleEndian);
+			long flags = read4Bytes(bytes, 48, isLittleEndian);
+			int ehsize = read2Bytes(bytes, 52, isLittleEndian);
+			int phentsize = read2Bytes(bytes, 54, isLittleEndian);
+			int phnum = read2Bytes(bytes, 56, isLittleEndian);
+			int shentsize = read2Bytes(bytes, 58, isLittleEndian);
+			int shnum = read2Bytes(bytes, 60, isLittleEndian);
+			int shstrndx = read2Bytes(bytes, 62, isLittleEndian);
+
+			sb.append(String.format("%-30s : 0x%016X\n", "Entry Point Address", entry));
+			sb.append(String.format("%-30s : %d (bytes from file start)\n", "Start of Program Headers", phoff));
+			sb.append(String.format("%-30s : %d (bytes from file start)\n", "Start of Section Headers", shoff));
+			sb.append(String.format("%-30s : 0x%X\n", "Flags", flags));
+			sb.append(String.format("%-30s : %d (bytes)\n", "Size of this Header", ehsize));
+			sb.append(String.format("%-30s : %d (bytes)\n", "Size of Program Headers", phentsize));
+			sb.append(String.format("%-30s : %d\n", "Number of Program Headers", phnum));
+			sb.append(String.format("%-30s : %d (bytes)\n", "Size of Section Headers", shentsize));
+			sb.append(String.format("%-30s : %d\n", "Number of Section Headers", shnum));
+			sb.append(String.format("%-30s : %d\n", "Section Header String Table Index", shstrndx));
+		}
+
+		return sb.toString();
+	}
+
+	private static int read2Bytes(byte[] bytes, int offset, boolean le) {
+		int b1 = bytes[offset] & 0xFF;
+		int b2 = bytes[offset + 1] & 0xFF;
+		return le ? (b2 << 8 | b1) : (b1 << 8 | b2);
+	}
+
+	private static long read4Bytes(byte[] bytes, int offset, boolean le) {
+		long b1 = bytes[offset] & 0xFF;
+		long b2 = bytes[offset + 1] & 0xFF;
+		long b3 = bytes[offset + 2] & 0xFF;
+		long b4 = bytes[offset + 3] & 0xFF;
+		return le ? (b4 << 24 | b3 << 16 | b2 << 8 | b1) : (b1 << 24 | b2 << 16 | b3 << 8 | b4);
+	}
+
+	private static long read8Bytes(byte[] bytes, int offset, boolean le) {
+		if (le) {
+			long l = 0;
+			for (int i = 0; i < 8; i++) {
+				l |= ((long) (bytes[offset + i] & 0xFF)) << (8 * i);
+			}
+			return l;
+		} else {
+			long l = 0;
+			for (int i = 0; i < 8; i++) {
+				l |= ((long) (bytes[offset + i] & 0xFF)) << (8 * (7 - i));
+			}
+			return l;
+		}
 	}
 }

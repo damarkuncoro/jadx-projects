@@ -284,6 +284,13 @@ public class JadxSettingsWindow extends JDialog {
 			needReload();
 		});
 
+		JCheckBox excludeZz = new JCheckBox();
+		excludeZz.setSelected(settings.isExcludeZzFiles());
+		excludeZz.addItemListener(e -> {
+			settings.setExcludeZzFiles(e.getStateChange() == ItemEvent.SELECTED);
+			needReload();
+		});
+
 		JComboBox<GeneratedRenamesMappingFileMode> generatedRenamesMappingFileModeCB =
 				new JComboBox<>(GeneratedRenamesMappingFileMode.values());
 		generatedRenamesMappingFileModeCB.setSelectedItem(settings.getGeneratedRenamesMappingFileMode());
@@ -316,6 +323,7 @@ public class JadxSettingsWindow extends JDialog {
 		deobfGroup.addRow(NLS.str("preferences.deobfuscation_max_len"), maxLenSpinner);
 		deobfGroup.addRow(NLS.str("preferences.deobfuscation_res_name_source"), resNamesSource);
 		deobfGroup.addRow(NLS.str("preferences.deobfuscation_res_use_headers"), useHeaders);
+		deobfGroup.addRow(NLS.str("preferences.exclude_zz"), NLS.str("preferences.exclude_zz.tooltip"), excludeZz);
 		deobfGroup.addRow(NLS.str("preferences.generated_renames_mapping_file_mode"), generatedRenamesMappingFileModeCB);
 		deobfGroup.addRow(NLS.str("preferences.deobfuscation_whitelist"),
 				NLS.str("preferences.deobfuscation_whitelist.tooltip"), editWhitelistedEntities);

@@ -138,6 +138,7 @@ import jadx.gui.ui.codearea.theme.EditorThemeManager;
 import jadx.gui.ui.dialog.ADBDialog;
 import jadx.gui.ui.dialog.AboutDialog;
 import jadx.gui.ui.dialog.CharsetDialog;
+import jadx.gui.ui.dialog.DeviceExplorerDialog;
 import jadx.gui.ui.dialog.GotoAddressDialog;
 import jadx.gui.ui.dialog.LogViewerDialog;
 import jadx.gui.ui.dialog.SearchDialog;
@@ -469,7 +470,7 @@ public class MainWindow extends JFrame {
 		open(paths, UiUtils.EMPTY_RUNNABLE);
 	}
 
-	private void open(List<Path> paths, Runnable onFinish) {
+	public void open(List<Path> paths, Runnable onFinish) {
 		saveAll();
 		UiUtils.bgRun(() -> {
 			closeAll();
@@ -1188,11 +1189,14 @@ public class MainWindow extends JFrame {
 				() -> new QuarkDialog(MainWindow.this).setVisible(true));
 		JadxGuiAction debuggerAction = new JadxGuiAction(ActionModel.OPEN_DEVICE,
 				() -> new ADBDialog(MainWindow.this).setVisible(true));
+		JadxGuiAction deviceExplorerAction = new JadxGuiAction(ActionModel.OPEN_DEVICE_EXPLORER,
+				() -> new DeviceExplorerDialog(MainWindow.this).setVisible(true));
 
 		JMenu file = new JadxMenu(NLS.str("menu.file"), shortcutsController);
 		file.setMnemonic(KeyEvent.VK_F);
 		file.add(openAction);
 		file.add(openProject);
+		file.add(deviceExplorerAction);
 		file.add(addFilesAction);
 		file.addSeparator();
 		file.add(newProjectAction);
@@ -1321,6 +1325,7 @@ public class MainWindow extends JFrame {
 		toolbar.add(deobfToggleBtn);
 		toolbar.add(quarkAction);
 		toolbar.add(debuggerAction);
+		toolbar.add(deviceExplorerAction);
 		toolbar.addSeparator();
 		toolbar.add(showLogAction);
 		toolbar.addSeparator();

@@ -23,6 +23,9 @@ Command line and GUI tools for producing Java source code from Android Dex and A
 - decompile Dalvik bytecode to Java code from APK, dex, aar, aab and zip files
 - decode `AndroidManifest.xml` and other resources from `resources.arsc`
 - deobfuscator included
+- **JADX Device Explorer**: pull APKs (including split APK packages) directly from Android devices via ADB, with automatic workspace creation, decompile runners, and security analysis assistant scanning
+- **ELF Header Parser & Hex Viewer**: view ELF file headers (Class, OS/ABI, Machine, Entry point, etc.) and raw hexadecimal contents of native libraries (`.so` files)
+- **Automatic Binary XML Decoder**: signature-based detection and decoding of binary Android XML files (layout/drawable) even without standard extensions
 
 **jadx-gui features:**
 - view decompiled code with highlighted syntax
@@ -30,6 +33,7 @@ Command line and GUI tools for producing Java source code from Android Dex and A
 - find usage
 - full text search
 - smali debugger, check [wiki page](https://github.com/skylot/jadx/wiki/Smali-debugger) for setup and usage
+- JADX Device Explorer UI under menu `File` -> `Open from Android Device...` to visually browse packages, select split APK configuration, pull, and decompile
 
 Jadx-gui key bindings can be found [here](https://github.com/skylot/jadx/wiki/JADX-GUI-Key-bindings)
 
@@ -88,7 +92,8 @@ and also packed to `build/jadx-<version>.zip`
 ```
 jadx[-gui] [command] [options] <input files> (.apk, .dex, .jar, .class, .smali, .zip, .aar, .arsc, .aab, .xapk, .apkm, .jadx.kts)
 commands (use '<command> --help' for command options):
-  plugins	  - manage jadx plugins
+  plugins         - manage jadx plugins
+  device-explorer - pull and decompile APKs from Android devices via ADB
 
 options:
   -d, --output-dir                              - output directory
@@ -124,6 +129,7 @@ options:
   --no-restore-switch-over-string               - don't restore switch over string
   --no-replace-consts                           - don't replace constant value with matching constant field
   --escape-unicode                              - escape non latin characters in strings (with \u)
+  --exclude-zz                                  - exclude/ignore classes starting with 'zz' from decompilation and output
   --respect-bytecode-access-modifiers           - don't change original access modifiers
   --mappings-path                               - deobfuscation mappings file or directory. Allowed formats: Tiny and Tiny v2 (both '.tiny'), Enigma (.mapping) or Enigma directory
   --mappings-mode                               - set mode for handling the deobfuscation mapping file:
@@ -239,6 +245,18 @@ options:
   --list-all                      - list all plugins including bundled and dropins
   --list-versions <locationId>    - fetch latest versions of plugin from locationId (will download all artefacts, limited to 10)
   -h, --help                      - print this help
+```
+
+Usage for `device-explorer` command
+```
+usage: device-explorer <command> [options]
+commands:
+  list-devices                                                  - list connected devices via ADB
+  list-users <serial>                                           - list Android users/profiles on device
+  list-packages <serial> <user_id> [filter]                     - list packages for user_id (filters: all, user, system)
+  paths <serial> <package_name>                                 - resolve APK paths for package name
+  pull <serial> <package_name> <out_dir> [user_id]              - pull APK and split APK components into workspace
+  pull-and-decompile <serial> <package_name> <out_dir> [user_id] - pull APK splits, decompile them, and generate security reports
 ```
 
 

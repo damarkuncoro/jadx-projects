@@ -23,6 +23,10 @@ public class JadxGUI {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxGUI.class);
 
 	public static void main(String[] args) {
+		if (args.length > 0 && args[0].equals("device-explorer")) {
+			jadx.gui.device.protocol.DeviceExplorerCLI.main(args);
+			return;
+		}
 		try {
 			JadxConfigAdapter<JadxSettingsData> configAdapter = JadxSettings.buildConfigAdapter();
 			JadxSettingsData settingsData = JadxCLIArgs.processArgs(args, new JadxSettingsData(), configAdapter);
