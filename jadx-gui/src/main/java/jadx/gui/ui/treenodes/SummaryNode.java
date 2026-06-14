@@ -2,9 +2,12 @@ package jadx.gui.ui.treenodes;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,8 +19,12 @@ import javax.swing.ImageIcon;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import jadx.api.ICodeInfo;
 import jadx.api.ResourceFile;
+import jadx.api.ResourcesLoader;
 import jadx.api.impl.SimpleCodeInfo;
 import jadx.core.dex.attributes.IAttributeNode;
 import jadx.core.dex.nodes.ClassNode;
@@ -54,6 +61,7 @@ public class SummaryNode extends JNode {
 			builder.append("<html>");
 			builder.append("<body>");
 			writeInputSummary(builder);
+			writeBuildStackSummary(builder);
 			writeDecompilationSummary(builder);
 			builder.append("</body>");
 		} catch (Exception e) {
@@ -152,6 +160,265 @@ public class SummaryNode extends JNode {
 			}
 		}
 		builder.append("</ul>");
+	}
+
+	private void writeBuildStackSummary(StringEscapeUtils.Builder builder) {
+		Map<String, String> manifest = parseManifest();
+		Map<String, String> buildMetadata = parseKotlinToolingMetadata();
+		Map<String, String> libraryVersions = collectLibraryVersions();
+		List<String> frameworks = detectFrameworks();
+
+		if (manifest.isEmpty() && buildMetadata.isEmpty() && libraryVersions.isEmpty() && frameworks.isEmpty()) {
+			return;
+		}
+
+		builder.append("<h2>Build Stack</h2>");
+		builder.append("<ul>");
+		if (!frameworks.isEmpty()) {
+			builder.append("<li>Detected: ");
+			builder.escape(String.join(", ", frameworks));
+			builder.append("</li>");
+		}
+		if (!buildMetadata.isEmpty()) {
+			builder.append("<li>Build system: ");
+			builder.escape(buildMetadata.getOrDefault("buildSystem", "Unknown"));
+			if (buildMetadata.containsKey("buildSystemVersion")) {
+				builder.append(" ");
+				builder.escape(buildMetadata.get("buildSystemVersion"));
+			}
+			builder.append("</li>");
+			if (buildMetadata.containsKey("buildPlugin")) {
+				builder.append("<li>Build plugin: ");
+				builder.escape(buildMetadata.get("buildPlugin"));
+				if (buildMetadata.containsKey("buildPluginVersion")) {
+					builder.append(" ");
+					builder.escape(buildMetadata.get("buildPluginVersion"));
+				}
+				builder.append("</li>");
+			}
+			if (buildMetadata.containsKey("platformType")) {
+				builder.append("<li>Platform: ");
+				builder.escape(buildMetadata.get("platformType"));
+				builder.append("</li>");
+			}
+			if (buildMetadata.containsKey("sourceCompatibility") || buildMetadata.containsKey("targetCompatibility")) {
+				builder.append("<li>Java compatibility: source ");
+				builder.escape(buildMetadata.getOrDefault("sourceCompatibility", "unknown"));
+				builder.append(", target ");
+				builder.escape(buildMetadata.getOrDefault("targetCompatibility", "unknown"));
+				builder.append("</li>");
+			}
+		}
+		if (!manifest.isEmpty()) {
+			addManifestItem(builder, manifest, "Package", "package");
+			addManifestItem(builder, manifest, "Version", "versionName");
+			addManifestItem(builder, manifest, "Version code", "versionCode");
+			addManifestItem(builder, manifest, "Compile SDK", "compileSdkVersion");
+			addManifestItem(builder, manifest, "Min SDK", "minSdkVersion");
+			addManifestItem(builder, manifest, "Target SDK", "targetSdkVersion");
+			addManifestItem(builder, manifest, "Application", "applicationName");
+		}
+		builder.append("</ul>");
+
+		if (!libraryVersions.isEmpty()) {
+			builder.append("<h3>Library versions</h3>");
+			builder.append("<ul>");
+			libraryVersions.entrySet().stream()
+					.filter(entry -> isImportantLibrary(entry.getKey()))
+					.forEach(entry -> {
+						builder.append("<li>");
+						builder.escape(entry.getKey());
+						builder.append(": ");
+						builder.escape(entry.getValue());
+						builder.append("</li>");
+					});
+			builder.append("<li>Total metadata entries: " + libraryVersions.size() + "</li>");
+			builder.append("</ul>");
+		}
+	}
+
+	private static void addManifestItem(StringEscapeUtils.Builder builder, Map<String, String> manifest, String title, String key) {
+		String value = manifest.get(key);
+		if (value == null) {
+			return;
+		}
+		builder.append("<li>");
+		builder.escape(title);
+		builder.append(": ");
+		builder.escape(value);
+		builder.append("</li>");
+	}
+
+	private Map<String, String> parseKotlinToolingMetadata() {
+		Map<String, String> metadata = new LinkedHashMap<>();
+		String content = readResourceAsString("kotlin-tooling-metadata.json");
+		if (content == null) {
+			return metadata;
+		}
+		try {
+			JsonObject root = JsonParser.parseString(content).getAsJsonObject();
+			copyJsonString(root, metadata, "buildSystem");
+			copyJsonString(root, metadata, "buildSystemVersion");
+			copyJsonString(root, metadata, "buildPlugin");
+			copyJsonString(root, metadata, "buildPluginVersion");
+			if (root.has("projectTargets") && root.get("projectTargets").isJsonArray()
+					&& root.getAsJsonArray("projectTargets").size() > 0) {
+				JsonObject target = root.getAsJsonArray("projectTargets").get(0).getAsJsonObject();
+				copyJsonString(target, metadata, "target");
+				copyJsonString(target, metadata, "platformType");
+				if (target.has("extras") && target.getAsJsonObject("extras").has("android")) {
+					JsonObject android = target.getAsJsonObject("extras").getAsJsonObject("android");
+					copyJsonString(android, metadata, "sourceCompatibility");
+					copyJsonString(android, metadata, "targetCompatibility");
+				}
+			}
+		} catch (Exception ignored) {
+			// Keep summary rendering best-effort.
+		}
+		return metadata;
+	}
+
+	private static void copyJsonString(JsonObject root, Map<String, String> target, String key) {
+		if (root.has(key) && root.get(key).isJsonPrimitive()) {
+			target.put(key, root.get(key).getAsString());
+		}
+	}
+
+	private Map<String, String> parseManifest() {
+		Map<String, String> manifest = new LinkedHashMap<>();
+		String content = readResourceAsString("AndroidManifest.xml");
+		if (content == null) {
+			return manifest;
+		}
+		putXmlAttr(content, manifest, "package", "package");
+		putXmlAttr(content, manifest, "versionName", "android:versionName");
+		putXmlAttr(content, manifest, "versionCode", "android:versionCode");
+		putXmlAttr(content, manifest, "compileSdkVersion", "android:compileSdkVersion");
+		putXmlAttr(content, manifest, "minSdkVersion", "android:minSdkVersion");
+		putXmlAttr(content, manifest, "targetSdkVersion", "android:targetSdkVersion");
+		putApplicationName(content, manifest);
+		return manifest;
+	}
+
+	private static void putXmlAttr(String content, Map<String, String> target, String key, String attrName) {
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(java.util.regex.Pattern.quote(attrName) + "=\"([^\"]+)\"");
+		java.util.regex.Matcher matcher = pattern.matcher(content);
+		if (matcher.find()) {
+			target.put(key, matcher.group(1));
+		}
+	}
+
+	private static void putApplicationName(String content, Map<String, String> manifest) {
+		java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("<application\\b[^>]*\\bandroid:name=\"([^\"]+)\"",
+				java.util.regex.Pattern.DOTALL);
+		java.util.regex.Matcher matcher = pattern.matcher(content);
+		if (matcher.find()) {
+			manifest.put("applicationName", matcher.group(1));
+		}
+	}
+
+	private Map<String, String> collectLibraryVersions() {
+		Map<String, String> versions = new LinkedHashMap<>();
+		wrapper.getResources().stream()
+				.filter(res -> getResourceName(res).startsWith("META-INF/"))
+				.filter(res -> getResourceName(res).endsWith(".version"))
+				.sorted(Comparator.comparing(this::getResourceName))
+				.forEach(res -> {
+					String name = getResourceName(res);
+					String library = name.substring("META-INF/".length(), name.length() - ".version".length());
+					String version = readResourceAsString(res);
+					if (version != null) {
+						versions.put(library, version.trim());
+					}
+				});
+		return versions;
+	}
+
+	private List<String> detectFrameworks() {
+		Set<String> resourceNames = wrapper.getResources().stream()
+				.map(this::getResourceName)
+				.collect(Collectors.toSet());
+		Set<String> classNames = wrapper.getRootNode().getClasses(true).stream()
+				.map(ClassNode::getClassInfo)
+				.map(clsInfo -> clsInfo.getRawName().replace('.', '/'))
+				.collect(Collectors.toSet());
+
+		List<String> frameworks = new ArrayList<>();
+		if (resourceNames.contains("AndroidManifest.xml")) {
+			frameworks.add("Native Android");
+		}
+		if (resourceNames.contains("flutter_assets/NOTICES.Z") || containsResource(resourceNames, "libflutter.so")) {
+			frameworks.add("Flutter");
+		}
+		if (resourceNames.contains("assets/index.android.bundle")
+				|| classNames.contains("com/facebook/react/ReactActivity")
+				|| classNames.contains("com/facebook/react/ReactNativeHost")) {
+			frameworks.add("React Native");
+		}
+		if (containsResource(resourceNames, "libunity.so") || classNames.contains("com/unity3d/player/UnityPlayerActivity")) {
+			frameworks.add("Unity");
+		}
+		if (resourceNames.contains("assets/www/cordova.js") || classNames.contains("org/apache/cordova/CordovaActivity")) {
+			frameworks.add("Cordova");
+		}
+		if (resourceNames.contains("assets/capacitor.config.json") || classNames.contains("com/getcapacitor/BridgeActivity")) {
+			frameworks.add("Capacitor");
+		}
+		if (classNames.contains("mono/android/Runtime") || containsResource(resourceNames, "libmonodroid.so")) {
+			frameworks.add("Xamarin");
+		}
+		if (resourceNames.contains("kotlin-tooling-metadata.json") || classNames.stream().anyMatch(cls -> cls.startsWith("kotlin/"))) {
+			frameworks.add("Kotlin");
+		}
+		if (resourceNames.contains("META-INF/androidx.core_core-ktx.version")
+				|| classNames.stream().anyMatch(cls -> cls.startsWith("androidx/"))) {
+			frameworks.add("AndroidX / Jetpack");
+		}
+		return frameworks;
+	}
+
+	private static boolean containsResource(Set<String> resourceNames, String fileName) {
+		return resourceNames.stream().anyMatch(name -> name.endsWith('/' + fileName));
+	}
+
+	private static boolean isImportantLibrary(String name) {
+		return name.startsWith("androidx.core")
+				|| name.startsWith("androidx.appcompat")
+				|| name.startsWith("androidx.databinding")
+				|| name.startsWith("androidx.navigation")
+				|| name.startsWith("androidx.room")
+				|| name.startsWith("androidx.camera")
+				|| name.startsWith("kotlinx_coroutines")
+				|| name.startsWith("com.google.android.material");
+	}
+
+	private String readResourceAsString(String resourceName) {
+		ResourceFile resource = findResource(resourceName);
+		return resource == null ? null : readResourceAsString(resource);
+	}
+
+	private String readResourceAsString(ResourceFile resource) {
+		try {
+			return ResourcesLoader.decodeStream(resource, (size, is) -> new String(is.readAllBytes(), StandardCharsets.UTF_8));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private ResourceFile findResource(String resourceName) {
+		return wrapper.getResources().stream()
+				.filter(resource -> getResourceName(resource).equals(resourceName))
+				.findFirst()
+				.orElse(null);
+	}
+
+	private String getResourceName(ResourceFile resource) {
+		String name = resource.getOriginalName();
+		int zipSeparator = name.indexOf(':');
+		if (zipSeparator != -1 && zipSeparator + 1 < name.length()) {
+			return name.substring(zipSeparator + 1);
+		}
+		return name;
 	}
 
 	private void writeDecompilationSummary(StringEscapeUtils.Builder builder) {

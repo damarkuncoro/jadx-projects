@@ -9,10 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
@@ -24,6 +27,9 @@ import static org.assertj.core.api.Assertions.fail;
 class CustomLoadTest {
 
 	private JadxDecompiler jadx;
+
+	@TempDir
+	Path tempDir;
 
 	@BeforeEach
 	void init() {
@@ -46,6 +52,22 @@ class CustomLoadTest {
 				.hasSize(2)
 				.satisfiesOnlyOnce(cls -> assertThat(cls.getName()).isEqualTo("HelloWorld"))
 				.satisfiesOnlyOnce(cls -> assertThat(cls.getName()).isEqualTo("HelloInner"));
+	}
+
+	@Test
+	void ignoreProfileEntriesInZip() throws IOException {
+		Path zip = tempDir.resolve("sample.apk");
+		try (ZipOutputStream out = new ZipOutputStream(Files.newOutputStream(zip))) {
+			addZipEntry(out, "HelloWorld.class", Files.readAllBytes(getSample("HelloWorld.class")));
+			addZipEntry(out, "assets/dexopt/baseline.prof", new byte[] { 0x70, 0x72, 0x6f, 0x00 });
+			addZipEntry(out, "assets/dexopt/baseline.profm", new byte[] { 0x70, 0x72, 0x6d, 0x00 });
+		}
+
+		List<JavaClassReader> readers = new JavaInputLoader().collectFiles(List.of(zip));
+
+		assertThat(readers)
+				.hasSize(1)
+				.satisfiesOnlyOnce(reader -> assertThat(reader.getFileName()).isEqualTo("sample.apk:HelloWorld.class"));
 	}
 
 	@Test
@@ -108,6 +130,12 @@ class CustomLoadTest {
 						.satisfiesOnlyOnce(inner -> assertThat(inner.getName()).isEqualTo("HelloInner")));
 
 		jadx.getClassesWithInners().forEach(cls -> System.out.println(cls.getCode()));
+	}
+
+	private static void addZipEntry(ZipOutputStream out, String name, byte[] content) throws IOException {
+		out.putNextEntry(new ZipEntry(name));
+		out.write(content);
+		out.closeEntry();
 	}
 
 	public void loadDecompiler(ICodeLoader codeLoader) {

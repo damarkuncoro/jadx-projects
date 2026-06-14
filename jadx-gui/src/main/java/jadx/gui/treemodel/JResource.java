@@ -647,16 +647,20 @@ public class JResource extends JLoadableNode {
 		}
 		try {
 			boolean detect = ResourcesLoader.decodeStream(resFile, (size, is) -> {
-				byte[] header = new byte[8];
-				int read = is.readNBytes(header, 0, 8);
-				if (read < 8) {
+				byte[] header = new byte[44];
+				int read = is.readNBytes(header, 0, header.length);
+				if (read < header.length) {
 					return false;
 				}
 				return header[0] == 'd' && header[1] == 'e' && header[2] == 'x' && header[3] == '\n'
 						&& header[4] >= '0' && header[4] <= '9'
 						&& header[5] >= '0' && header[5] <= '9'
 						&& header[6] >= '0' && header[6] <= '9'
-						&& header[7] == 0;
+						&& header[7] == 0
+						&& header[40] == 0x78
+						&& header[41] == 0x56
+						&& header[42] == 0x34
+						&& header[43] == 0x12;
 			});
 			return detect;
 		} catch (Exception e) {

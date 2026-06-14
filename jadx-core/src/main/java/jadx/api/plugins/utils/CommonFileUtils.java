@@ -98,7 +98,7 @@ public class CommonFileUtils {
 		return fileName.substring(0, dotIndex);
 	}
 
-	private static final Set<String> ZIP_FILE_EXTS = Utils.constSet("zip", "jar", "apk");
+	private static final Set<String> ZIP_FILE_EXTS = Utils.constSet("zip", "jar", "apk", "prof", "profm");
 
 	public static boolean isZipFileExt(String fileName) {
 		String ext = getFileExtension(fileName);

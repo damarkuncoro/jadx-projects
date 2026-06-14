@@ -56,6 +56,10 @@ public class DeviceExplorerAssistant {
 		Map<String, Object> obfuscationSummary = runObfuscationScan(sourcesDir);
 		assistantReport.put("obfuscationSummary", obfuscationSummary);
 
+		// 2. Build stack fingerprint
+		Map<String, Object> buildStack = runBuildStackScan(outputDir, sourcesDir, resourcesDir);
+		assistantReport.put("buildStack", buildStack);
+
 		// Scan variables
 		List<Map<String, String>> endpoints = new ArrayList<>();
 		Map<String, Object> firebaseConfig = new LinkedHashMap<>();
@@ -63,10 +67,10 @@ public class DeviceExplorerAssistant {
 		List<Map<String, String>> base64Strings = new ArrayList<>();
 		List<Map<String, String>> failedMethods = new ArrayList<>();
 
-		// 2. Scan resources for Firebase configurations
+		// 3. Scan resources for Firebase configurations
 		scanResources(resourcesDir, firebaseConfig);
 
-		// 3. Scan Java files
+		// 4. Scan Java files
 		scanJavaSources(sourcesDir, endpoints, cryptoUsage, base64Strings, failedMethods);
 
 		assistantReport.put("endpoints", endpoints);
@@ -148,6 +152,212 @@ public class DeviceExplorerAssistant {
 		summary.put("obfuscatedClasses", obfuscatedClasses);
 		summary.put("obfuscationPercentage", percentage);
 		return summary;
+	}
+
+	private static Map<String, Object> runBuildStackScan(File outputDir, File sourcesDir, File resourcesDir) {
+		Map<String, Object> buildStack = new LinkedHashMap<>();
+		Map<String, Object> buildMetadata = new LinkedHashMap<>();
+		Map<String, String> manifest = new LinkedHashMap<>();
+		Map<String, String> libraryVersions = new LinkedHashMap<>();
+		List<Map<String, Object>> frameworks = new ArrayList<>();
+		Set<String> evidence = new HashSet<>();
+
+		parseKotlinToolingMetadata(new File(resourcesDir, "kotlin-tooling-metadata.json"), buildMetadata, evidence);
+		parseManifest(new File(resourcesDir, "AndroidManifest.xml"), manifest, evidence);
+		collectLibraryVersions(new File(resourcesDir, "META-INF"), libraryVersions);
+		detectFrameworks(outputDir, sourcesDir, resourcesDir, frameworks, evidence);
+
+		buildStack.put("summary", summarizeBuildStack(buildMetadata, manifest, frameworks));
+		buildStack.put("buildMetadata", buildMetadata);
+		buildStack.put("manifest", manifest);
+		buildStack.put("frameworks", frameworks);
+		buildStack.put("libraryVersions", libraryVersions);
+		buildStack.put("evidence", evidence.stream().sorted().toList());
+		return buildStack;
+	}
+
+	private static void parseKotlinToolingMetadata(File file, Map<String, Object> buildMetadata, Set<String> evidence) {
+		if (!file.exists()) {
+			return;
+		}
+		try (FileReader reader = new FileReader(file)) {
+			JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+			copyJsonString(root, buildMetadata, "buildSystem");
+			copyJsonString(root, buildMetadata, "buildSystemVersion");
+			copyJsonString(root, buildMetadata, "buildPlugin");
+			copyJsonString(root, buildMetadata, "buildPluginVersion");
+			if (root.has("projectTargets") && root.get("projectTargets").isJsonArray()
+					&& root.getAsJsonArray("projectTargets").size() > 0) {
+				JsonObject target = root.getAsJsonArray("projectTargets").get(0).getAsJsonObject();
+				copyJsonString(target, buildMetadata, "target");
+				copyJsonString(target, buildMetadata, "platformType");
+				if (target.has("extras")
+						&& target.getAsJsonObject("extras").has("android")) {
+					JsonObject android = target.getAsJsonObject("extras").getAsJsonObject("android");
+					copyJsonString(android, buildMetadata, "sourceCompatibility");
+					copyJsonString(android, buildMetadata, "targetCompatibility");
+				}
+			}
+			evidence.add("resources/kotlin-tooling-metadata.json");
+		} catch (Exception e) {
+			LOG.warn("Failed to parse Kotlin tooling metadata: {}", file, e);
+		}
+	}
+
+	private static void copyJsonString(JsonObject root, Map<String, Object> target, String key) {
+		if (root.has(key) && root.get(key).isJsonPrimitive()) {
+			target.put(key, root.get(key).getAsString());
+		}
+	}
+
+	private static void parseManifest(File manifestFile, Map<String, String> manifest, Set<String> evidence) {
+		if (!manifestFile.exists()) {
+			return;
+		}
+		try {
+			String content = Files.readString(manifestFile.toPath());
+			putXmlAttr(content, manifest, "package", "package");
+			putXmlAttr(content, manifest, "versionName", "android:versionName");
+			putXmlAttr(content, manifest, "versionCode", "android:versionCode");
+			putXmlAttr(content, manifest, "compileSdkVersion", "android:compileSdkVersion");
+			putXmlAttr(content, manifest, "platformBuildVersionName", "platformBuildVersionName");
+			putXmlAttr(content, manifest, "minSdkVersion", "android:minSdkVersion");
+			putXmlAttr(content, manifest, "targetSdkVersion", "android:targetSdkVersion");
+			putApplicationName(content, manifest);
+			evidence.add("resources/AndroidManifest.xml");
+		} catch (Exception e) {
+			LOG.warn("Failed to parse AndroidManifest.xml: {}", manifestFile, e);
+		}
+	}
+
+	private static void putXmlAttr(String content, Map<String, String> target, String key, String attrName) {
+		Pattern pattern = Pattern.compile(Pattern.quote(attrName) + "=\"([^\"]+)\"");
+		Matcher matcher = pattern.matcher(content);
+		if (matcher.find()) {
+			target.put(key, matcher.group(1));
+		}
+	}
+
+	private static void putApplicationName(String content, Map<String, String> manifest) {
+		Pattern pattern = Pattern.compile("<application\\b[^>]*\\bandroid:name=\"([^\"]+)\"", Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(content);
+		if (matcher.find()) {
+			manifest.put("applicationName", matcher.group(1));
+		}
+	}
+
+	private static void collectLibraryVersions(File metaInfDir, Map<String, String> libraryVersions) {
+		if (!metaInfDir.exists()) {
+			return;
+		}
+		try (Stream<Path> walk = Files.walk(metaInfDir.toPath(), 1)) {
+			walk.filter(Files::isRegularFile)
+					.filter(path -> path.getFileName().toString().endsWith(".version"))
+					.sorted()
+					.forEach(path -> {
+						try {
+							String fileName = path.getFileName().toString();
+							String libraryName = fileName.substring(0, fileName.length() - ".version".length());
+							libraryVersions.put(libraryName, Files.readString(path).trim());
+						} catch (Exception e) {
+							LOG.debug("Failed to read library version file: {}", path, e);
+						}
+					});
+		} catch (Exception e) {
+			LOG.warn("Failed to collect library versions from {}", metaInfDir, e);
+		}
+	}
+
+	private static void detectFrameworks(
+			File outputDir,
+			File sourcesDir,
+			File resourcesDir,
+			List<Map<String, Object>> frameworks,
+			Set<String> evidence) {
+		boolean nativeAndroid = resourcesDir.exists() && new File(resourcesDir, "AndroidManifest.xml").exists();
+		if (nativeAndroid) {
+			List<String> nativeEvidence = new ArrayList<>();
+			nativeEvidence.add("resources/AndroidManifest.xml");
+			if (new File(resourcesDir, "res/layout").exists()) {
+				nativeEvidence.add("resources/res/layout");
+			}
+			if (new File(resourcesDir, "kotlin-tooling-metadata.json").exists()) {
+				nativeEvidence.add("resources/kotlin-tooling-metadata.json");
+			}
+			addFramework(frameworks, "Native Android", "HIGH", nativeEvidence);
+			evidence.addAll(nativeEvidence);
+		}
+
+		addFrameworkIfPresent(frameworks, "Flutter", outputDir, List.of(
+				"resources/flutter_assets",
+				"resources/lib/arm64-v8a/libflutter.so",
+				"resources/lib/armeabi-v7a/libflutter.so"));
+		addFrameworkIfPresent(frameworks, "React Native", outputDir, List.of(
+				"resources/assets/index.android.bundle",
+				"sources/com/facebook/react/ReactActivity.java",
+				"sources/com/facebook/react/ReactNativeHost.java"));
+		addFrameworkIfPresent(frameworks, "Unity", outputDir, List.of(
+				"resources/lib/arm64-v8a/libunity.so",
+				"sources/com/unity3d/player/UnityPlayerActivity.java"));
+		addFrameworkIfPresent(frameworks, "Cordova", outputDir, List.of(
+				"resources/assets/www/cordova.js",
+				"sources/org/apache/cordova/CordovaActivity.java"));
+		addFrameworkIfPresent(frameworks, "Capacitor", outputDir, List.of(
+				"resources/assets/capacitor.config.json",
+				"sources/com/getcapacitor/BridgeActivity.java"));
+		addFrameworkIfPresent(frameworks, "Xamarin", outputDir, List.of(
+				"sources/mono/android/Runtime.java",
+				"resources/lib/arm64-v8a/libmonodroid.so"));
+
+		if (sourcesDir.exists()) {
+			if (new File(sourcesDir, "kotlin").exists()) {
+				addFramework(frameworks, "Kotlin runtime", "MEDIUM", List.of("sources/kotlin"));
+			}
+			if (new File(resourcesDir, "META-INF/androidx.core_core-ktx.version").exists()) {
+				addFramework(frameworks, "AndroidX / Jetpack", "HIGH", List.of("resources/META-INF/androidx.core_core-ktx.version"));
+			}
+		}
+	}
+
+	private static void addFrameworkIfPresent(
+			List<Map<String, Object>> frameworks,
+			String name,
+			File outputDir,
+			List<String> relativeEvidence) {
+		List<String> found = relativeEvidence.stream()
+				.filter(path -> new File(outputDir, path).exists())
+				.toList();
+		if (!found.isEmpty()) {
+			addFramework(frameworks, name, "HIGH", found);
+		}
+	}
+
+	private static void addFramework(
+			List<Map<String, Object>> frameworks,
+			String name,
+			String confidence,
+			List<String> evidence) {
+		Map<String, Object> item = new LinkedHashMap<>();
+		item.put("name", name);
+		item.put("confidence", confidence);
+		item.put("evidence", evidence);
+		frameworks.add(item);
+	}
+
+	private static String summarizeBuildStack(
+			Map<String, Object> buildMetadata,
+			Map<String, String> manifest,
+			List<Map<String, Object>> frameworks) {
+		String buildSystem = (String) buildMetadata.getOrDefault("buildSystem", "Unknown build system");
+		String buildPlugin = (String) buildMetadata.getOrDefault("buildPlugin", "unknown plugin");
+		String pluginVersion = (String) buildMetadata.getOrDefault("buildPluginVersion", "unknown version");
+		String compileSdk = manifest.getOrDefault("compileSdkVersion", "unknown");
+		String targetSdk = manifest.getOrDefault("targetSdkVersion", "unknown");
+		String primaryFramework = frameworks.isEmpty()
+				? "unknown framework"
+				: String.valueOf(frameworks.get(0).get("name"));
+		return String.format("%s app built with %s using %s %s (compileSdk %s, targetSdk %s)",
+				primaryFramework, buildSystem, buildPlugin, pluginVersion, compileSdk, targetSdk);
 	}
 
 	private static void scanResources(File resourcesDir, Map<String, Object> firebaseConfig) {

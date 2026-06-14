@@ -22,6 +22,7 @@ import jadx.api.plugins.utils.CommonFileUtils;
 import jadx.core.utils.files.FileUtils;
 import jadx.plugins.input.dex.sections.DexConsts;
 import jadx.plugins.input.dex.sections.DexHeaderV41;
+import jadx.plugins.input.dex.utils.DataReader;
 import jadx.plugins.input.dex.utils.DexCheckSum;
 import jadx.zip.IZipEntry;
 import jadx.zip.ZipContent;
@@ -29,6 +30,7 @@ import jadx.zip.ZipReader;
 
 public class DexFileLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(DexFileLoader.class);
+	private static final int MIN_DEX_HEADER_SIZE = 112;
 
 	// sharing between all instances (can be used in other plugins) // TODO:
 	private static int dexUniqId = 1;
@@ -48,7 +50,7 @@ public class DexFileLoader {
 	public List<DexReader> collectDexFiles(List<Path> pathsList) {
 		return pathsList.stream()
 				.map(Path::toFile)
-				.map(this::loadDexFromFile)
+				.map((File file) -> loadDexFromFile(file))
 				.filter(list -> !list.isEmpty())
 				.flatMap(Collection::stream)
 				.peek(dr -> LOG.debug("Loading dex: {}", dr))
@@ -99,22 +101,51 @@ public class DexFileLoader {
 		if (fileName.startsWith("assets/") && !fileName.endsWith(".dex")) {
 			return Collections.emptyList();
 		}
-		if (isStartWithBytes(content, DexConsts.DEX_FILE_MAGIC) || fileName.endsWith(".dex")) {
+		if (isStartWithBytes(content, DexConsts.DEX_FILE_MAGIC)) {
 			return loadDexReaders(fileName, content);
+		}
+		if (fileName.endsWith(".dex")) {
+			LOG.warn("Invalid DEX magic in file: {}", fileName);
 		}
 		return Collections.emptyList();
 	}
 
 	public List<DexReader> loadDexReaders(String fileName, byte[] content) {
-		DexHeaderV41 dexHeaderV41 = DexHeaderV41.readIfPresent(content);
-		if (dexHeaderV41 != null) {
-			return DexHeaderV41.readSubDexOffsets(content, dexHeaderV41)
-					.stream()
-					.map(offset -> loadSingleDex(fileName, content, offset))
-					.collect(Collectors.toList());
+		if (!isValidDexHeader(fileName, content)) {
+			return Collections.emptyList();
 		}
-		DexReader dexReader = loadSingleDex(fileName, content, 0);
-		return Collections.singletonList(dexReader);
+		try {
+			DexHeaderV41 dexHeaderV41 = DexHeaderV41.readIfPresent(content);
+			if (dexHeaderV41 != null) {
+				return DexHeaderV41.readSubDexOffsets(content, dexHeaderV41)
+						.stream()
+						.map(offset -> loadSingleDex(fileName, content, offset))
+						.collect(Collectors.toList());
+			}
+			DexReader dexReader = loadSingleDex(fileName, content, 0);
+			return Collections.singletonList(dexReader);
+		} catch (Exception e) {
+			LOG.warn("Failed to load DEX file: {}", fileName, e);
+			return Collections.emptyList();
+		}
+	}
+
+	private static boolean isValidDexHeader(String fileName, byte[] content) {
+		if (!isStartWithBytes(content, DexConsts.DEX_FILE_MAGIC)) {
+			LOG.warn("Invalid DEX magic in file: {}", fileName);
+			return false;
+		}
+		if (content.length < MIN_DEX_HEADER_SIZE) {
+			LOG.warn("DEX file is too short: {}, size: {}", fileName, content.length);
+			return false;
+		}
+		int endianTagOffset = 40;
+		int endianTag = DataReader.readU4(content, endianTagOffset);
+		if (endianTag != DexConsts.ENDIAN_CONSTANT) {
+			LOG.warn("Unexpected DEX endian tag: 0x{} in file: {}", Integer.toHexString(endianTag), fileName);
+			return false;
+		}
+		return true;
 	}
 
 	private DexReader loadSingleDex(String fileName, byte[] content, int offset) {

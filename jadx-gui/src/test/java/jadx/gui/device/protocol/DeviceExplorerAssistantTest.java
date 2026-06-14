@@ -111,6 +111,53 @@ class DeviceExplorerAssistantTest {
 			fw.write(xmlContent);
 		}
 
+		File manifest = new File(resourcesDir, "AndroidManifest.xml");
+		String manifestContent = "<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\n"
+				+ "    android:versionCode=\"12\"\n"
+				+ "    android:versionName=\"1.2.3\"\n"
+				+ "    android:compileSdkVersion=\"35\"\n"
+				+ "    package=\"com.example.app\"\n"
+				+ "    platformBuildVersionName=\"15\">\n"
+				+ "    <uses-sdk android:minSdkVersion=\"26\" android:targetSdkVersion=\"35\"/>\n"
+				+ "    <application android:name=\"com.example.App\"/>\n"
+				+ "</manifest>\n";
+		try (FileWriter fw = new FileWriter(manifest)) {
+			fw.write(manifestContent);
+		}
+
+		File layoutDir = new File(resourcesDir, "res/layout");
+		layoutDir.mkdirs();
+
+		File kotlinMetadata = new File(resourcesDir, "kotlin-tooling-metadata.json");
+		String kotlinMetadataContent = "{\n"
+				+ "  \"schemaVersion\": \"1.1.0\",\n"
+				+ "  \"buildSystem\": \"Gradle\",\n"
+				+ "  \"buildSystemVersion\": \"8.9\",\n"
+				+ "  \"buildPlugin\": \"org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper\",\n"
+				+ "  \"buildPluginVersion\": \"1.9.0\",\n"
+				+ "  \"projectTargets\": [\n"
+				+ "    {\n"
+				+ "      \"target\": \"org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget\",\n"
+				+ "      \"platformType\": \"androidJvm\",\n"
+				+ "      \"extras\": {\n"
+				+ "        \"android\": {\n"
+				+ "          \"sourceCompatibility\": \"17\",\n"
+				+ "          \"targetCompatibility\": \"17\"\n"
+				+ "        }\n"
+				+ "      }\n"
+				+ "    }\n"
+				+ "  ]\n"
+				+ "}";
+		try (FileWriter fw = new FileWriter(kotlinMetadata)) {
+			fw.write(kotlinMetadataContent);
+		}
+
+		File metaInf = new File(resourcesDir, "META-INF");
+		metaInf.mkdirs();
+		try (FileWriter fw = new FileWriter(new File(metaInf, "androidx.core_core-ktx.version"))) {
+			fw.write("1.9.0");
+		}
+
 		// 3. Run analysis
 		DeviceExplorerAssistant.runAnalysis(outputDir, reportFile);
 
@@ -128,6 +175,22 @@ class DeviceExplorerAssistantTest {
 			assertThat(obf.get("totalClasses").getAsInt()).isEqualTo(2);
 			assertThat(obf.get("obfuscatedClasses").getAsInt()).isEqualTo(1);
 			assertThat(obf.get("obfuscationPercentage").getAsDouble()).isEqualTo(50.0);
+
+			JsonObject buildStack = report.getAsJsonObject("buildStack");
+			assertThat(buildStack.get("summary").getAsString())
+					.contains("Native Android", "Gradle", "KotlinAndroidPluginWrapper", "compileSdk 35", "targetSdk 35");
+			JsonObject buildMetadata = buildStack.getAsJsonObject("buildMetadata");
+			assertThat(buildMetadata.get("buildSystem").getAsString()).isEqualTo("Gradle");
+			assertThat(buildMetadata.get("buildSystemVersion").getAsString()).isEqualTo("8.9");
+			assertThat(buildMetadata.get("buildPluginVersion").getAsString()).isEqualTo("1.9.0");
+			assertThat(buildMetadata.get("platformType").getAsString()).isEqualTo("androidJvm");
+			JsonObject manifestReport = buildStack.getAsJsonObject("manifest");
+			assertThat(manifestReport.get("package").getAsString()).isEqualTo("com.example.app");
+			assertThat(manifestReport.get("versionName").getAsString()).isEqualTo("1.2.3");
+			assertThat(manifestReport.get("targetSdkVersion").getAsString()).isEqualTo("35");
+			assertThat(buildStack.getAsJsonArray("frameworks").toString()).contains("Native Android", "AndroidX / Jetpack");
+			assertThat(buildStack.getAsJsonObject("libraryVersions").get("androidx.core_core-ktx").getAsString())
+					.isEqualTo("1.9.0");
 
 			// Endpoints
 			assertThat(report.getAsJsonArray("endpoints")).hasSize(1);

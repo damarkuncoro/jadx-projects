@@ -30,6 +30,7 @@ public class JavaInputLoader {
 	private static final int MAX_MAGIC_SIZE = 4;
 	private static final byte[] JAVA_CLASS_FILE_MAGIC = { (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE };
 	private static final byte[] ZIP_FILE_MAGIC = { 0x50, 0x4B, 0x03, 0x04 };
+	private static final List<String> JAVA_ARCHIVE_EXTS = List.of(".zip", ".jar", ".apk");
 
 	private final ZipReader zipReader;
 	private final Path tempPath;
@@ -87,7 +88,7 @@ public class JavaInputLoader {
 			JavaClassReader reader = new JavaClassReader(getNextUniqId(), source, data);
 			return Collections.singletonList(reader);
 		}
-		if (isStartWithBytes(magic, ZIP_FILE_MAGIC) || CommonFileUtils.isZipFileExt(name)) {
+		if (isStartWithBytes(magic, ZIP_FILE_MAGIC) || isJavaArchiveExt(name)) {
 			if (file != null) {
 				return collectFromZip(file, name);
 			}
@@ -105,7 +106,7 @@ public class JavaInputLoader {
 			JavaClassReader reader = new JavaClassReader(getNextUniqId(), source, content);
 			return Collections.singletonList(reader);
 		}
-		if (isStartWithBytes(content, ZIP_FILE_MAGIC) || CommonFileUtils.isZipFileExt(name)) {
+		if (isStartWithBytes(content, ZIP_FILE_MAGIC) || isJavaArchiveExt(name)) {
 			Path tempZip = Files.createTempFile(tempPath, "temp", ".zip");
 			FileUtils.writeFile(tempZip, content);
 			File zipFile = tempZip.toFile();
@@ -114,6 +115,11 @@ public class JavaInputLoader {
 			return readers;
 		}
 		return Collections.emptyList();
+	}
+
+	private static boolean isJavaArchiveExt(String name) {
+		String lowerName = name.toLowerCase();
+		return JAVA_ARCHIVE_EXTS.stream().anyMatch(lowerName::endsWith);
 	}
 
 	private static String concatSource(@Nullable String parentFileName, String name) {
