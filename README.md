@@ -1,17 +1,16 @@
 <img src="https://raw.githubusercontent.com/skylot/jadx/master/jadx-gui/src/main/resources/logos/jadx-logo.png" width="64" align="left" />
 
-> **Note:** this repository is a local fork of `skylot/jadx` maintained by `damarkuncoro`. It includes personal changes and can be built with Gradle.
+> **Note:** this repository is a local fork of `skylot/jadx` maintained by `damarkuncoro`.
+> This fork includes custom build and release tooling, and is intended for local development and binary-only release packaging.
 >
 > To run the GUI from source, use `./gradlew :jadx-gui:run`.
+> To create a GitHub release asset, use `./gradlew dist` and `./scripts/release.sh <tag>`.
 
 ## JADX
 
-![Build status](https://img.shields.io/github/actions/workflow/status/skylot/jadx/build-artifacts.yml)
-![GitHub contributors](https://img.shields.io/github/contributors/skylot/jadx)
-![GitHub all releases](https://img.shields.io/github/downloads/skylot/jadx/total)
-![GitHub release (latest by SemVer)](https://img.shields.io/github/downloads/skylot/jadx/latest/total)
-![Latest release](https://img.shields.io/github/release/skylot/jadx.svg)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.skylot/jadx-core)](https://search.maven.org/search?q=g:io.github.skylot%20AND%20jadx)
+![GitHub release](https://img.shields.io/github/v/release/damarkuncoro/jadx-projects?label=release&logo=github)
+![GitHub downloads](https://img.shields.io/github/downloads/damarkuncoro/jadx-projects/total)
+![GitHub contributors](https://img.shields.io/github/contributors/damarkuncoro/jadx-projects)
 ![Java 11+](https://img.shields.io/badge/Java-11%2B-blue)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -47,18 +46,20 @@ See these features in action here: [jadx-gui features overview](https://github.c
 
 ### Download
 - release
-  from [github: ![Latest release](https://img.shields.io/github/release/skylot/jadx.svg)](https://github.com/skylot/jadx/releases/latest)
-- latest [unstable build ![GitHub commits since tagged version (branch)](https://img.shields.io/github/commits-since/skylot/jadx/latest/master)](https://nightly.link/skylot/jadx/workflows/build-artifacts/master)
+  from [GitHub release](https://github.com/damarkuncoro/jadx-projects/releases/latest)
+- built artifact available from `./gradlew dist` as `build/jadx-dev.zip`
 
-After download unpack zip file go to `bin` directory and run:
+After unpacking the zip file, run from `bin`:
 - `jadx` - command line version
 - `jadx-gui` - UI version
 
-On Windows run `.bat` files with double-click\
-**Note:** ensure you have installed Java 11 or later 64-bit version.
-For Windows, you can download it from [oracle.com](https://www.oracle.com/java/technologies/downloads/#jdk17-windows) (select x64 Installer).
+On Windows, run the corresponding `.bat` files.
+**Note:** ensure you have Java 11 or later installed.
 
 ### Install
+- Arch Linux / AUR / macOS / Flathub instructions below refer to the upstream `skylot/jadx` distribution and may not reflect this fork.
+- For this fork, preferred method is to build from source and use the generated binary release asset.
+
 - Arch Linux
   [![Arch Linux package](https://img.shields.io/archlinux/v/extra/any/jadx)](https://archlinux.org/packages/extra/any/jadx/)
   [![AUR Version](https://img.shields.io/aur/version/jadx-git)](https://aur.archlinux.org/packages/jadx-git)
@@ -82,12 +83,17 @@ You can use jadx in your java projects, check details on [wiki page](https://git
 ### Build from source
 JDK 17 or higher must be installed:
 ```
-git clone https://github.com/skylot/jadx.git
-cd jadx
+git clone https://github.com/damarkuncoro/jadx-projects.git
+cd jadx-projects
 ./gradlew dist
 ```
 
 (on Windows, use `gradlew.bat` instead of `./gradlew`)
+
+If you only need to run the GUI during development:
+```bash
+./gradlew :jadx-gui:run
+```
 
 ### Project requirements
 For the local fork, see [`docs/PROJECT_REQUIREMENTS.md`](docs/PROJECT_REQUIREMENTS.md) for environment setup, build prerequisites, and runtime dependencies.
