@@ -1,5 +1,9 @@
 <img src="https://raw.githubusercontent.com/skylot/jadx/master/jadx-gui/src/main/resources/logos/jadx-logo.png" width="64" align="left" />
 
+> **Note:** this repository is a local fork of `skylot/jadx` maintained by `damarkuncoro`. It includes personal changes and can be built with Gradle.
+>
+> To run the GUI from source, use `./gradlew :jadx-gui:run`.
+
 ## JADX
 
 ![Build status](https://img.shields.io/github/actions/workflow/status/skylot/jadx/build-artifacts.yml)
@@ -85,8 +89,25 @@ cd jadx
 
 (on Windows, use `gradlew.bat` instead of `./gradlew`)
 
+### Project requirements
+For the local fork, see [`docs/PROJECT_REQUIREMENTS.md`](docs/PROJECT_REQUIREMENTS.md) for environment setup, build prerequisites, and runtime dependencies.
+
 Scripts for run jadx will be placed in `build/jadx/bin`
 and also packed to `build/jadx-<version>.zip`
+
+### Binary release helper
+A small helper script is available to create GitHub Releases from the generated distribution asset.
+
+```bash
+./gradlew dist
+./scripts/release.sh v1.0.0
+```
+
+Use `--artifact` to point to a custom zip or `--notes-file` to attach release notes:
+
+```bash
+./scripts/release.sh v1.0.0 --artifact build/jadx/jadx-v1.0.0.zip --notes-file release-notes.md
+```
 
 ### Usage
 ```
