@@ -19,8 +19,8 @@
 Command line and GUI tools for producing Java source code from Android Dex and Apk files
 
 > [!WARNING]
-> Please note that in most cases **jadx** can't decompile all 100% of the code, so errors will occur.<br />
-> Check [Troubleshooting guide](https://github.com/skylot/jadx/wiki/Troubleshooting-Q&A#decompilation-issues) for workarounds.
+> Please note that jadx may not decompile 100% of code in all cases, so errors can occur.
+> For troubleshooting, upstream `skylot/jadx` wiki resources often contain useful guidance.
 
 **Main features:**
 - decompile Dalvik bytecode to Java code from APK, dex, aar, aab and zip files
@@ -35,12 +35,12 @@ Command line and GUI tools for producing Java source code from Android Dex and A
 - jump to declaration
 - find usage
 - full text search
-- smali debugger, check [wiki page](https://github.com/skylot/jadx/wiki/Smali-debugger) for setup and usage
+- smali debugger, check the upstream wiki for setup and usage
 - JADX Device Explorer UI under menu `File` -> `Open from Android Device...` to visually browse packages, select split APK configuration, pull, and decompile
 
-Jadx-gui key bindings can be found [here](https://github.com/skylot/jadx/wiki/JADX-GUI-Key-bindings)
+Jadx-gui key bindings can be found in the upstream wiki.
 
-See these features in action here: [jadx-gui features overview](https://github.com/skylot/jadx/wiki/jadx-gui-features-overview)
+See these features in action in the upstream jadx documentation.
 
 <img src="https://user-images.githubusercontent.com/118523/142730720-839f017e-38db-423e-b53f-39f5f0a0316f.png" width="700"/>
 
@@ -102,18 +102,29 @@ Scripts for run jadx will be placed in `build/jadx/bin`
 and also packed to `build/jadx-<version>.zip`
 
 ### Binary release helper
-A small helper script is available to create GitHub Releases from the generated distribution asset.
+This repository includes a helper script to create GitHub Releases from the generated distribution asset.
+
+Build the distribution first:
 
 ```bash
 ./gradlew dist
-./scripts/release.sh v1.0.0
 ```
 
-Use `--artifact` to point to a custom zip or `--notes-file` to attach release notes:
+Then create a release (example):
 
 ```bash
-./scripts/release.sh v1.0.0 --artifact build/jadx/jadx-v1.0.0.zip --notes-file release-notes.md
+./scripts/release.sh v1.5.6
 ```
+
+The helper will use `build/jadx-dev.zip` by default when it exists.
+
+To attach custom release notes:
+
+```bash
+./scripts/release.sh v1.5.6 --artifact build/jadx-dev.zip --notes-file release-notes.md
+```
+
+Latest release notes are stored in `release-notes.md`.
 
 ### Usage
 ```
