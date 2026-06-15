@@ -82,6 +82,7 @@ public class DeviceExplorerDialog extends JDialog {
 
 	private JPanel splitsPanel;
 	private final List<JCheckBox> splitCheckBoxes = new ArrayList<>();
+	private int packageListUserId;
 
 	private JTextField outDirTextField;
 	private JButton browseButton;
@@ -378,13 +379,25 @@ public class DeviceExplorerDialog extends JDialog {
 					setControlsEnabled(true);
 				});
 			} catch (Exception e) {
-				LOG.error("Failed to list devices", e);
+				LOG.warn("Failed to list devices: {}", e.getMessage());
 				UiUtils.uiRun(() -> {
-					UiUtils.errorMessage(this, "ADB list devices failed: " + e.getMessage() + "\n" + NLS.str("device_explorer.no_devices"));
+					UiUtils.errorMessage(this, "ADB list devices failed: " + getAdbErrorMessage(e) + "\n" + NLS.str("device_explorer.no_devices"));
 					setControlsEnabled(true);
 				});
 			}
 		});
+	}
+
+	private static String getAdbErrorMessage(Exception e) {
+		Throwable cause = e;
+		while (cause.getCause() != null) {
+			cause = cause.getCause();
+		}
+		String message = e.getMessage();
+		if (message == null || message.isBlank()) {
+			message = cause.getMessage();
+		}
+		return message == null || message.isBlank() ? cause.getClass().getSimpleName() : message;
 	}
 
 	private void loadUsers(ADBDevice device) {
@@ -426,14 +439,16 @@ public class DeviceExplorerDialog extends JDialog {
 		UiUtils.bgRun(() -> {
 			try {
 				boolean fallbackTriggered = (userId != 0);
+				int effectiveUserId = userId;
 				List<AdbPackage> packagesList;
 				try {
 					packagesList = AdbService.listPackages(device, userId, "all");
 					fallbackTriggered = false;
 				} catch (IOException ex) {
 					if (userId != 0) {
-						LOG.warn("Failed to list packages for user {}. Falling back to user 0.", userId, ex);
+						LOG.warn("Failed to list packages for user {}: {}. Falling back to user 0.", userId, ex.getMessage());
 						packagesList = AdbService.listPackages(device, 0, "all");
+						effectiveUserId = 0;
 					} else {
 						throw ex;
 					}
@@ -441,6 +456,7 @@ public class DeviceExplorerDialog extends JDialog {
 
 				final List<AdbPackage> finalPackages = packagesList;
 				final boolean selectUser0 = fallbackTriggered;
+				final int finalEffectiveUserId = effectiveUserId;
 				UiUtils.uiRun(() -> {
 					if (selectUser0) {
 						for (int i = 0; i < userComboBox.getItemCount(); i++) {
@@ -451,6 +467,7 @@ public class DeviceExplorerDialog extends JDialog {
 							}
 						}
 					}
+					packageListUserId = finalEffectiveUserId;
 					allPackages = finalPackages;
 					filterPackages();
 					setControlsEnabled(true);
@@ -519,10 +536,11 @@ public class DeviceExplorerDialog extends JDialog {
 
 		String pkgName = selectedPkg.getPackageName();
 		int userId = user.getId();
+		int effectiveUserId = packageListUserId;
 
 		UiUtils.bgRun(() -> {
 			try {
-				List<ApkPath> paths = AdbService.resolveApkPaths(device, pkgName, userId);
+				List<ApkPath> paths = AdbService.resolveApkPaths(device, pkgName, effectiveUserId);
 				UiUtils.uiRun(() -> {
 					// Check if selection is still the same package to avoid race conditions
 					AdbPackage currentSel = packageList.getSelectedValue();
@@ -649,6 +667,7 @@ public class DeviceExplorerDialog extends JDialog {
 		String adbPath = getAdbPath();
 		String serial = device.getSerial();
 		int userId = user.getId();
+		int effectiveUserId = packageListUserId;
 		String pkgName = pkg.getPackageName();
 
 		setControlsEnabled(false);
@@ -678,7 +697,8 @@ public class DeviceExplorerDialog extends JDialog {
 						Map<String, Object> report = new LinkedHashMap<>();
 						report.put("packageName", pkgName);
 						report.put("deviceSerial", serial);
-						report.put("androidUser", userId);
+						report.put("selectedAndroidUser", userId);
+						report.put("effectiveAndroidUser", effectiveUserId);
 						report.put("pulledAt", java.time.Instant.now().toString());
 
 						List<Map<String, Object>> apkFilesList = new ArrayList<>();

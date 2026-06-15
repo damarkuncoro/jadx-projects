@@ -58,9 +58,18 @@ public final class CodeContentPanel extends AbstractCodeContentPanel implements 
 	public void restoreEditorViewState(EditorViewState viewState) {
 		try {
 			codePanel.getCodeScrollPane().getViewport().setViewPosition(viewState.getViewPoint());
-			codePanel.getCodeArea().setCaretPosition(viewState.getCaretPos());
 		} catch (Exception e) {
-			LOG.error("Failed to restore view state", e);
+			LOG.debug("Failed to restore view position: {}", viewState.getViewPoint(), e);
+		}
+		int caretPos = viewState.getCaretPos();
+		try {
+			AbstractCodeArea codeArea = codePanel.getCodeArea();
+			int codeLen = codeArea.getDocument().getLength();
+			if (caretPos >= 0 && caretPos <= codeLen) {
+				codeArea.setCaretPosition(caretPos);
+			}
+		} catch (Exception e) {
+			LOG.debug("Failed to restore caret position: {}", caretPos, e);
 		}
 	}
 

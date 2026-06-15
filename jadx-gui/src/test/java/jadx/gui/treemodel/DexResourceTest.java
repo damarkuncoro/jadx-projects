@@ -16,8 +16,8 @@ class DexResourceTest {
 
 	@Test
 	void testIsDexMagic(@TempDir File tempDir) throws IOException {
-		// Test valid DEX header (dex\n035\0)
-		byte[] dexBytes = new byte[16];
+		// Test valid DEX header (dex\n035\0 with endian tag at offset 40)
+		byte[] dexBytes = new byte[44];
 		dexBytes[0] = 'd';
 		dexBytes[1] = 'e';
 		dexBytes[2] = 'x';
@@ -26,6 +26,10 @@ class DexResourceTest {
 		dexBytes[5] = '3';
 		dexBytes[6] = '5';
 		dexBytes[7] = 0;
+		dexBytes[40] = 0x78;
+		dexBytes[41] = 0x56;
+		dexBytes[42] = 0x34;
+		dexBytes[43] = 0x12;
 
 		File dexFile = new File(tempDir, "test.txt");
 		Files.write(dexFile.toPath(), dexBytes);

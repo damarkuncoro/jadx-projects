@@ -88,6 +88,7 @@ public class AdbService {
 	}
 
 	public static List<ADBDevice> listDevices(String host, int port) throws IOException {
+		ensureAdbServer(host, port);
 		String cmd = "host:devices-l";
 		String prefixedCmd = String.format("%04x%s", cmd.length(), cmd);
 		byte[] response;
@@ -107,6 +108,34 @@ public class AdbService {
 			}
 		}
 		return devices;
+	}
+
+	private static void ensureAdbServer(String host, int port) throws IOException {
+		if (ADB.isServerRunning(host, port)) {
+			return;
+		}
+		if (!isLocalAdbHost(host)) {
+			throw new IOException("ADB server is not running at " + host + ':' + port);
+		}
+		String adbPath = detectAdbPath();
+		LOG.info("ADB server is not running at {}:{}, trying to start it with {}", host, port, adbPath);
+		try {
+			boolean started = ADB.startServer(adbPath, port);
+			if (!started || !ADB.isServerRunning(host, port)) {
+				throw new IOException("ADB server is not running at " + host + ':' + port
+						+ " and could not be started using: " + adbPath);
+			}
+		} catch (IOException e) {
+			throw new IOException("ADB server is not running at " + host + ':' + port
+					+ ". Start it manually with `" + adbPath + " start-server` or check the ADB path in settings.", e);
+		}
+	}
+
+	private static boolean isLocalAdbHost(String host) {
+		return "localhost".equalsIgnoreCase(host)
+				|| "127.0.0.1".equals(host)
+				|| "::1".equals(host)
+				|| "0:0:0:0:0:0:0:1".equals(host);
 	}
 
 	public static String execShell(ADBDevice device, String command) throws IOException {
@@ -147,10 +176,27 @@ public class AdbService {
 		String output = execShell(device, cmd);
 
 		if (output.contains("SecurityException") || output.contains("Permission Denial") || output.startsWith("Error:")) {
-			throw new IOException("Permission denied listing packages for user " + userId + ": " + output.trim());
+			throw new IOException("Permission denied listing packages for user " + userId + ": " + summarizeShellError(output));
 		}
 
 		return parsePackages(output, filterType);
+	}
+
+	private static String summarizeShellError(String output) {
+		for (String line : output.split("\n")) {
+			String trimmed = line.trim();
+			if (trimmed.isEmpty()) {
+				continue;
+			}
+			if (trimmed.contains("SecurityException")
+					|| trimmed.contains("Permission Denial")
+					|| trimmed.startsWith("Error:")) {
+				return trimmed;
+			}
+		}
+		String trimmed = output.trim();
+		int firstLineEnd = trimmed.indexOf('\n');
+		return firstLineEnd == -1 ? trimmed : trimmed.substring(0, firstLineEnd).trim();
 	}
 
 	public static List<AdbPackage> parsePackages(String output, String filterType) {

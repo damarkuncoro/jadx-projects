@@ -188,7 +188,8 @@ class DeviceExplorerAssistantTest {
 			assertThat(manifestReport.get("package").getAsString()).isEqualTo("com.example.app");
 			assertThat(manifestReport.get("versionName").getAsString()).isEqualTo("1.2.3");
 			assertThat(manifestReport.get("targetSdkVersion").getAsString()).isEqualTo("35");
-			assertThat(buildStack.getAsJsonArray("frameworks").toString()).contains("Native Android", "AndroidX / Jetpack");
+			assertThat(buildStack.getAsJsonArray("frameworks").toString())
+					.contains("Native Android", "AndroidX / Jetpack", "DETECTED", "Flutter", "NOT_DETECTED");
 			assertThat(buildStack.getAsJsonObject("libraryVersions").get("androidx.core_core-ktx").getAsString())
 					.isEqualTo("1.9.0");
 

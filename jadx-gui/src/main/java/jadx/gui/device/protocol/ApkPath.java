@@ -1,6 +1,10 @@
 package jadx.gui.device.protocol;
 
+import java.util.regex.Pattern;
+
 public class ApkPath {
+	private static final Pattern LANG_SPLIT = Pattern.compile(".*config\\.[a-z]{2,3}(-r[a-z]{2})?\\.apk$");
+
 	private final String remotePath;
 	private final String localName;
 	private final String type;
@@ -34,10 +38,7 @@ public class ApkPath {
 				|| lower.contains("config.xxxhdpi") || lower.contains("config.mdpi") || lower.contains("config.ldpi")) {
 			return "density";
 		}
-		if (lower.contains("config.en") || lower.contains("config.id") || lower.contains("config.es")
-				|| lower.contains("config.fr") || lower.contains("config.de") || lower.contains("config.zh")
-				|| lower.contains("config.ru") || lower.contains("config.it") || lower.contains("config.pt")
-				|| lower.contains("config.ja") || lower.contains("config.ko")) {
+		if (LANG_SPLIT.matcher(lower).matches()) {
 			return "lang";
 		}
 		return "unknown";

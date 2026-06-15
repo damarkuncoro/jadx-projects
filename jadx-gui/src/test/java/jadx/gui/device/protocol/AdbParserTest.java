@@ -87,6 +87,14 @@ class AdbParserTest {
 		assertThat(lang.getLocalName()).isEqualTo("split_config.id.apk");
 		assertThat(lang.getType()).isEqualTo("lang");
 
+		ApkPath legacyIndonesianLang = new ApkPath("/data/app/com.whatsapp/split_config.in.apk");
+		assertThat(legacyIndonesianLang.getLocalName()).isEqualTo("split_config.in.apk");
+		assertThat(legacyIndonesianLang.getType()).isEqualTo("lang");
+
+		ApkPath regionalLang = new ApkPath("/data/app/com.whatsapp/split_config.pt-rBR.apk");
+		assertThat(regionalLang.getLocalName()).isEqualTo("split_config.pt-rBR.apk");
+		assertThat(regionalLang.getType()).isEqualTo("lang");
+
 		ApkPath unknown = new ApkPath("/data/app/com.whatsapp/something_random.apk");
 		assertThat(unknown.getLocalName()).isEqualTo("something_random.apk");
 		assertThat(unknown.getType()).isEqualTo("unknown");

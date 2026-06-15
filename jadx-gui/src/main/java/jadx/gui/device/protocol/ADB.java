@@ -164,12 +164,19 @@ public class ADB {
 		java.lang.Process proc = new ProcessBuilder(command)
 				.redirectErrorStream(true)
 				.start();
+		boolean exited;
+		int exitCode;
 		try {
 			// Wait for the adb server to start. On Windows even on a fast system 6 seconds are not unusual.
-			proc.waitFor(10, TimeUnit.SECONDS);
-			proc.exitValue();
+			exited = proc.waitFor(10, TimeUnit.SECONDS);
+			exitCode = exited ? proc.exitValue() : -1;
 		} catch (Exception e) {
 			LOG.error("ADB start server failed with command: {}", String.join(" ", command), e);
+			proc.destroyForcibly();
+			return false;
+		}
+		if (!exited) {
+			LOG.error("ADB start server timed out with command: {}", String.join(" ", command));
 			proc.destroyForcibly();
 			return false;
 		}
@@ -181,7 +188,11 @@ public class ADB {
 				out.write(buf, 0, read);
 			}
 		}
-		return out.toString().contains(tcpPort);
+		String output = out.toString();
+		if (!output.isBlank()) {
+			LOG.debug("ADB start server output: {}", output.trim());
+		}
+		return exitCode == 0 && (isServerRunning(DEFAULT_ADDR, port) || isServerRunning("127.0.0.1", port));
 	}
 
 	public static boolean isServerRunning(String host, int port) {
