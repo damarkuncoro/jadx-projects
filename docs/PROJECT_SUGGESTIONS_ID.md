@@ -1,5 +1,19 @@
 # Saran dan Panduan untuk Proyek JADX
 
+## 0. Frida Integration (Modul Baru)
+
+Proyek JADX sekarang memiliki modul `jadx-frida-integration` yang mengintegrasikan fungsi runtime hooking dan tracing menggunakan **Frida**! Dengan fitur ini, kamu bisa:
+- Generate script Frida langsung dari method yang dipilih di JADX GUI
+- Hook function runtime tanpa compile ulang
+- Trace method call dan inspect crypto/API call
+- Dukung multi-platform: Android, iOS, Linux, macOS, Windows
+
+### Cara Menggunakan:
+1. Decompile APK/app target di JADX GUI
+2. Pilih method yang ingin dihook
+3. Klik tombol "Generate Frida Script" (fitur di GUI)
+4. Jalankan script yang di-generate dengan Frida
+
 ## 1. Ringkasan Perubahan yang Sudah Dilakukan
 
 Berikut adalah perubahan yang telah diterapkan pada proyek ini:

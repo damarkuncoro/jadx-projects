@@ -12,6 +12,7 @@ dependencies {
 	implementation(project(":jadx-cli"))
 	implementation(project(":jadx-plugins-tools"))
 	implementation(project(":jadx-commons:jadx-app-commons"))
+	implementation(project(":jadx-frida-integration"))
 
 	// import mappings
 	implementation(project(":jadx-plugins:jadx-rename-mappings"))

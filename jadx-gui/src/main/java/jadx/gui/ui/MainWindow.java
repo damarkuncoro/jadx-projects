@@ -111,6 +111,10 @@ import jadx.gui.jobs.TaskWithExtraOnFinish;
 import jadx.gui.logs.LogCollector;
 import jadx.gui.logs.LogOptions;
 import jadx.gui.logs.LogPanel;
+import jadx.gui.frida.FridaPanel;
+import jadx.api.JavaMethod;
+import jadx.api.metadata.ICodeNodeRef;
+import jadx.gui.plugins.context.CodePopupAction;
 import jadx.gui.plugins.context.CommonGuiPluginsContext;
 import jadx.gui.plugins.context.TreePopupMenuEntry;
 import jadx.gui.plugins.mappings.RenameMappingsGui;
@@ -251,6 +255,8 @@ public class MainWindow extends JFrame {
 	public JMenu hexViewerMenu;
 
 	private final transient RenameMappingsGui renameMappings;
+	private transient FridaPanel fridaPanel;
+	private transient boolean fridaPopupAdded = false;
 
 	public MainWindow(JadxSettings settings) {
 		this.settings = settings;
@@ -264,6 +270,7 @@ public class MainWindow extends JFrame {
 		this.tabsController = new TabsController(this);
 		this.navController = new NavigationController(this);
 		this.editorThemeManager = new EditorThemeManager(settings);
+		this.fridaPanel = new FridaPanel();
 
 		JadxEventQueue.register();
 		JadxExceptionHandler.register(this);
@@ -525,6 +532,53 @@ public class MainWindow extends JFrame {
 		});
 	}
 
+	private void addFridaPopupAction() {
+		if (fridaPopupAdded) {
+			return;
+		}
+		CommonGuiPluginsContext pluginsContext = getWrapper().getGuiPluginsContext();
+		if (pluginsContext == null) {
+			LOG.error("pluginsContext is null, cannot add Frida popup action");
+			return;
+		}
+		pluginsContext.getCodePopupActionList().add(new CodePopupAction(
+			"Generate Frida Hook Script",
+			codeNodeRef -> {
+				try {
+					JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
+					return javaNode instanceof JavaMethod;
+				} catch (Exception e) {
+					return false;
+				}
+			},
+			null,
+			codeNodeRef -> {
+				try {
+					JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
+					if (javaNode instanceof JavaMethod) {
+						JavaMethod method = (JavaMethod) javaNode;
+						boolean found = false;
+						for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+							if (tabbedPane.getComponentAt(i) == fridaPanel) {
+								found = true;
+								tabbedPane.setSelectedIndex(i);
+								break;
+							}
+						}
+						if (!found) {
+							tabbedPane.addTab("Frida", fridaPanel);
+							tabbedPane.setSelectedComponent(fridaPanel);
+						}
+						fridaPanel.generateAndDisplayScript(method);
+					}
+				} catch (Exception e) {
+					LOG.error("Failed to generate Frida script", e);
+				}
+			}
+		));
+		fridaPopupAdded = true;
+	}
+
 	private void openProject(Path path, Runnable onFinish) {
 		LOG.debug("Loading project: {}", path);
 		project = JadxProject.load(this, path);
@@ -542,6 +596,8 @@ public class MainWindow extends JFrame {
 				() -> {
 					try {
 						wrapper.open();
+						// Add Frida integration to code popup menu now that guiPluginsContext is ready
+						addFridaPopupAction();
 					} catch (Exception e) {
 						LOG.error("Project load error", e);
 						closeAll();

@@ -30,3 +30,6 @@ include("jadx-plugins:jadx-xapk-input")
 include("jadx-plugins:jadx-aab-input")
 include("jadx-plugins:jadx-apkm-input")
 include("jadx-plugins:jadx-apks-input")
+
+// Frida Integration Module
+include("jadx-frida-integration")
