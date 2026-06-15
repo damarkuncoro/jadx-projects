@@ -217,7 +217,7 @@ public class CacheManager {
 			Files.writeString(JadxFiles.CACHES_LIST, json, StandardCharsets.UTF_8,
 					StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (Exception e) {
-			throw new JadxRuntimeException("Failed to write caches file", e);
+			LOG.warn("Failed to write caches file", e);
 		}
 	}
 
