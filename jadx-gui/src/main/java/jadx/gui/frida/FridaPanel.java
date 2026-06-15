@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JavaMethod;
+import jadx.frida.FridaSnippets;
+import jadx.gui.ui.MainWindow;
 
 /**
  * Frida integration panel for Jadx GUI
@@ -26,24 +28,22 @@ import jadx.api.JavaMethod;
 public class FridaPanel extends JPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(FridaPanel.class);
 
+	private final MainWindow mainWindow;
 	private RSyntaxTextArea scriptTextArea;
 	private JTextArea logTextArea;
 	private JButton runButton;
 	private JButton clearLogButton;
+	private JComboBox<String> snippetsComboBox;
 	private Process currentFridaProcess;
 
-	public FridaPanel() {
+	public FridaPanel(MainWindow mainWindow) {
+		this.mainWindow = mainWindow;
 		initUI();
 	}
 
 	private void initUI() {
 		setLayout(new BorderLayout(10, 10));
 		setBorder(new EmptyBorder(10, 10, 10, 10));
-
-		// Title label
-		JLabel titleLabel = new JLabel("Frida Integration");
-		titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16f));
-		add(titleLabel, BorderLayout.NORTH);
 
 		// Center panel: split between script editor and log
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -52,9 +52,37 @@ public class FridaPanel extends JPanel {
 
 		// Script editor panel
 		JPanel scriptPanel = new JPanel(new BorderLayout(5, 5));
-		JLabel scriptLabel = new JLabel("Frida Script:");
-		scriptLabel.setFont(scriptLabel.getFont().deriveFont(Font.BOLD));
-		scriptPanel.add(scriptLabel, BorderLayout.NORTH);
+		
+		// Top panel: title + snippets dropdown
+		JPanel topPanel = new JPanel(new BorderLayout(5, 5));
+		JLabel scriptLabel = new JLabel("Frida Integration");
+		scriptLabel.setFont(scriptLabel.getFont().deriveFont(Font.BOLD, 16f));
+		topPanel.add(scriptLabel, BorderLayout.NORTH);
+
+		// Snippets dropdown panel
+		JPanel snippetsPanel = new JPanel(new BorderLayout(5, 5));
+		JLabel snippetsLabel = new JLabel("Predefined Snippets:");
+		snippetsLabel.setFont(snippetsLabel.getFont().deriveFont(Font.PLAIN));
+		snippetsPanel.add(snippetsLabel, BorderLayout.WEST);
+
+		snippetsComboBox = new JComboBox<>();
+		snippetsComboBox.addItem("Select a snippet...");
+		for (String name : FridaSnippets.SNIPPETS.keySet()) {
+			snippetsComboBox.addItem(name);
+		}
+		snippetsComboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selected = (String) snippetsComboBox.getSelectedItem();
+				if (selected != null && !selected.equals("Select a snippet...")) {
+					scriptTextArea.setText(FridaSnippets.SNIPPETS.get(selected));
+					logTextArea.append("[INFO] Loaded snippet: " + selected + "\n");
+				}
+			}
+		});
+		snippetsPanel.add(snippetsComboBox, BorderLayout.CENTER);
+		topPanel.add(snippetsPanel, BorderLayout.SOUTH);
+		scriptPanel.add(topPanel, BorderLayout.NORTH);
 
 		scriptTextArea = new RSyntaxTextArea(20, 80);
 		scriptTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
@@ -100,6 +128,37 @@ public class FridaPanel extends JPanel {
 			}
 		});
 		logButtonPanel.add(clearLogButton);
+
+		JButton clearScriptButton = new JButton("Clear Script");
+		clearScriptButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				scriptTextArea.setText("");
+			}
+		});
+		logButtonPanel.add(clearScriptButton);
+
+		JButton gcButton = new JButton("Run Garbage Collection");
+		gcButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				logTextArea.append("[INFO] Running garbage collection...\n");
+				System.gc();
+				logTextArea.append("[INFO] Garbage collection completed!\n");
+			}
+		});
+		logButtonPanel.add(gcButton);
+
+		JButton closeAllTabsButton = new JButton("Close All Tabs");
+		closeAllTabsButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				logTextArea.append("[INFO] Closing all tabs...\n");
+				mainWindow.getTabsController().closeAllTabs();
+				logTextArea.append("[INFO] All tabs closed!\n");
+			}
+		});
+		logButtonPanel.add(closeAllTabsButton);
 		logPanel.add(logButtonPanel, BorderLayout.SOUTH);
 
 		splitPane.setBottomComponent(logPanel);

@@ -270,7 +270,7 @@ public class MainWindow extends JFrame {
 		this.tabsController = new TabsController(this);
 		this.navController = new NavigationController(this);
 		this.editorThemeManager = new EditorThemeManager(settings);
-		this.fridaPanel = new FridaPanel();
+		this.fridaPanel = new FridaPanel(this);
 
 		JadxEventQueue.register();
 		JadxExceptionHandler.register(this);
@@ -1204,6 +1204,16 @@ public class MainWindow extends JFrame {
 		dockLog.setState(settings.isDockLogViewer());
 		dockLog.addActionListener(event -> settings.saveDockLogViewer(!settings.isDockLogViewer()));
 
+		JCheckBoxMenuItem fridaPanelMenuItem = new JCheckBoxMenuItem("Show Frida Panel");
+		fridaPanelMenuItem.setState(false);
+		fridaPanelMenuItem.addActionListener(event -> {
+			if (fridaPanelMenuItem.getState()) {
+				showFridaPanel();
+			} else {
+				hideFridaPanel();
+			}
+		});
+
 		ActionHandler quickTabsAction = new ActionHandler(ev -> {
 			boolean visible = quickTabsTree == null;
 			setQuickTabsVisibility(visible);
@@ -1284,6 +1294,7 @@ public class MainWindow extends JFrame {
 		view.add(alwaysSelectOpened);
 		view.addSeparator();
 		view.add(dockLog);
+		view.add(fridaPanelMenuItem);
 		view.add(heapUsageBarMenuItem);
 
 		JMenu nav = new JadxMenu(NLS.str("menu.navigation"), shortcutsController);
@@ -1834,7 +1845,23 @@ public class MainWindow extends JFrame {
 		}
 		logPanel.dispose();
 		logPanel = null;
-		rightSplitPane.setBottomComponent(null);
+		updateRightSplitPaneBottom();
+	}
+
+	private void showFridaPanel() {
+		rightSplitPane.setBottomComponent(fridaPanel);
+	}
+
+	private void hideFridaPanel() {
+		rightSplitPane.setBottomComponent(logPanel != null ? logPanel : null);
+	}
+
+	private void updateRightSplitPaneBottom() {
+		if (logPanel != null) {
+			rightSplitPane.setBottomComponent(logPanel);
+		} else {
+			rightSplitPane.setBottomComponent(null);
+		}
 	}
 
 	private void setQuickTabsVisibility(boolean visible) {

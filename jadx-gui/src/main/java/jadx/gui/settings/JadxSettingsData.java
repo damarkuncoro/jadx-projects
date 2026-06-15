@@ -72,7 +72,7 @@ public class JadxSettingsData extends JadxGUIArgs {
 
 	private Map<ActionModel, Shortcut> shortcuts = new HashMap<>();
 
-	private boolean showHeapUsageBar = false;
+	private boolean showHeapUsageBar = true;
 	private boolean alwaysSelectOpened = false;
 	private boolean enablePreviewTab = false;
 	private boolean useAlternativeFileDialog = false;
@@ -91,7 +91,7 @@ public class JadxSettingsData extends JadxGUIArgs {
 	private String adbDialogPort = "5037";
 
 	private CodeCacheMode codeCacheMode = CodeCacheMode.DISK;
-	private UsageCacheMode usageCacheMode = UsageCacheMode.DISK;
+	private UsageCacheMode usageCacheMode = UsageCacheMode.NONE;
 
 	/**
 	 * Cache dir option values:
