@@ -114,7 +114,7 @@ public class DeviceExplorerAssistant {
 		try (Stream<Path> walk = Files.walk(sourcesDir.toPath())) {
 			List<Path> files = walk.filter(Files::isRegularFile)
 					.filter(p -> p.toString().endsWith(".java"))
-					.toList();
+					.collect(java.util.stream.Collectors.toList());
 
 			totalClasses = files.size();
 

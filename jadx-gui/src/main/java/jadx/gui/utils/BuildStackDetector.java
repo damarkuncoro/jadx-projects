@@ -94,7 +94,7 @@ public class BuildStackDetector {
 			evidence.add("AndroidManifest.xml");
 		}
 		return new BuildStackInfo(summarizeBuildStack(buildMetadata, manifest, frameworks), buildMetadata, manifest,
-				frameworks, libraryVersions, evidence.stream().sorted().toList());
+				frameworks, libraryVersions, evidence.stream().sorted().collect(Collectors.toList()));
 	}
 
 	private static Map<String, String> collectExportedResources(File resourcesDir) {
@@ -306,7 +306,7 @@ public class BuildStackDetector {
 				"MEDIUM", matchingR8Evidence(resourceNames, classNames));
 		return frameworks.stream()
 				.sorted(Comparator.comparingInt(framework -> FRAMEWORK_ORDER.indexOf(framework.getName())))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	private static void addFramework(
@@ -325,9 +325,9 @@ public class BuildStackDetector {
 
 	private static List<String> matchingResources(Set<String> resourceNames, Predicate<String> predicate) {
 		return resourceNames.stream()
-				.filter(predicate)
-				.sorted()
-				.toList();
+			.filter(predicate)
+			.sorted()
+			.collect(Collectors.toList());
 	}
 
 	private static List<String> matchingEvidence(
@@ -350,7 +350,7 @@ public class BuildStackDetector {
 				evidence.add("package:" + cls);
 			}
 		}
-		return evidence.stream().distinct().sorted().toList();
+		return evidence.stream().distinct().sorted().collect(Collectors.toList());
 	}
 
 	private static boolean hasLibrary(Map<String, String> libraryVersions, String prefix) {
@@ -370,7 +370,7 @@ public class BuildStackDetector {
 		if (classNames.stream().anyMatch(name -> name.startsWith(classPrefix + "/"))) {
 			evidence.add("package:" + classPrefix);
 		}
-		return evidence.stream().distinct().sorted().toList();
+		return evidence.stream().distinct().sorted().collect(Collectors.toList());
 	}
 
 	private static List<String> matchingFirebaseEvidence(
@@ -382,7 +382,7 @@ public class BuildStackDetector {
 		if (resourceNames.contains("google-services.json")) {
 			evidence.add("google-services.json");
 		}
-		return evidence.stream().distinct().sorted().toList();
+		return evidence.stream().distinct().sorted().collect(Collectors.toList());
 	}
 
 	private static List<String> matchingDaggerEvidence(Map<String, String> libraryVersions, Set<String> classNames) {
@@ -390,7 +390,7 @@ public class BuildStackDetector {
 		if (classNames.stream().anyMatch(name -> name.startsWith("javax/inject/"))) {
 			evidence.add("package:javax/inject");
 		}
-		return evidence.stream().distinct().sorted().toList();
+		return evidence.stream().distinct().sorted().collect(Collectors.toList());
 	}
 
 	private static List<String> matchingWebViewEvidence(Set<String> resourceNames, Set<String> classNames) {
@@ -404,7 +404,7 @@ public class BuildStackDetector {
 				.map(cls -> "class:" + cls)
 				.sorted()
 				.forEach(evidence::add);
-		return evidence.stream().distinct().sorted().toList();
+		return evidence.stream().distinct().sorted().collect(Collectors.toList());
 	}
 
 	private static List<String> matchingR8Evidence(Set<String> resourceNames, Set<String> classNames) {
@@ -416,7 +416,7 @@ public class BuildStackDetector {
 		if (classNames.stream().anyMatch(name -> name.startsWith("com/android/tools/r8/"))) {
 			evidence.add("package:com/android/tools/r8");
 		}
-		return evidence.stream().distinct().sorted().toList();
+		return evidence.stream().distinct().sorted().collect(Collectors.toList());
 	}
 
 	private static String summarizeBuildStack(
@@ -493,10 +493,10 @@ public class BuildStackDetector {
 		private BuildStackInfo withEvidencePrefix(String prefix) {
 			List<FrameworkDetection> prefixedFrameworks = frameworks.stream()
 					.map(framework -> framework.withEvidencePrefix(prefix))
-					.toList();
+					.collect(Collectors.toList());
 			List<String> prefixedEvidence = evidence.stream()
 					.map(item -> toExportedEvidence(item, prefix))
-					.toList();
+					.collect(Collectors.toList());
 			return new BuildStackInfo(summary, buildMetadata, manifest, prefixedFrameworks, libraryVersions, prefixedEvidence);
 		}
 
@@ -519,13 +519,13 @@ public class BuildStackDetector {
 		public List<FrameworkDetection> getDetectedFrameworks() {
 			return frameworks.stream()
 					.filter(FrameworkDetection::isDetected)
-					.toList();
+					.collect(Collectors.toList());
 		}
 
 		public List<FrameworkDetection> getNotDetectedFrameworks() {
 			return frameworks.stream()
 					.filter(framework -> !framework.isDetected())
-					.toList();
+					.collect(Collectors.toList());
 		}
 
 		public Map<String, String> getLibraryVersions() {
@@ -544,7 +544,7 @@ public class BuildStackDetector {
 			map.put("summary", summary);
 			map.put("buildMetadata", buildMetadata);
 			map.put("manifest", manifest);
-			map.put("frameworks", frameworks.stream().map(FrameworkDetection::toMap).toList());
+			map.put("frameworks", frameworks.stream().map(FrameworkDetection::toMap).collect(Collectors.toList()));
 			map.put("libraryVersions", libraryVersions);
 			map.put("evidence", evidence);
 			return map;
@@ -567,7 +567,7 @@ public class BuildStackDetector {
 		private FrameworkDetection withEvidencePrefix(String prefix) {
 			List<String> prefixedEvidence = evidence.stream()
 					.map(item -> toExportedEvidence(item, prefix))
-					.toList();
+					.collect(Collectors.toList());
 			return new FrameworkDetection(name, status, confidence, prefixedEvidence);
 		}
 
