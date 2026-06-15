@@ -48,7 +48,9 @@ public class JadxCLIArgs implements IJadxConfig {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxCLIArgs.class);
 
 	@JadxConfigExclude
-	@Parameter(description = "<input files> (.apk, .dex, .jar, .class, .smali, .zip, .aar, .arsc, .prof, .profm, .aab, .xapk, .apkm, .jadx.kts)")
+	@Parameter(
+			description = "<input files> (.apk, .dex, .jar, .class, .smali, .zip, .aar, .arsc, .prof, .profm, .aab, .xapk, .apkm, .jadx.kts)"
+	)
 	protected List<String> files = Collections.emptyList();
 
 	@JadxConfigExclude

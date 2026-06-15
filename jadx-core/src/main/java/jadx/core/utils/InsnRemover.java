@@ -184,11 +184,10 @@ public class InsnRemover {
 			return;
 		}
 		for (InsnNode rem : toRemove) {
-			int insnsCount = insns.size();
 			boolean found = false;
-			for (int i = 0; i < insnsCount; i++) {
-				if (insns.get(i) == rem) {
-					insns.remove(i);
+			for (Iterator<InsnNode> it = insns.iterator(); it.hasNext(); ) {
+				if (it.next() == rem) {
+					it.remove();
 					found = true;
 					break;
 				}
