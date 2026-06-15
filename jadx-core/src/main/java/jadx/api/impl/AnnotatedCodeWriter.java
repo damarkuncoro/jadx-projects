@@ -13,7 +13,7 @@ import jadx.api.metadata.ICodeNodeRef;
 import jadx.api.metadata.annotations.NodeDeclareRef;
 import jadx.core.utils.StringUtils;
 
-public class AnnotatedCodeWriter extends SimpleCodeWriter implements ICodeWriter {
+public class AnnotatedCodeWriter extends SimpleCodeWriter {
 
 	private int line = 1;
 	private int offset;

@@ -379,6 +379,8 @@ public class PrepareForCodeGen extends AbstractVisitor {
 				List<EncodedValue> valueList = (List<EncodedValue>) encodedValue.getValue();
 				valueList.forEach(v -> checkEncodedValue(mth, v));
 				break;
+			default:
+				break;
 		}
 	}
 
@@ -391,6 +393,8 @@ public class PrepareForCodeGen extends AbstractVisitor {
 
 				case ARRAY_LENGTH:
 					verifyNullCast(mth, insn.getArg(0));
+					break;
+				default:
 					break;
 			}
 		}

@@ -107,6 +107,8 @@ public class CodeUtils {
 							case METHOD:
 								nested++;
 								break;
+							default:
+								break;
 						}
 						break;
 
@@ -115,6 +117,8 @@ public class CodeUtils {
 							return pos;
 						}
 						nested--;
+						break;
+					default:
 						break;
 				}
 				return null;

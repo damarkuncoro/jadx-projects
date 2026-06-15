@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JadxArgs;
+import jadx.api.JadxDecompiler;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.android.TextResMapFile;
 import jadx.core.xmlgen.ResTableBinaryParser;
@@ -53,7 +54,7 @@ public class ConvertArscFile {
 		}
 		LOG.info("Input entries count: {}", resMap.size());
 
-		RootNode root = new RootNode(new JadxArgs()); // not really needed
+		RootNode root = new RootNode(new JadxDecompiler(new JadxArgs())); // not really needed
 		ZipReader zipReader = new ZipReader();
 		rewritesCount = 0;
 		for (Path resFile : inputResFiles) {

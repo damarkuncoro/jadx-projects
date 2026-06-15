@@ -759,6 +759,7 @@ public class JadxCLIArgs implements IJadxConfig {
 		this.sourceNameRepeatLimit = sourceNameRepeatLimit;
 	}
 
+	@SuppressWarnings("deprecation")
 	public UseSourceNameAsClassNameAlias getUseSourceNameAsClassNameAlias() {
 		if (useSourceNameAsClassNameAlias != null) {
 			return useSourceNameAsClassNameAlias;

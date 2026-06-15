@@ -1,6 +1,6 @@
 package jadx.tests.integration.names.pkg;
 
-@SuppressWarnings("TypeName")
+@SuppressWarnings({ "TypeName", "unused" })
 public class b {
 	class a {
 	}

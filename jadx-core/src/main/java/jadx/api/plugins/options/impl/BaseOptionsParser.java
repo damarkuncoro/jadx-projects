@@ -12,16 +12,20 @@ import jadx.api.plugins.options.JadxPluginOptions;
 @Deprecated
 public abstract class BaseOptionsParser implements JadxPluginOptions {
 
+	@Deprecated
 	protected Map<String, String> options;
 
+	@Deprecated
 	@Override
 	public void setOptions(Map<String, String> options) {
 		this.options = options;
 		parseOptions();
 	}
 
+	@Deprecated
 	public abstract void parseOptions();
 
+	@Deprecated
 	public boolean getBooleanOption(String key, boolean defValue) {
 		String val = options.get(key);
 		if (val == null) {
@@ -38,6 +42,7 @@ public abstract class BaseOptionsParser implements JadxPluginOptions {
 				+ ", expect: 'yes' or 'no'");
 	}
 
+	@Deprecated
 	public <T> T getOption(String key, Function<String, T> parse, T defValue) {
 		String val = options.get(key);
 		if (val == null) {

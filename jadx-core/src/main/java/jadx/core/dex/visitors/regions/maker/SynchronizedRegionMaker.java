@@ -5,9 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.instructions.ConstClassNode;
 import jadx.core.dex.instructions.InsnType;
@@ -29,7 +26,6 @@ import static jadx.core.utils.BlockUtils.getNextBlock;
 import static jadx.core.utils.BlockUtils.isPathExists;
 
 public class SynchronizedRegionMaker {
-	private static final Logger LOG = LoggerFactory.getLogger(SynchronizedRegionMaker.class);
 	private final MethodNode mth;
 	private final RegionMaker regionMaker;
 

@@ -13,7 +13,6 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 public class SimpleJavaGradleGenerator implements IExportGradleGenerator {
 	private final RootNode root;
 	private final File projectDir;
-	private final List<ResourceFile> resources;
 
 	private OutDirs outDirs;
 	private File appDir;
@@ -21,7 +20,6 @@ public class SimpleJavaGradleGenerator implements IExportGradleGenerator {
 	public SimpleJavaGradleGenerator(RootNode root, File projectDir, List<ResourceFile> resources) {
 		this.root = root;
 		this.projectDir = projectDir;
-		this.resources = resources;
 	}
 
 	@Override

@@ -130,10 +130,6 @@ public class SourceFileRename extends AbstractVisitor {
 			return alias;
 		}
 
-		public int getSuffix() {
-			return suffix;
-		}
-
 		public String buildAlias() {
 			return suffix < 2 ? alias : alias + suffix;
 		}

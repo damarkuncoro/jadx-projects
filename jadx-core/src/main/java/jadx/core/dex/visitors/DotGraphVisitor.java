@@ -8,6 +8,7 @@ import jadx.core.dex.nodes.IRegion;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.utils.DotGraphUtils;
 
+@SuppressWarnings("all")
 public class DotGraphVisitor extends AbstractVisitor {
 
 	private static final String NL = "\\l";

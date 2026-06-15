@@ -8,6 +8,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 
 public class JadxPluginsData implements IJadxPlugins {
 
+	@SuppressWarnings("unused")
 	private final JadxDecompiler decompiler;
 	private final JadxPluginManager pluginManager;
 

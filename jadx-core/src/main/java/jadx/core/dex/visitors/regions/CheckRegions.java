@@ -23,6 +23,7 @@ import jadx.core.dex.visitors.AbstractVisitor;
 import jadx.core.utils.exceptions.CodegenException;
 import jadx.core.utils.exceptions.JadxException;
 
+@SuppressWarnings("all")
 public class CheckRegions extends AbstractVisitor {
 	private static final Logger LOG = LoggerFactory.getLogger(CheckRegions.class);
 
@@ -87,7 +88,7 @@ public class CheckRegions extends AbstractVisitor {
 	}
 
 	private static String getBlockInsnStr(MethodNode mth, IBlock block) {
-		ICodeWriter code = new SimpleCodeWriter();
+		ICodeWriter code = new SimpleCodeWriter(mth.root().getArgs());
 		code.incIndent();
 		code.newLine();
 		MethodGen mg = MethodGen.getFallbackMethodGen(mth);

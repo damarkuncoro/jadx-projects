@@ -442,7 +442,7 @@ final class IfRegionMaker {
 			}
 			BlockNode otherBranchBlock = followThenBranch ? curElse : curThen;
 			otherBranchBlock = BlockUtils.followEmptyPath(otherBranchBlock);
-			if (!isPathExists(nextIf.getFirstIfBlock(), otherBranchBlock)) {
+			if (!isPathExists(nextIf.getMergedBlocks().getFirst(), otherBranchBlock)) {
 				return checkForTernaryInCondition(currentIf);
 			}
 
@@ -482,7 +482,7 @@ final class IfRegionMaker {
 		if (nextThen == null || nextElse == null) {
 			return null;
 		}
-		if (!nextThen.getFirstIfBlock().getDomFrontier().equals(nextElse.getFirstIfBlock().getDomFrontier())) {
+		if (!nextThen.getMergedBlocks().getFirst().getDomFrontier().equals(nextElse.getMergedBlocks().getFirst().getDomFrontier())) {
 			return null;
 		}
 		nextThen = searchNestedIf(nextThen);
@@ -579,7 +579,7 @@ final class IfRegionMaker {
 	static void confirmMerge(IfInfo info) {
 		if (info.getMergedBlocks().size() > 1) {
 			for (BlockNode block : info.getMergedBlocks()) {
-				if (block != info.getFirstIfBlock()) {
+				if (block != info.getMergedBlocks().getFirst()) {
 					block.add(AFlag.ADDED_TO_REGION);
 				}
 			}

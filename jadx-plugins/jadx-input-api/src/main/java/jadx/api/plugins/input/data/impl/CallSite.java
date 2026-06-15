@@ -25,6 +25,8 @@ public class CallSite implements ICallSite {
 				case ENCODED_METHOD:
 					((IMethodRef) value.getValue()).load();
 					break;
+				default:
+					break;
 			}
 		}
 	}

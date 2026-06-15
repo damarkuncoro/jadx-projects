@@ -108,6 +108,7 @@ public class MoveInlineVisitor extends AbstractVisitor {
 		return true;
 	}
 
+	@SuppressWarnings("unused")
 	private static boolean deleteMove(MethodNode mth, InsnNode move) {
 		InsnArg moveArg = move.getArg(0);
 		if (!moveArg.isRegister()) {

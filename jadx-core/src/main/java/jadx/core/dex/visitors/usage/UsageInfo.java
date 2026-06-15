@@ -180,6 +180,8 @@ public class UsageInfo implements IUsageInfoData {
 			case METHOD:
 				fieldUse((MethodNode) node, fld);
 				break;
+			default:
+				break;
 		}
 	}
 

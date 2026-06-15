@@ -139,7 +139,7 @@ public class DebugUtils {
 	}
 
 	public static void printRegion(MethodNode mth, IRegion region, boolean printInsns) {
-		ICodeWriter cw = new SimpleCodeWriter();
+		ICodeWriter cw = new SimpleCodeWriter(mth.root().getArgs());
 		cw.startLine('|').add(mth.toString());
 		printRegion(mth, region, cw, "|  ", printInsns);
 		LOG.debug("{}{}", '\n', cw.finish().getCodeStr());
@@ -184,7 +184,7 @@ public class DebugUtils {
 			try {
 				MethodGen mg = MethodGen.getFallbackMethodGen(mth);
 				InsnGen ig = new InsnGen(mg, true);
-				ICodeWriter code = new SimpleCodeWriter();
+				ICodeWriter code = new SimpleCodeWriter(mth.root().getArgs());
 				ig.makeInsn(insn, code);
 				String codeStr = code.getCodeStr();
 

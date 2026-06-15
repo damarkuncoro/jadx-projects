@@ -39,7 +39,6 @@ public final class JadxZipParser implements IZipParser {
 
 	private static final byte LOCAL_FILE_HEADER_START = 0x50;
 	private static final int LOCAL_FILE_HEADER_SIGN = 0x04034b50;
-	private static final int CD_SIGN = 0x02014b50;
 	private static final int END_OF_CD_SIGN = 0x06054b50;
 
 	private final File zipFile;

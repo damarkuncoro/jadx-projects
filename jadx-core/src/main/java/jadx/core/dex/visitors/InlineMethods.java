@@ -3,8 +3,7 @@ package jadx.core.dex.visitors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
@@ -37,7 +36,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 		runBefore = ModVisitor.class
 )
 public class InlineMethods extends AbstractVisitor {
-	private static final Logger LOG = LoggerFactory.getLogger(InlineMethods.class);
+
 
 	@Override
 	public void visit(MethodNode mth) throws JadxException {
@@ -184,6 +183,8 @@ public class InlineMethods extends AbstractVisitor {
 						fieldNode.setUseIn(ListUtils.safeReplace(new ArrayList<>(fieldNode.getUseIn()), inlinedMth, mth));
 						replaceClsUsage(mth, inlinedMth, fieldNode.getParentClass());
 					}
+					break;
+				default:
 					break;
 			}
 		});

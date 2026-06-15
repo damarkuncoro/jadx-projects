@@ -78,6 +78,8 @@ public class FixSwitchOverEnum extends AbstractVisitor {
 				return processRemappedEnumSwitch(mth, insn, wrapInsn, arg);
 			case INVOKE:
 				return processDirectEnumSwitch(mth, insn, (InvokeNode) wrapInsn, arg);
+			default:
+				break;
 		}
 		return false;
 	}

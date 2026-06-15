@@ -32,6 +32,7 @@ public class ListUtils {
 		return list;
 	}
 
+	@SafeVarargs
 	public static <T> List<T> mutableListOf(T... objs) {
 		List<T> list = new ArrayList<>();
 		Collections.addAll(list, objs);

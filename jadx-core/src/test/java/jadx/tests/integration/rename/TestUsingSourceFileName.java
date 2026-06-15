@@ -7,6 +7,7 @@ import jadx.tests.api.SmaliTest;
 
 import static jadx.tests.api.utils.assertj.JadxAssertions.assertThat;
 
+@SuppressWarnings("deprecation")
 public class TestUsingSourceFileName extends SmaliTest {
 
 	@Test

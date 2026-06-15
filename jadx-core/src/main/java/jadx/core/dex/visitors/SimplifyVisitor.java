@@ -598,6 +598,8 @@ public class SimplifyVisitor extends AbstractVisitor {
 					return newInsn;
 				}
 				break;
+			default:
+				break;
 		}
 		return null;
 	}

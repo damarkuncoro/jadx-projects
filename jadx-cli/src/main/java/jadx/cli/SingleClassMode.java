@@ -72,7 +72,7 @@ public class SingleClassMode {
 				out = new File(singleClassOutput);
 			} else {
 				// treat as directory
-				out = new File(singleClassOutput, clsForProcess.getShortName() + fileExt);
+				out = new File(singleClassOutput, clsForProcess.getAlias() + fileExt);
 			}
 		}
 		File resultOut = FileUtils.prepareFile(out);

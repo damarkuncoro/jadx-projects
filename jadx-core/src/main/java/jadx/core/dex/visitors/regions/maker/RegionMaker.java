@@ -121,6 +121,8 @@ public class RegionMaker {
 					next = syncMaker.process(r, block, insn, stack);
 					processed = true;
 					break;
+				default:
+					break;
 			}
 		}
 		if (!processed) {

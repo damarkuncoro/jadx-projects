@@ -49,7 +49,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 
 import static jadx.core.utils.Utils.lockList;
 
-public class MethodNode extends NotificationAttrNode implements IMethodDetails, ILoadable, ICodeNode, Comparable<MethodNode> {
+public class MethodNode extends NotificationAttrNode implements IMethodDetails, ILoadable, Comparable<MethodNode> {
 	private static final Logger LOG = LoggerFactory.getLogger(MethodNode.class);
 	private static final InsnNode[] EMPTY_INSN_ARRAY = new InsnNode[0];
 

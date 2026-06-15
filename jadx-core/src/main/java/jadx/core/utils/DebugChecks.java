@@ -113,6 +113,9 @@ public class DebugChecks {
 				checkBlock(mth, ifNode.getThenBlock(), () -> "then block in if insn: " + ifNode);
 				checkBlock(mth, ifNode.getElseBlock(), () -> "else block in if insn: " + ifNode);
 				break;
+
+			default:
+				break;
 		}
 	}
 
@@ -265,6 +268,7 @@ public class DebugChecks {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static void checkPHI(MethodNode mth) {
 		for (BlockNode block : mth.getBasicBlocks()) {
 			List<PhiInsn> phis = new ArrayList<>();

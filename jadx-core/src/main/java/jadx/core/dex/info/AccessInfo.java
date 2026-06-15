@@ -172,6 +172,7 @@ public class AccessInfo {
 		return type;
 	}
 
+	@SuppressWarnings("all")
 	public String makeString(boolean showHidden) {
 		StringBuilder code = new StringBuilder();
 		if (isPublic()) {

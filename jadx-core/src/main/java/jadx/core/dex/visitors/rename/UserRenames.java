@@ -80,6 +80,8 @@ public class UserRenames {
 					}
 				}
 				break;
+			default:
+				break;
 		}
 	}
 

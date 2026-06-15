@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
 import jadx.api.ICodeWriter;
+import jadx.api.JadxArgs;
 import jadx.api.JavaMethod;
 import jadx.api.impl.SimpleCodeWriter;
 import jadx.api.plugins.input.data.IMethodRef;
@@ -48,8 +49,8 @@ public class DotGraphUtils {
 	private static final boolean PRINT_DOMINATORS_INFO = false;
 	private static final int MAX_REGION_NAME_LENGTH = 2000;
 
-	private final ICodeWriter dot = new SimpleCodeWriter();
-	private final ICodeWriter conn = new SimpleCodeWriter();
+	private ICodeWriter dot;
+	private ICodeWriter conn;
 
 	private final boolean useRegions;
 	private final boolean rawInsn;
@@ -109,6 +110,9 @@ public class DotGraphUtils {
 	}
 
 	public @Nullable String dumpToString(MethodNode mth) {
+		JadxArgs args = mth.root().getArgs();
+		this.dot = new SimpleCodeWriter(args);
+		this.conn = new SimpleCodeWriter(args);
 		dot.startLine("digraph \"CFG for");
 		dot.add(escape(mth.getMethodInfo().getFullId()));
 		dot.add("\" {");
@@ -416,7 +420,7 @@ public class DotGraphUtils {
 			}
 			return sb.toString();
 		} else {
-			ICodeWriter code = new SimpleCodeWriter();
+			ICodeWriter code = new SimpleCodeWriter(mth.root().getArgs());
 			List<InsnNode> instructions = block.getInstructions();
 			MethodGen.addFallbackInsns(code, mth, instructions.toArray(new InsnNode[0]), BLOCK_DUMP);
 			// For some reason, instructions here get put through an additional step of unescaping

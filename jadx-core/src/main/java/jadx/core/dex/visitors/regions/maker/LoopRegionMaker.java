@@ -162,7 +162,7 @@ final class LoopRegionMaker {
 				body = regionMaker.makeRegion(loopBody);
 			}
 			// add blocks from loop start to first condition block
-			BlockNode conditionBlock = condInfo.getFirstIfBlock();
+			BlockNode conditionBlock = condInfo.getMergedBlocks().getFirst();
 			if (loopStart != conditionBlock) {
 				Set<BlockNode> blocks = BlockUtils.getAllPathsBlocks(loopStart, conditionBlock);
 				blocks.remove(conditionBlock);

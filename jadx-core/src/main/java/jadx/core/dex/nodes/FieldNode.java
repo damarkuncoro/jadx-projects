@@ -12,7 +12,7 @@ import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.utils.ListUtils;
 
-public class FieldNode extends NotificationAttrNode implements ICodeNode, IFieldInfoRef {
+public class FieldNode extends NotificationAttrNode implements IFieldInfoRef {
 
 	private final ClassNode parentClass;
 	private final FieldInfo fieldInfo;

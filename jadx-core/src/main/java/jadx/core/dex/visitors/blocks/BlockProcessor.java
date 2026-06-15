@@ -37,6 +37,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 
 import static jadx.core.dex.visitors.blocks.BlockSplitter.connect;
 
+@SuppressWarnings("all")
 public class BlockProcessor extends AbstractVisitor {
 	private static final Logger LOG = LoggerFactory.getLogger(BlockProcessor.class);
 
@@ -301,7 +302,7 @@ public class BlockProcessor extends AbstractVisitor {
 			// Every successor that dominates its predecessor is a header of a loop,
 			// block -> successor is a back edge.
 			block.getSuccessors().forEach(successor -> {
-				if (block.getDoms().get(successor.getId()) || block == successor) {
+				if (block.getDoms().get(successor.getPos()) || block == successor) {
 					successor.add(AFlag.LOOP_START);
 					block.add(AFlag.LOOP_END);
 

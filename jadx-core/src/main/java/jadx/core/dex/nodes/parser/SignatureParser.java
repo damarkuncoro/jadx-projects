@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import jadx.api.plugins.input.data.attributes.JadxAttrType;
 import jadx.api.plugins.input.data.attributes.types.SignatureAttr;
@@ -15,7 +14,7 @@ import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
 public class SignatureParser {
-	private static final Logger LOG = LoggerFactory.getLogger(SignatureParser.class);
+
 
 	private static final char STOP_CHAR = 0;
 
@@ -346,16 +345,7 @@ public class SignatureParser {
 		return args;
 	}
 
-	private static String mergeSignature(List<String> list) {
-		if (list.size() == 1) {
-			return list.get(0);
-		}
-		StringBuilder sb = new StringBuilder();
-		for (String s : list) {
-			sb.append(s);
-		}
-		return sb.toString();
-	}
+
 
 	public String getSignature() {
 		return sign;

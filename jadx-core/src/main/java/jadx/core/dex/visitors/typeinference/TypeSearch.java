@@ -31,6 +31,7 @@ import jadx.core.dex.nodes.MethodNode;
  * - build dynamic constraint list for every variable
  * - run search by checking all candidates
  */
+@SuppressWarnings("all")
 public class TypeSearch {
 	private static final Logger LOG = LoggerFactory.getLogger(TypeSearch.class);
 

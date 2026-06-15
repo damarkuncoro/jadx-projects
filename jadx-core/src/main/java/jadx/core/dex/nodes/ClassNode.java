@@ -57,7 +57,7 @@ import static jadx.core.dex.nodes.ProcessState.LOADED;
 import static jadx.core.dex.nodes.ProcessState.NOT_LOADED;
 
 public class ClassNode extends NotificationAttrNode
-		implements ILoadable, ICodeNode, IPackageUpdate, Comparable<ClassNode> {
+		implements ILoadable, IPackageUpdate, Comparable<ClassNode> {
 	private static final Logger LOG = LoggerFactory.getLogger(ClassNode.class);
 
 	private final RootNode root;

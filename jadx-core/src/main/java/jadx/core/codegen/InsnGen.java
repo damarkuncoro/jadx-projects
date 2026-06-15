@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import jadx.api.CommentsLevel;
 import jadx.api.ICodeWriter;
@@ -68,7 +67,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 import static jadx.core.utils.android.AndroidResourcesUtils.handleAppResField;
 
 public class InsnGen {
-	private static final Logger LOG = LoggerFactory.getLogger(InsnGen.class);
+
 
 	protected final MethodGen mgen;
 	protected final MethodNode mth;
@@ -893,6 +892,8 @@ public class InsnGen {
 					useClass(code, declClass);
 					code.add('.');
 				}
+				break;
+			default:
 				break;
 		}
 		if (callMthNode != null) {

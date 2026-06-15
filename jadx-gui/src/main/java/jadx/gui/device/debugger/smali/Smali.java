@@ -248,7 +248,6 @@ public class Smali {
 	}
 
 	private void writeFields(SmaliWriter smali, IClassData classData, List<RawField> fields, int[] colWidths) {
-		int staticIdx = 0;
 		smali.startLine().startLine("# fields");
 		String whites = new String(new byte[Math.max(colWidths[0], colWidths[1])]).replace("\0", " ");
 		for (RawField fld : fields) {
@@ -434,6 +433,8 @@ public class Smali {
 				}
 				return true;
 			}
+			default:
+				break;
 		}
 		return false;
 	}
@@ -606,6 +607,7 @@ public class Smali {
 					smali.incIndent();
 					smali.startLine();
 				}
+				@SuppressWarnings("unchecked")
 				List<EncodedValue> values = (List<EncodedValue>) value.getValue();
 				for (int i = 0; i < values.size(); i++) {
 					writeEncodedValue(smali, values.get(i), wrapArray);
@@ -876,6 +878,8 @@ public class Smali {
 			case INVOKE_CUSTOM_RANGE:
 			case INVOKE_POLYMORPHIC_RANGE:
 				return true;
+			default:
+				break;
 		}
 		return false;
 	}
@@ -962,6 +966,7 @@ public class Smali {
 					innerMap.put(tip, ((int) obj) + 1);
 				} else if (obj instanceof List) {
 					if (!extra.isEmpty()) {
+						@SuppressWarnings("unchecked")
 						List<String> extras = (List<String>) obj;
 						extras.add(extra);
 					}
@@ -1018,6 +1023,7 @@ public class Smali {
 						smali.add(String.format("%s%s", entry.getKey(), entry.getValue()))
 								.startLine();
 					} else if (entry.getValue() instanceof List) {
+						@SuppressWarnings("unchecked")
 						List<String> extras = (List<String>) entry.getValue();
 						smali.add(String.format("%s%s", entry.getKey(), extras.get(0)))
 								.startLine();

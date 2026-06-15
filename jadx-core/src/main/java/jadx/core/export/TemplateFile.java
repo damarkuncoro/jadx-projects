@@ -116,6 +116,8 @@ public class TemplateFile {
 						String varName = parser.curVariable.toString();
 						parser.curVariable = new StringBuilder();
 						return processVar(varName);
+					default:
+						break;
 				}
 				break;
 
@@ -133,6 +135,8 @@ public class TemplateFile {
 					case END:
 						throw new JadxRuntimeException("Expected variable end: '" + parser.curVariable
 								+ "' (missing second '}')");
+					default:
+						break;
 				}
 				break;
 		}

@@ -48,6 +48,7 @@ public class ZipSecurity {
 	private ZipSecurity() {
 	}
 
+	@Deprecated
 	public static boolean isInSubDirectory(File baseDir, File file) {
 		return ZIP_SECURITY.isInSubDirectory(baseDir, file);
 	}
@@ -56,18 +57,22 @@ public class ZipSecurity {
 	 * Checks that entry name contains no any traversals and prevents cases like "../classes.dex",
 	 * to limit output only to the specified directory
 	 */
+	@Deprecated
 	public static boolean isValidZipEntryName(String entryName) {
 		return ZIP_SECURITY.isValidEntryName(entryName);
 	}
 
+	@Deprecated
 	public static boolean isZipBomb(IZipEntry entry) {
 		return !ZIP_SECURITY.isValidEntry(entry);
 	}
 
+	@Deprecated
 	public static boolean isValidZipEntry(IZipEntry entry) {
 		return ZIP_SECURITY.isValidEntry(entry);
 	}
 
+	@Deprecated
 	public static InputStream getInputStreamForEntry(ZipFile zipFile, ZipEntry entry) throws IOException {
 		if (DISABLE_CHECKS) {
 			return new BufferedInputStream(zipFile.getInputStream(entry));
@@ -81,11 +86,13 @@ public class ZipSecurity {
 	 * Visit valid entries in a zip file.
 	 * Return not null value from visitor to stop iteration.
 	 */
+	@Deprecated
 	@Nullable
 	public static <R> R visitZipEntries(File file, Function<IZipEntry, R> visitor) {
 		return ZIP_READER.visitEntries(file, visitor);
 	}
 
+	@Deprecated
 	public static void readZipEntries(File file, BiConsumer<IZipEntry, InputStream> visitor) {
 		ZIP_READER.readEntries(file, visitor);
 	}

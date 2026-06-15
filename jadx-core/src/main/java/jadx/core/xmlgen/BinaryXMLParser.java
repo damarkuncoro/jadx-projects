@@ -83,7 +83,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 
 	private boolean isBinaryXml() throws IOException {
 		is.mark(4);
-		int v = is.readInt16(); // version
+		is.skip(2); // version
 		int h = is.readInt16(); // header size
 		// Some APK Manifest.xml the version is 0
 		if (h == 0x0008) {
@@ -161,8 +161,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 			die("NAMESPACE header chunk is not 0x18 big");
 		}
 
-		int beginLineNumber = is.readInt32();
-		int comment = is.readInt32();
+		is.skip(8); // line number and comment
 		int beginPrefix = is.readInt32();
 		int beginURI = is.readInt32();
 		is.skip(headerSize - 0x10);
@@ -186,8 +185,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 		if (dataSize != 0x18) {
 			LOG.warn("Invalid namespace end size");
 		}
-		int endLineNumber = is.readInt32();
-		int comment = is.readInt32();
+		is.skip(8); // line number and comment
 		int endPrefix = is.readInt32();
 		int endURI = is.readInt32();
 		is.skip(headerSize - 0x10);
@@ -237,8 +235,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 		long startPos = is.getPos();
 		int elementSize = is.readInt32();
 		int elementBegLineNumber = is.readInt32();
-		int comment = is.readInt32();
-		int startNS = is.readInt32();
+		is.skip(8); // comment and startNS
 		int startNSName = is.readInt32(); // actually is elementName...
 		if (!isLastEnd && !"ERROR".equals(currentTag)) {
 			writer.add('>');
@@ -259,9 +256,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 		}
 
 		int attributeCount = is.readInt16();
-		int idIndex = is.readInt16();
-		int classIndex = is.readInt16();
-		int styleIndex = is.readInt16();
+		is.skip(6); // idIndex, classIndex, styleIndex
 		if ("manifest".equals(currentTag) || definedNamespaces.size() != nsMap.size()) {
 			for (Map.Entry<String, String> entry : nsMap.entrySet()) {
 				if (!definedNamespaces.contains(entry.getKey())) {
@@ -290,8 +285,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 	private void parseAttribute(int i, boolean newLine, Set<String> attrCache, int attributeSize) throws IOException {
 		int attributeNS = is.readInt32();
 		int attributeName = is.readInt32();
-		int attributeRawValue = is.readInt32();
-		is.skip(3);
+		is.skip(7); // attributeRawValue + 3 bytes padding
 		int attrValDataType = is.readInt8();
 		int attrValData = is.readInt32();
 
@@ -453,8 +447,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 			die("ELEMENT END header chunk is not 0x18 big");
 		}
 		int endLineNumber = is.readInt32();
-		int comment = is.readInt32();
-		int elementNS = is.readInt32();
+		is.skip(8); // comment and elementNS
 		int elementNameId = is.readInt32();
 		String elemName = deobfClassName(getString(elementNameId));
 		elemName = getValidTagAttributeName(elemName);

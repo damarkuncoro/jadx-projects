@@ -49,6 +49,7 @@ import jadx.core.utils.exceptions.JadxOverflowException;
 				AttachMethodDetails.class
 		}
 )
+@SuppressWarnings("all")
 public final class TypeInferenceVisitor extends AbstractVisitor {
 	private static final Logger LOG = LoggerFactory.getLogger(TypeInferenceVisitor.class);
 

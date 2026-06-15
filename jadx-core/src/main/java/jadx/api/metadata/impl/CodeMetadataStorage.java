@@ -117,6 +117,8 @@ public class CodeMetadataStorage implements ICodeMetadata {
 						nesting--;
 					}
 					break;
+				default:
+					break;
 			}
 		}
 		return null;

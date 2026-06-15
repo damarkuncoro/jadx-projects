@@ -20,21 +20,20 @@ public class DexHeader {
 	private int methodHandleOff;
 
 	public DexHeader(SectionReader buf) {
-		byte[] magic = buf.readByteArray(4);
+		buf.skip(4); // magic
 		version = buf.readString(3);
 		buf.skip(1);
-		int checksum = buf.readInt();
-		byte[] signature = buf.readByteArray(20);
-		int fileSize = buf.readInt();
-		int headerSize = buf.readInt();
+		buf.skip(4); // checksum
+		buf.skip(20); // signature
+		buf.skip(4); // fileSize
+		buf.skip(4); // headerSize
 		int endianTag = buf.readInt();
 		if (endianTag != DexConsts.ENDIAN_CONSTANT) {
 			throw new DexException("Unexpected endian tag: 0x" + Integer.toHexString(endianTag));
 		}
-		int linkSize = buf.readInt();
-		int linkOff = buf.readInt();
+		buf.skip(8); // linkSize, linkOff
 		int mapListOff = buf.readInt();
-		int stringIdsSize = buf.readInt();
+		buf.skip(4); // stringIdsSize
 		stringIdsOff = buf.readInt();
 		typeIdsSize = buf.readInt();
 		typeIdsOff = buf.readInt();
@@ -46,8 +45,7 @@ public class DexHeader {
 		methodIdsOff = buf.readInt();
 		classDefsSize = buf.readInt();
 		classDefsOff = buf.readInt();
-		int dataSize = buf.readInt();
-		int dataOff = buf.readInt();
+		buf.skip(8); // dataSize, dataOff
 
 		readMapList(buf, mapListOff);
 	}

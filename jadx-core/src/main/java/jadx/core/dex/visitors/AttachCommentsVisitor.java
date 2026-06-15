@@ -84,6 +84,8 @@ public class AttachCommentsVisitor extends AbstractVisitor {
 						}
 					}
 					break;
+				default:
+					break;
 			}
 		}
 	}

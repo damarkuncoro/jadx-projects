@@ -162,6 +162,8 @@ public class ConstInlineVisitor extends AbstractVisitor {
 
 			case IPUT:
 				return insn.getArg(1) != useArg;
+			default:
+				break;
 		}
 		return true;
 	}

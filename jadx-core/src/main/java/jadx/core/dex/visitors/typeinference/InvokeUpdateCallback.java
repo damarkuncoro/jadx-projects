@@ -57,6 +57,8 @@ public class InvokeUpdateCallback implements ITypeUpdateCallback {
 						return REJECT;
 					}
 					break;
+				default:
+					break;
 			}
 			if (!getNextArg()) {
 				return allSame ? SAME : CHANGED;

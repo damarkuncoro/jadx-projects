@@ -97,6 +97,8 @@ public class EncodedValueUtils {
 			case ENCODED_METHOD_HANDLE:
 				return InsnArg.wrapArg(buildMethodHandle(root, (IMethodHandle) obj));
 
+			default:
+				break;
 		}
 		throw new JadxRuntimeException("Unsupported type for raw invoke-custom: " + value.getType());
 	}

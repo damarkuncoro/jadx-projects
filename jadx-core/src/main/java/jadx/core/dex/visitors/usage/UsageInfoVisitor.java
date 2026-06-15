@@ -190,6 +190,9 @@ public class UsageInfoVisitor extends AbstractVisitor {
 				}
 				break;
 			}
+
+			default:
+				break;
 		}
 	}
 
@@ -248,6 +251,9 @@ public class UsageInfoVisitor extends AbstractVisitor {
 				break;
 			case ENCODED_ANNOTATION:
 				processAnnotation(node, (IAnnotation) obj, usageInfo);
+				break;
+
+			default:
 				break;
 		}
 	}

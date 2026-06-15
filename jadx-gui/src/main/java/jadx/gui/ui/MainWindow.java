@@ -996,6 +996,8 @@ public class MainWindow extends JFrame {
 				case HEX_VIEWER_FIND:
 					hexPreviewPanel.showSearchBar();
 					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -1588,7 +1590,6 @@ public class MainWindow extends JFrame {
 		}
 	}
 
-	@SuppressWarnings("finally")
 	private void closeWindow() {
 		saveAll();
 		if (!ensureProjectIsSaved()) {
