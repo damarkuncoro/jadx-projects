@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-	compileOnly(project(":jadx-core"))
+	api(project(":jadx-core"))
 
 	implementation("com.android.tools.build:aapt2-proto:9.1.0-14792394")
 	implementation("com.google.protobuf:protobuf-java") {
