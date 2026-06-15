@@ -29,6 +29,7 @@ Command line and GUI tools for producing Java source code from Android Dex and A
 - **JADX Device Explorer**: pull APKs (including split APK packages) directly from Android devices via ADB, with automatic workspace creation, decompile runners, and security analysis assistant scanning
 - **ELF Header Parser & Hex Viewer**: view ELF file headers (Class, OS/ABI, Machine, Entry point, etc.) and raw hexadecimal contents of native libraries (`.so` files)
 - **Automatic Binary XML Decoder**: signature-based detection and decoding of binary Android XML files (layout/drawable) even without standard extensions
+- **Frida Integration**: generate and run Frida scripts directly from Jadx GUI, with predefined snippets for common tasks like SSL pinning bypass, root detection bypass, etc.
 
 **jadx-gui features:**
 - view decompiled code with highlighted syntax
@@ -37,6 +38,7 @@ Command line and GUI tools for producing Java source code from Android Dex and A
 - full text search
 - smali debugger, check the upstream wiki for setup and usage
 - JADX Device Explorer UI under menu `File` -> `Open from Android Device...` to visually browse packages, select split APK configuration, pull, and decompile
+- Frida integration: right-click a method in the decompiled code to generate a Frida hook script, or open the Frida panel via the menu to use predefined snippets
 
 Jadx-gui key bindings can be found in the upstream wiki.
 

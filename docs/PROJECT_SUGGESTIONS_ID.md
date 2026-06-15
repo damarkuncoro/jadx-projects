@@ -3,16 +3,17 @@
 ## 0. Frida Integration (Modul Baru)
 
 Proyek JADX sekarang memiliki modul `jadx-frida-integration` yang mengintegrasikan fungsi runtime hooking dan tracing menggunakan **Frida**! Dengan fitur ini, kamu bisa:
-- Generate script Frida langsung dari method yang dipilih di JADX GUI
-- Hook function runtime tanpa compile ulang
-- Trace method call dan inspect crypto/API call
+- Generate script Frida langsung dari method yang dipilih di JADX GUI (klik kanan method → "Generate Frida Hook Script")
+- Menggunakan panel Frida di JADX GUI untuk mengedit dan menjalankan script
+- Akses snippet predefined untuk tugas umum seperti bypass SSL pinning, bypass root detection, dll.
 - Dukung multi-platform: Android, iOS, Linux, macOS, Windows
 
 ### Cara Menggunakan:
 1. Decompile APK/app target di JADX GUI
-2. Pilih method yang ingin dihook
-3. Klik tombol "Generate Frida Script" (fitur di GUI)
-4. Jalankan script yang di-generate dengan Frida
+2. Pilih method yang ingin dihook, klik kanan → pilih "Generate Frida Hook Script"
+3. Panel Frida akan terbuka dengan script yang sudah di-generate
+4. (Opsional) Pilih snippet predefined dari dropdown
+5. Klik "Run Frida Script" untuk menjalankan script pada target process
 
 ## 1. Ringkasan Perubahan yang Sudah Dilakukan
 
@@ -21,6 +22,7 @@ Berikut adalah perubahan yang telah diterapkan pada proyek ini:
 - **Memperbaiki Masalah Cache GUI**: Mengubah `saveCaches` di `jadx-gui/src/main/java/jadx/gui/cache/manager/CacheManager.java` agar tidak crash ketika tidak bisa menulis file cache
 - **Menyiapkan Direktori Aman**: Membuat folder `~/.jadx/config` dan `~/.jadx/cache` untuk menyimpan konfigurasi dan cache JADX tanpa masalah izin
 - **Menyetel Environment Variable Permanen**: Menambahkan variabel `JADX_CONFIG_DIR` dan `JADX_CACHE_DIR` di `~/.zshrc`
+- **Menambahkan Frida Integration**: Menambahkan modul `jadx-frida-integration` dan panel Frida di GUI
 
 ## 2. Cara Menjalankan JADX GUI
 
