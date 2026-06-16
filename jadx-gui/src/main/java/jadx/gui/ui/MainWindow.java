@@ -100,6 +100,7 @@ import jadx.core.utils.android.ApplicationParams;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.gui.JadxWrapper;
+import jadx.gui.ads.AdDetectorDialog;
 import jadx.gui.cache.manager.CacheManager;
 import jadx.gui.device.debugger.BreakpointManager;
 import jadx.gui.events.services.RenameService;
@@ -1388,6 +1389,10 @@ public class MainWindow extends JFrame {
 		tools.add(deobfMenuItem);
 		tools.add(quarkAction);
 		tools.add(debuggerAction);
+		tools.addSeparator();
+		JMenuItem adDetectorItem = new JMenuItem("Ad Detector");
+		adDetectorItem.addActionListener(e -> new AdDetectorDialog(this).setVisible(true));
+		tools.add(adDetectorItem);
 
 		JMenu help = new JadxMenu(NLS.str("menu.help"), shortcutsController);
 		help.setMnemonic(KeyEvent.VK_H);
