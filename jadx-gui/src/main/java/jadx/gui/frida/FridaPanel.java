@@ -441,7 +441,7 @@ public class FridaPanel extends JPanel {
 			return;
 		}
 
-		String defaultPackage = "";
+		String target = "";
 		try {
 			BuildStackInfo buildStack = BuildStackDetector.analyzeLoadedProject(
 					mainWindow.getWrapper().getResources(),
@@ -449,25 +449,24 @@ public class FridaPanel extends JPanel {
 			);
 			String pkg = buildStack.getManifest().get("package");
 			if (pkg != null) {
-				defaultPackage = pkg;
+				target = pkg.trim();
 			}
 		} catch (Exception ex) {
 			// ignore
 		}
 
-		String target = (String) JOptionPane.showInputDialog(this,
-				"Enter target process name or package name (e.g., com.example.app):",
-				"Run Frida Script",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				null,
-				defaultPackage);
-
-		if (target == null || target.trim().isEmpty()) {
-			return;
+		if (target.isEmpty()) {
+			target = JOptionPane.showInputDialog(this,
+					"Enter target process name or package name (e.g., com.example.app):",
+					"Run Frida Script",
+					JOptionPane.QUESTION_MESSAGE);
+			if (target == null || target.trim().isEmpty()) {
+				return;
+			}
+			target = target.trim();
 		}
 
-		runFridaScript(target.trim(), script);
+		runFridaScript(target, script);
 	}
 
 	public void setScriptText(String script) {
