@@ -2,7 +2,6 @@ package jadx.gui.frida;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -20,6 +19,10 @@ public class AddSnippetDialog extends JDialog {
 	private boolean confirmed = false;
 
 	public AddSnippetDialog(Window parent) {
+		this(parent, null);
+	}
+
+	public AddSnippetDialog(Window parent, String initialScript) {
 		super(parent, NLS.str("frida.add_snippet"), ModalityType.APPLICATION_MODAL);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
@@ -39,6 +42,9 @@ public class AddSnippetDialog extends JDialog {
 		// Script area
 		scriptArea = new JTextArea();
 		scriptArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		if (initialScript != null) {
+			scriptArea.setText(initialScript);
+		}
 		JScrollPane scriptScrollPane = new JScrollPane(scriptArea);
 		panel.add(scriptScrollPane, BorderLayout.CENTER);
 

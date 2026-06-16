@@ -129,6 +129,10 @@ public class FridaPanel extends JPanel {
 		loadScriptButton.addActionListener(this::onLoadScriptClicked);
 		buttonPanel.add(loadScriptButton);
 
+		JButton saveAsSnippetButton = new JButton("Save as Snippet");
+		saveAsSnippetButton.addActionListener(this::onSaveAsSnippetButtonClicked);
+		buttonPanel.add(saveAsSnippetButton);
+
 		scriptPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		return scriptPanel;
@@ -231,6 +235,44 @@ public class FridaPanel extends JPanel {
 
 		refreshSnippetsComboBox();
 		appendLog("[INFO] Deleted custom snippet: " + selectedSnippet);
+	}
+
+	private void onSaveAsSnippetButtonClicked(ActionEvent e) {
+		String script = scriptTextArea.getText().trim();
+		if (script.isEmpty()) {
+			JOptionPane.showMessageDialog(this,
+					"Script editor is empty!",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		AddSnippetDialog dialog = new AddSnippetDialog(mainWindow, script);
+		dialog.setVisible(true);
+		if (dialog.isConfirmed()) {
+			String name = dialog.getSnippetName();
+			String scriptContent = dialog.getSnippetScript();
+
+			IFridaSnippet newSnippet = new IFridaSnippet() {
+				@Override
+				public String getDisplayName() {
+					return name;
+				}
+
+				@Override
+				public String getScript() {
+					return scriptContent;
+				}
+			};
+			snippetRegistry.registerSnippet(newSnippet);
+
+			List<CustomFridaSnippet> customSnippets = new ArrayList<>(settings.getCustomFridaSnippets());
+			customSnippets.add(new CustomFridaSnippet(name, scriptContent));
+			settings.setCustomFridaSnippets(customSnippets);
+
+			refreshSnippetsComboBox();
+			appendLog("[INFO] Saved script as custom snippet: " + name);
+		}
 	}
 
 	private JPanel createLogPanel() {
