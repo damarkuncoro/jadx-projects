@@ -79,6 +79,7 @@ import ch.qos.logback.classic.Level;
 
 import jadx.api.JadxArgs;
 import jadx.api.JavaClass;
+import jadx.api.JavaMethod;
 import jadx.api.JavaNode;
 import jadx.api.ResourceFile;
 import jadx.api.plugins.events.JadxEvents;
@@ -102,6 +103,7 @@ import jadx.gui.cache.manager.CacheManager;
 import jadx.gui.device.debugger.BreakpointManager;
 import jadx.gui.events.services.RenameService;
 import jadx.gui.events.types.JadxGuiEventsImpl;
+import jadx.gui.frida.FridaPanel;
 import jadx.gui.jobs.BackgroundExecutor;
 import jadx.gui.jobs.DecompileTask;
 import jadx.gui.jobs.ExportTask;
@@ -111,9 +113,6 @@ import jadx.gui.jobs.TaskWithExtraOnFinish;
 import jadx.gui.logs.LogCollector;
 import jadx.gui.logs.LogOptions;
 import jadx.gui.logs.LogPanel;
-import jadx.gui.frida.FridaPanel;
-import jadx.api.JavaMethod;
-import jadx.api.metadata.ICodeNodeRef;
 import jadx.gui.plugins.context.CodePopupAction;
 import jadx.gui.plugins.context.CommonGuiPluginsContext;
 import jadx.gui.plugins.context.TreePopupMenuEntry;
@@ -542,40 +541,39 @@ public class MainWindow extends JFrame {
 			return;
 		}
 		pluginsContext.getCodePopupActionList().add(new CodePopupAction(
-			"Generate Frida Hook Script",
-			codeNodeRef -> {
-				try {
-					JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
-					return javaNode instanceof JavaMethod;
-				} catch (Exception e) {
-					return false;
-				}
-			},
-			null,
-			codeNodeRef -> {
-				try {
-					JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
-					if (javaNode instanceof JavaMethod) {
-						JavaMethod method = (JavaMethod) javaNode;
-						boolean found = false;
-						for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-							if (tabbedPane.getComponentAt(i) == fridaPanel) {
-								found = true;
-								tabbedPane.setSelectedIndex(i);
-								break;
-							}
-						}
-						if (!found) {
-							tabbedPane.addTab("Frida", fridaPanel);
-							tabbedPane.setSelectedComponent(fridaPanel);
-						}
-						fridaPanel.generateAndDisplayScript(method);
+				"Generate Frida Hook Script",
+				codeNodeRef -> {
+					try {
+						JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
+						return javaNode instanceof JavaMethod;
+					} catch (Exception e) {
+						return false;
 					}
-				} catch (Exception e) {
-					LOG.error("Failed to generate Frida script", e);
-				}
-			}
-		));
+				},
+				null,
+				codeNodeRef -> {
+					try {
+						JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
+						if (javaNode instanceof JavaMethod) {
+							JavaMethod method = (JavaMethod) javaNode;
+							boolean found = false;
+							for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+								if (tabbedPane.getComponentAt(i) == fridaPanel) {
+									found = true;
+									tabbedPane.setSelectedIndex(i);
+									break;
+								}
+							}
+							if (!found) {
+								tabbedPane.addTab("Frida", fridaPanel);
+								tabbedPane.setSelectedComponent(fridaPanel);
+							}
+							fridaPanel.generateAndDisplayScript(method);
+						}
+					} catch (Exception e) {
+						LOG.error("Failed to generate Frida script", e);
+					}
+				}));
 		fridaPopupAdded = true;
 	}
 

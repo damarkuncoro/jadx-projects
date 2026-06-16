@@ -381,7 +381,8 @@ public class DeviceExplorerDialog extends JDialog {
 			} catch (Exception e) {
 				LOG.warn("Failed to list devices: {}", e.getMessage());
 				UiUtils.uiRun(() -> {
-					UiUtils.errorMessage(this, "ADB list devices failed: " + getAdbErrorMessage(e) + "\n" + NLS.str("device_explorer.no_devices"));
+					UiUtils.errorMessage(this,
+							"ADB list devices failed: " + getAdbErrorMessage(e) + "\n" + NLS.str("device_explorer.no_devices"));
 					setControlsEnabled(true);
 				});
 			}

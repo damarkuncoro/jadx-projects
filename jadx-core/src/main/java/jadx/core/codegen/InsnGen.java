@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-
 import jadx.api.CommentsLevel;
 import jadx.api.ICodeWriter;
 import jadx.api.metadata.annotations.InsnCodeOffset;
@@ -67,7 +66,6 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 import static jadx.core.utils.android.AndroidResourcesUtils.handleAppResField;
 
 public class InsnGen {
-
 
 	protected final MethodGen mgen;
 	protected final MethodNode mth;

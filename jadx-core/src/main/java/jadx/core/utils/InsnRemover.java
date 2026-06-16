@@ -185,7 +185,7 @@ public class InsnRemover {
 		}
 		for (InsnNode rem : toRemove) {
 			boolean found = false;
-			for (Iterator<InsnNode> it = insns.iterator(); it.hasNext(); ) {
+			for (Iterator<InsnNode> it = insns.iterator(); it.hasNext();) {
 				if (it.next() == rem) {
 					it.remove();
 					found = true;

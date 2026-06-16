@@ -1,7 +1,5 @@
 package jadx.gui.ui.action;
 
-import java.util.List;
-
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -9,11 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JavaClass;
-import jadx.api.JavaField;
-import jadx.api.JavaMethod;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.frida.FridaScriptGenerator;
+import jadx.frida.IFridaScriptGenerator;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.treemodel.JField;
 import jadx.gui.treemodel.JMethod;
@@ -27,8 +24,11 @@ public final class FridaAction extends JNodeAction {
 	private static final Logger LOG = LoggerFactory.getLogger(FridaAction.class);
 	private static final long serialVersionUID = -3084073927621269039L;
 
+	private final IFridaScriptGenerator scriptGenerator;
+
 	public FridaAction(CodeArea codeArea) {
 		super(ActionModel.FRIDA_COPY, codeArea);
+		this.scriptGenerator = new FridaScriptGenerator();
 	}
 
 	@Override
@@ -51,13 +51,13 @@ public final class FridaAction extends JNodeAction {
 		String fridaSnippet;
 		if (node instanceof JMethod) {
 			JMethod jMth = (JMethod) node;
-			String classSnippet = FridaScriptGenerator.generateClassSnippet(jMth.getJParent().getCls());
-			String methodSnippet = FridaScriptGenerator.generateMethodSnippet(jMth.getJavaMethod(), jMth.getJParent().getCls());
+			String classSnippet = scriptGenerator.generateClassSnippet(jMth.getJParent().getCls());
+			String methodSnippet = scriptGenerator.generateMethodSnippet(jMth.getJavaMethod(), jMth.getJParent().getCls());
 			fridaSnippet = String.format("%s\n%s", classSnippet, methodSnippet);
 			copySnipped(fridaSnippet);
 		} else if (node instanceof JField) {
 			JField jf = (JField) node;
-			fridaSnippet = FridaScriptGenerator.generateFieldSnippet(jf.getJavaField(), jf.getRootClass().getCls());
+			fridaSnippet = scriptGenerator.generateFieldSnippet(jf.getJavaField(), jf.getRootClass().getCls());
 			copySnipped(fridaSnippet);
 		} else if (node instanceof JClass) {
 			SwingUtilities.invokeLater(() -> showMethodSelectionDialog((JClass) node));
@@ -77,7 +77,7 @@ public final class FridaAction extends JNodeAction {
 	private void showMethodSelectionDialog(JClass jc) {
 		JavaClass javaClass = jc.getCls();
 		new MethodsDialog(getCodeArea().getMainWindow(), javaClass.getMethods(), (result) -> {
-			String fridaSnippet = FridaScriptGenerator.generateClassAllMethodSnippet(javaClass, result);
+			String fridaSnippet = scriptGenerator.generateClassAllMethodSnippet(javaClass, result);
 			copySnipped(fridaSnippet);
 		});
 	}

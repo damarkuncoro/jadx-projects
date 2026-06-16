@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-
 import jadx.api.plugins.input.data.attributes.JadxAttrType;
 import jadx.api.plugins.input.data.attributes.types.SignatureAttr;
 import jadx.core.dex.attributes.IAttributeNode;
@@ -14,7 +13,6 @@ import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
 public class SignatureParser {
-
 
 	private static final char STOP_CHAR = 0;
 
@@ -344,8 +342,6 @@ public class SignatureParser {
 		consume(')');
 		return args;
 	}
-
-
 
 	public String getSignature() {
 		return sign;

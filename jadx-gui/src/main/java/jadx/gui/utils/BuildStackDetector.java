@@ -247,7 +247,8 @@ public class BuildStackDetector {
 		List<FrameworkDetection> frameworks = new ArrayList<>();
 		addFramework(frameworks, "Native Android", resourceNames.contains("AndroidManifest.xml"), "HIGH", List.of("AndroidManifest.xml"));
 		addFramework(frameworks, "Flutter",
-				resourceNames.stream().anyMatch(name -> name.startsWith("flutter_assets/")) || containsResource(resourceNames, "libflutter.so"),
+				resourceNames.stream().anyMatch(name -> name.startsWith("flutter_assets/"))
+						|| containsResource(resourceNames, "libflutter.so"),
 				"HIGH", matchingResources(resourceNames, name -> name.startsWith("flutter_assets/") || name.endsWith("/libflutter.so")));
 		addFramework(frameworks, "React Native",
 				resourceNames.contains("assets/index.android.bundle")
@@ -257,13 +258,16 @@ public class BuildStackDetector {
 						List.of("com/facebook/react/ReactActivity", "com/facebook/react/ReactNativeHost")));
 		addFramework(frameworks, "Unity",
 				containsResource(resourceNames, "libunity.so") || classNames.contains("com/unity3d/player/UnityPlayerActivity"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("libunity.so"), List.of("com/unity3d/player/UnityPlayerActivity")));
+				"HIGH",
+				matchingEvidence(resourceNames, classNames, List.of("libunity.so"), List.of("com/unity3d/player/UnityPlayerActivity")));
 		addFramework(frameworks, "Cordova",
 				resourceNames.contains("assets/www/cordova.js") || classNames.contains("org/apache/cordova/CordovaActivity"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/www/cordova.js"), List.of("org/apache/cordova/CordovaActivity")));
+				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/www/cordova.js"),
+						List.of("org/apache/cordova/CordovaActivity")));
 		addFramework(frameworks, "Capacitor",
 				resourceNames.contains("assets/capacitor.config.json") || classNames.contains("com/getcapacitor/BridgeActivity"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/capacitor.config.json"), List.of("com/getcapacitor/BridgeActivity")));
+				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/capacitor.config.json"),
+						List.of("com/getcapacitor/BridgeActivity")));
 		addFramework(frameworks, "Xamarin",
 				classNames.contains("mono/android/Runtime") || containsResource(resourceNames, "libmonodroid.so"),
 				"HIGH", matchingEvidence(resourceNames, classNames, List.of("libmonodroid.so"), List.of("mono/android/Runtime")));
@@ -271,10 +275,13 @@ public class BuildStackDetector {
 				resourceNames.contains("kotlin-tooling-metadata.json") || classNames.stream().anyMatch(cls -> cls.startsWith("kotlin/")),
 				"MEDIUM", matchingEvidence(resourceNames, classNames, List.of("kotlin-tooling-metadata.json"), List.of("kotlin")));
 		addFramework(frameworks, "AndroidX / Jetpack",
-				resourceNames.contains("META-INF/androidx.core_core-ktx.version") || classNames.stream().anyMatch(cls -> cls.startsWith("androidx/")),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("META-INF/androidx.core_core-ktx.version"), List.of("androidx")));
+				resourceNames.contains("META-INF/androidx.core_core-ktx.version")
+						|| classNames.stream().anyMatch(cls -> cls.startsWith("androidx/")),
+				"HIGH",
+				matchingEvidence(resourceNames, classNames, List.of("META-INF/androidx.core_core-ktx.version"), List.of("androidx")));
 		addFramework(frameworks, "Jetpack Compose",
-				hasLibrary(libraryVersions, "androidx.compose.") || classNames.stream().anyMatch(cls -> cls.startsWith("androidx/compose/")),
+				hasLibrary(libraryVersions, "androidx.compose.")
+						|| classNames.stream().anyMatch(cls -> cls.startsWith("androidx/compose/")),
 				"HIGH", matchingLibraryAndClassEvidence(libraryVersions, classNames, "androidx.compose.", "androidx/compose"));
 		addFramework(frameworks, "Room",
 				hasLibrary(libraryVersions, "androidx.room") || classNames.stream().anyMatch(cls -> cls.startsWith("androidx/room/")),
@@ -325,9 +332,9 @@ public class BuildStackDetector {
 
 	private static List<String> matchingResources(Set<String> resourceNames, Predicate<String> predicate) {
 		return resourceNames.stream()
-			.filter(predicate)
-			.sorted()
-			.collect(Collectors.toList());
+				.filter(predicate)
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	private static List<String> matchingEvidence(
@@ -386,7 +393,8 @@ public class BuildStackDetector {
 	}
 
 	private static List<String> matchingDaggerEvidence(Map<String, String> libraryVersions, Set<String> classNames) {
-		List<String> evidence = new ArrayList<>(matchingLibraryAndClassEvidence(libraryVersions, classNames, "com.google.dagger", "dagger"));
+		List<String> evidence =
+				new ArrayList<>(matchingLibraryAndClassEvidence(libraryVersions, classNames, "com.google.dagger", "dagger"));
 		if (classNames.stream().anyMatch(name -> name.startsWith("javax/inject/"))) {
 			evidence.add("package:javax/inject");
 		}

@@ -3,8 +3,6 @@ package jadx.core.dex.visitors;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.MethodInlineAttr;
@@ -36,7 +34,6 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 		runBefore = ModVisitor.class
 )
 public class InlineMethods extends AbstractVisitor {
-
 
 	@Override
 	public void visit(MethodNode mth) throws JadxException {
