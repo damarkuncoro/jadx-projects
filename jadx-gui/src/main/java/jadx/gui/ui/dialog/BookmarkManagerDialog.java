@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,6 +31,8 @@ public class BookmarkManagerDialog extends JDialog {
 	private final MainWindow mainWindow;
 	private JTable table;
 	private DefaultTableModel tableModel;
+
+	private boolean loadingBookmarks = false;
 
 	public BookmarkManagerDialog(MainWindow mainWindow) {
 		super(mainWindow, NLS.str("bookmarks.title"), ModalityType.APPLICATION_MODAL);
@@ -58,9 +61,29 @@ public class BookmarkManagerDialog extends JDialog {
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false;
+				return column == 2;
 			}
 		};
+
+		tableModel.addTableModelListener(e -> {
+			if (loadingBookmarks) {
+				return;
+			}
+			if (e.getType() == javax.swing.event.TableModelEvent.UPDATE) {
+				int row = e.getFirstRow();
+				int column = e.getColumn();
+				if (column == 2) {
+					String newDesc = (String) tableModel.getValueAt(row, column);
+					Bookmark bookmark = mainWindow.getProject().getBookmarks().get(row);
+					if (newDesc != null && !newDesc.equals(bookmark.getDescription())) {
+						mainWindow.getProject().removeBookmark(bookmark);
+						bookmark.setDescription(newDesc);
+						mainWindow.getProject().addBookmark(bookmark);
+						SwingUtilities.invokeLater(this::loadBookmarks);
+					}
+				}
+			}
+		});
 
 		table = new JTable(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -108,6 +131,7 @@ public class BookmarkManagerDialog extends JDialog {
 	}
 
 	private void loadBookmarks() {
+		loadingBookmarks = true;
 		tableModel.setRowCount(0);
 		List<Bookmark> bookmarks = mainWindow.getProject().getBookmarks();
 		for (Bookmark bookmark : bookmarks) {
@@ -118,6 +142,7 @@ public class BookmarkManagerDialog extends JDialog {
 					bookmark.getDescription()
 			});
 		}
+		loadingBookmarks = false;
 	}
 
 	private void jumpToSelectedBookmark() {
