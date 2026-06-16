@@ -2,9 +2,14 @@ package jadx.gui.frida;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
@@ -95,6 +100,14 @@ public class FridaPanel extends JPanel {
 		clearScriptButton.addActionListener(e -> scriptTextArea.setText(""));
 		buttonPanel.add(clearScriptButton);
 
+		JButton saveScriptButton = new JButton("Save Script");
+		saveScriptButton.addActionListener(this::onSaveScriptClicked);
+		buttonPanel.add(saveScriptButton);
+
+		JButton loadScriptButton = new JButton("Load Script");
+		loadScriptButton.addActionListener(this::onLoadScriptClicked);
+		buttonPanel.add(loadScriptButton);
+
 		scriptPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		return scriptPanel;
@@ -129,6 +142,56 @@ public class FridaPanel extends JPanel {
 				scriptTextArea.setText(snippet.getScript());
 				appendLog("[INFO] Loaded snippet: " + selected);
 			});
+		}
+	}
+
+	private void onSaveScriptClicked(ActionEvent e) {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Save Frida Script");
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Frida Scripts (*.js)", "js"));
+		int userSelection = fileChooser.showSaveDialog(this);
+
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			File fileToSave = fileChooser.getSelectedFile();
+			if (!fileToSave.getName().toLowerCase().endsWith(".js")) {
+				fileToSave = new File(fileToSave.getAbsolutePath() + ".js");
+			}
+
+			try {
+				Files.write(fileToSave.toPath(), scriptTextArea.getText().getBytes(StandardCharsets.UTF_8));
+				appendLog("[INFO] Saved script to: " + fileToSave.getAbsolutePath());
+			} catch (IOException ex) {
+				LOG.error("Failed to save script", ex);
+				JOptionPane.showMessageDialog(this,
+						"Failed to save script: " + ex.getMessage(),
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+				appendLog("[ERROR] Failed to save script: " + ex.getMessage());
+			}
+		}
+	}
+
+	private void onLoadScriptClicked(ActionEvent e) {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Load Frida Script");
+		fileChooser.setFileFilter(new FileNameExtensionFilter("Frida Scripts (*.js)", "js"));
+		int userSelection = fileChooser.showOpenDialog(this);
+
+		if (userSelection == JFileChooser.APPROVE_OPTION) {
+			File fileToLoad = fileChooser.getSelectedFile();
+
+			try {
+				String content = Files.readString(fileToLoad.toPath(), StandardCharsets.UTF_8);
+				scriptTextArea.setText(content);
+				appendLog("[INFO] Loaded script from: " + fileToLoad.getAbsolutePath());
+			} catch (IOException ex) {
+				LOG.error("Failed to load script", ex);
+				JOptionPane.showMessageDialog(this,
+						"Failed to load script: " + ex.getMessage(),
+						"Error",
+						JOptionPane.ERROR_MESSAGE);
+				appendLog("[ERROR] Failed to load script: " + ex.getMessage());
+			}
 		}
 	}
 
