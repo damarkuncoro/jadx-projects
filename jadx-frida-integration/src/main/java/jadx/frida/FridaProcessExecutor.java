@@ -56,9 +56,13 @@ public class FridaProcessExecutor implements IFridaProcessExecutor {
 	private List<String> buildCommand(String target, Path tempScriptFile) {
 		List<String> command = new ArrayList<>();
 		command.add("frida");
-		command.add("-U");
-		command.add("-f");
-		command.add(target);
+		if (target.equalsIgnoreCase("Gadget")) {
+			command.add("-R");
+		} else {
+			command.add("-U");
+			command.add("-f");
+			command.add(target);
+		}
 		command.add("-l");
 		command.add(tempScriptFile.toAbsolutePath().toString());
 		return command;

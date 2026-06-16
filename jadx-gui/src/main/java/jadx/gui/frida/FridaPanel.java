@@ -1138,6 +1138,35 @@ public class FridaPanel extends JPanel {
 
 				if (!isRooted) {
 					appendLog("[WARN] Device " + serial + " is not rooted. Automated frida-server startup is not supported on jailed devices.");
+					
+					// Setup port forwarding
+					String adbPath = jadx.gui.device.protocol.AdbService.detectAdbPath();
+					try {
+						Process forwardProc = Runtime.getRuntime().exec(new String[]{
+							adbPath, "-s", serial, "forward", "tcp:27042", "tcp:27042"
+						});
+						forwardProc.waitFor();
+						appendLog("[INFO] Forwarded Frida Gadget port (27042 -> 27042) via ADB.");
+					} catch (Exception ex) {
+						LOG.error("Failed to forward adb port", ex);
+					}
+
+					// Check if port 27042 is already listening on the device (meaning gadget is loaded)
+					boolean isGadgetListening = false;
+					try {
+						String netstat = jadx.gui.device.protocol.AdbService.execShell(device, "cat /proc/net/tcp");
+						if (netstat != null && netstat.toLowerCase().contains("69a2")) {
+							isGadgetListening = true;
+						}
+					} catch (Exception ex) {
+						// ignore
+					}
+
+					if (isGadgetListening) {
+						appendLog("[INFO] Frida Gadget is already listening on device. Bypassing patch dialog.");
+						return; // bypass prompt!
+					}
+
 					appendLog("[INFO] Preparing Frida Gadget fallback on the host...");
 					downloadFridaGadget(arch, version);
 					
@@ -1219,13 +1248,46 @@ public class FridaPanel extends JPanel {
 		}
 	}
 
+	private boolean isJailedDevice() {
+		try {
+			String host = settings.getAdbDialogHost();
+			if (host == null || host.isEmpty()) {
+				host = "localhost";
+			}
+			int port = 5037;
+			try {
+				port = Integer.parseInt(settings.getAdbDialogPort());
+			} catch (Exception ex) {
+				// use default
+			}
+			List<jadx.gui.device.protocol.ADBDevice> devices = jadx.gui.device.protocol.AdbService.listDevices(host, port);
+			if (devices.isEmpty()) {
+				return false;
+			}
+			for (jadx.gui.device.protocol.ADBDevice device : devices) {
+				String suTest = jadx.gui.device.protocol.AdbService.execShell(device, "which su");
+				if (suTest != null && suTest.contains("su")) {
+					return false; // rooted
+				}
+				return true; // not rooted
+			}
+		} catch (Exception e) {
+			// fallback
+		}
+		return false;
+	}
+
 	private void runFridaScript(String target, String script) {
 		runButton.setEnabled(false);
 
 		new Thread(() -> {
 			try {
 				autoStartFridaServer();
-				processExecutor.execute(target, script, this::appendLog);
+				String finalTarget = target;
+				if (isJailedDevice()) {
+					finalTarget = "Gadget";
+				}
+				processExecutor.execute(finalTarget, script, this::appendLog);
 			} catch (Exception e) {
 				LOG.error("Failed to run Frida script", e);
 				SwingUtilities.invokeLater(() -> appendLog("[ERROR] " + e.getMessage()));
