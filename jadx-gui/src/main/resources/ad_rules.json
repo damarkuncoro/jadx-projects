@@ -6,49 +6,56 @@
       "packagePrefixes": [
         "com.google.ads",
         "com.google.android.gms.ads"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass Google AdMob Initialization\n    try {\n        var MobileAds = Java.use(\"com.google.android.gms.ads.MobileAds\");\n        MobileAds.initialize.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked Google AdMob initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] AdMob hook failed: \" + e.message);\n    }"
     },
     {
       "name": "Facebook Audience Network",
       "category": "Ads",
       "packagePrefixes": [
         "com.facebook.ads"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass Facebook Audience Network Initialization\n    try {\n        var AudienceNetworkAds = Java.use(\"com.facebook.ads.AudienceNetworkAds\");\n        AudienceNetworkAds.initialize.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked Facebook Audience Network initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] Facebook Audience Network hook failed: \" + e.message);\n    }"
     },
     {
       "name": "Unity Ads",
       "category": "Ads",
       "packagePrefixes": [
         "com.unity3d.ads"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass Unity Ads Initialization\n    try {\n        var UnityAds = Java.use(\"com.unity3d.ads.UnityAds\");\n        UnityAds.initialize.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked Unity Ads initialization\");\n                var listener = arguments[arguments.length - 1];\n                if (listener !== null && typeof listener === 'object' && listener.onInitializationComplete) {\n                    listener.onInitializationComplete();\n                }\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] Unity Ads hook failed: \" + e.message);\n    }"
     },
     {
       "name": "AppLovin",
       "category": "Ads",
       "packagePrefixes": [
         "com.applovin"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass AppLovin SDK Initialization\n    try {\n        var AppLovinSdk = Java.use(\"com.applovin.sdk.AppLovinSdk\");\n        AppLovinSdk.initializeSdk.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked AppLovin SDK initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] AppLovin SDK hook failed: \" + e.message);\n    }"
     },
     {
       "name": "MoPub",
       "category": "Ads",
       "packagePrefixes": [
         "com.mopub"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass MoPub SDK Initialization\n    try {\n        var MoPub = Java.use(\"com.mopub.common.MoPub\");\n        MoPub.initializeSdk.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked MoPub SDK initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] MoPub SDK hook failed: \" + e.message);\n    }"
     },
     {
       "name": "StartApp",
       "category": "Ads",
       "packagePrefixes": [
         "com.startapp"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass StartApp SDK Initialization\n    try {\n        var StartAppSDK = Java.use(\"com.startapp.sdk.adsbase.StartAppSDK\");\n        StartAppSDK.init.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked StartApp SDK initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] StartApp SDK hook failed: \" + e.message);\n    }"
     },
     {
       "name": "IronSource",
       "category": "Ads",
       "packagePrefixes": [
         "com.ironsource"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass IronSource SDK Initialization\n    try {\n        var IronSource = Java.use(\"com.ironsource.mediationsdk.IronSource\");\n        IronSource.init.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked IronSource SDK initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] IronSource SDK hook failed: \" + e.message);\n    }"
     },
     {
       "name": "Vungle",
@@ -91,7 +98,8 @@
       "packagePrefixes": [
         "com.google.firebase.analytics",
         "com.google.android.gms.measurement"
-      ]
+      ],
+      "fridaTemplate": "    // Disable Firebase/Google Analytics Tracking\n    try {\n        var FirebaseAnalytics = Java.use(\"com.google.firebase.analytics.FirebaseAnalytics\");\n        FirebaseAnalytics.logEvent.overloads.forEach(function (o) {\n            o.implementation = function (name, bundle) {\n                console.log(\"[+] Blocked Firebase Analytics event: \" + name);\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] Firebase Analytics hook failed: \" + e.message);\n    }"
     },
     {
       "name": "Google Analytics",
@@ -105,14 +113,16 @@
       "category": "Analytics",
       "packagePrefixes": [
         "com.adjust.sdk"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass Adjust SDK Initialization\n    try {\n        var Adjust = Java.use(\"com.adjust.sdk.Adjust\");\n        Adjust.onCreate.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked Adjust SDK onCreate initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] Adjust SDK hook failed: \" + e.message);\n    }"
     },
     {
       "name": "AppsFlyer",
       "category": "Analytics",
       "packagePrefixes": [
         "com.appsflyer"
-      ]
+      ],
+      "fridaTemplate": "    // Bypass AppsFlyer SDK Initialization\n    try {\n        var AppsFlyerLib = Java.use(\"com.appsflyer.AppsFlyerLib\");\n        AppsFlyerLib.start.overloads.forEach(function (o) {\n            o.implementation = function () {\n                console.log(\"[+] Blocked AppsFlyer start initialization\");\n            };\n        });\n    } catch (e) {\n        console.log(\"[-] AppsFlyer SDK hook failed: \" + e.message);\n    }"
     },
     {
       "name": "Mixpanel",

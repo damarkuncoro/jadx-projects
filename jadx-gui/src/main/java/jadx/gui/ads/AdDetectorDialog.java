@@ -2,6 +2,7 @@ package jadx.gui.ads;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -63,15 +64,28 @@ public class AdDetectorDialog extends JDialog {
 
 		// Buttons
 		JPanel buttonPanel = new JPanel(new BorderLayout(10, 10));
+
+		JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
 		JButton scanButton = new JButton("Scan for Ads");
 		scanButton.addActionListener(e -> scanForAds());
-		buttonPanel.add(scanButton, BorderLayout.WEST);
+		leftPanel.add(scanButton);
+
+		JButton fridaButton = new JButton("Generate Frida Bypass");
+		fridaButton.addActionListener(e -> generateFridaBypassScript());
+		leftPanel.add(fridaButton);
+
+		buttonPanel.add(leftPanel, BorderLayout.WEST);
+
+		JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 		JButton jumpButton = new JButton("Jump to Selected Class");
 		jumpButton.addActionListener(e -> jumpToSelectedClass());
-		buttonPanel.add(jumpButton, BorderLayout.CENTER);
+		rightPanel.add(jumpButton);
+
 		JButton closeButton = new JButton("Close");
 		closeButton.addActionListener(e -> dispose());
-		buttonPanel.add(closeButton, BorderLayout.EAST);
+		rightPanel.add(closeButton);
+
+		buttonPanel.add(rightPanel, BorderLayout.EAST);
 
 		panel.add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -170,5 +184,48 @@ public class AdDetectorDialog extends JDialog {
 
 	private JClass findJClassByName(String fullClassName) {
 		return mainWindow.searchClassByName(fullClassName);
+	}
+
+	private void generateFridaBypassScript() {
+		JadxDecompiler decompiler = mainWindow.getWrapper().getDecompiler();
+		List<AdFinding> findings = AdDetector.detectAds(decompiler);
+
+		if (findings.isEmpty()) {
+			JOptionPane.showMessageDialog(this,
+					"No ad networks or trackers detected in this project to generate bypass scripts.",
+					"Information",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
+		StringBuilder scriptBuilder = new StringBuilder();
+		scriptBuilder.append("/*\n");
+		scriptBuilder.append("  Auto-generated Ad & Tracker Blocker Script\n");
+		scriptBuilder.append("  Target: ").append(mainWindow.getProject().getName()).append("\n");
+		scriptBuilder.append("*/\n\n");
+		scriptBuilder.append("Java.perform(function () {\n");
+		scriptBuilder.append("    console.log(\"[*] Dynamic Ad & Tracker Blocker script loaded\");\n\n");
+
+		boolean hasTemplates = false;
+		for (AdFinding finding : findings) {
+			String template = finding.getNetwork().getFridaTemplate();
+			if (template != null && !template.trim().isEmpty()) {
+				scriptBuilder.append(template).append("\n\n");
+				hasTemplates = true;
+			}
+		}
+
+		if (!hasTemplates) {
+			JOptionPane.showMessageDialog(this,
+					"No Frida templates defined for the detected ad/tracker networks in this APK.",
+					"Information",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
+		scriptBuilder.append("});\n");
+
+		FridaScriptDialog dialog = new FridaScriptDialog(mainWindow, scriptBuilder.toString());
+		dialog.setVisible(true);
 	}
 }
