@@ -2,12 +2,21 @@ package jadx.gui.tree;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import jadx.core.utils.GsonUtils;
 import jadx.gui.ui.MainWindow;
 
 public class TreePresetManagerDialog extends JDialog {
@@ -52,6 +61,10 @@ public class TreePresetManagerDialog extends JDialog {
 		saveButton.addActionListener(e -> savePreset());
 		leftButtons.add(saveButton, BorderLayout.NORTH);
 
+		JButton exportButton = new JButton("Export Presets");
+		exportButton.addActionListener(e -> exportPresets());
+		leftButtons.add(exportButton, BorderLayout.SOUTH);
+
 		JPanel rightButtons = new JPanel(new BorderLayout(10, 10));
 		JButton loadButton = new JButton("Load Selected");
 		loadButton.addActionListener(e -> loadSelectedPreset());
@@ -59,7 +72,11 @@ public class TreePresetManagerDialog extends JDialog {
 
 		JButton deleteButton = new JButton("Delete Selected");
 		deleteButton.addActionListener(e -> deleteSelectedPreset());
-		rightButtons.add(deleteButton, BorderLayout.SOUTH);
+		rightButtons.add(deleteButton, BorderLayout.CENTER);
+
+		JButton importButton = new JButton("Import Presets");
+		importButton.addActionListener(e -> importPresets());
+		rightButtons.add(importButton, BorderLayout.SOUTH);
 
 		buttonPanel.add(leftButtons, BorderLayout.WEST);
 		buttonPanel.add(rightButtons, BorderLayout.EAST);
@@ -128,6 +145,54 @@ public class TreePresetManagerDialog extends JDialog {
 		mainWindow.getSettings().sync();
 
 		loadPresets();
+	}
+
+	private void exportPresets() {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files", "json");
+		fileChooser.setFileFilter(filter);
+		fileChooser.setSelectedFile(new File("tree-presets.json"));
+
+		int option = fileChooser.showSaveDialog(this);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			try (FileWriter writer = new FileWriter(file)) {
+				Gson gson = GsonUtils.buildGson();
+				gson.toJson(mainWindow.getSettings().getTreePresets(), writer);
+				JOptionPane.showMessageDialog(this, "Presets exported successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "Error exporting presets: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	private void importPresets() {
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files", "json");
+		fileChooser.setFileFilter(filter);
+
+		int option = fileChooser.showOpenDialog(this);
+		if (option == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			try (FileReader reader = new FileReader(file)) {
+				Gson gson = GsonUtils.buildGson();
+				List<TreePreset> importedPresets = gson.fromJson(reader, new TypeToken<List<TreePreset>>() {
+				}.getType());
+
+				List<TreePreset> existingPresets = new ArrayList<>(mainWindow.getSettings().getTreePresets());
+				for (TreePreset imported : importedPresets) {
+					existingPresets.removeIf(p -> p.getName().equals(imported.getName()));
+					existingPresets.add(imported);
+				}
+				mainWindow.getSettings().setTreePresets(existingPresets);
+				mainWindow.getSettings().sync();
+
+				loadPresets();
+				JOptionPane.showMessageDialog(this, "Presets imported successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, "Error importing presets: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 
 	private static class PresetCellRenderer extends DefaultListCellRenderer {
