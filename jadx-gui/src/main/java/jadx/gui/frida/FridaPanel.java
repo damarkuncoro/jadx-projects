@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -87,6 +88,10 @@ public class FridaPanel extends JPanel {
 		JButton addSnippetButton = new JButton("Add Custom Snippet");
 		addSnippetButton.addActionListener(this::onAddSnippetButtonClicked);
 		snippetsButtonsPanel.add(addSnippetButton);
+
+		JButton editSnippetButton = new JButton("Edit Snippet");
+		editSnippetButton.addActionListener(this::onEditSnippetButtonClicked);
+		snippetsButtonsPanel.add(editSnippetButton);
 
 		JButton deleteSnippetButton = new JButton("Delete Snippet");
 		deleteSnippetButton.addActionListener(this::onDeleteSnippetButtonClicked);
@@ -272,6 +277,73 @@ public class FridaPanel extends JPanel {
 
 			refreshSnippetsComboBox();
 			appendLog("[INFO] Saved script as custom snippet: " + name);
+		}
+	}
+
+	private void onEditSnippetButtonClicked(ActionEvent e) {
+		String selectedSnippet = (String) snippetsComboBox.getSelectedItem();
+		if (selectedSnippet == null || selectedSnippet.equals(SELECT_SNIPPET_TEXT)) {
+			return;
+		}
+
+		// Check if selected snippet is a default one (don't allow editing default snippets)
+		boolean isDefaultSnippet = false;
+		for (FridaSnippets defaultSnippet : FridaSnippets.values()) {
+			if (defaultSnippet.getDisplayName().equals(selectedSnippet)) {
+				isDefaultSnippet = true;
+				break;
+			}
+		}
+
+		if (isDefaultSnippet) {
+			JOptionPane.showMessageDialog(this,
+					"Cannot edit default Frida snippets!",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		Optional<IFridaSnippet> snippetOpt = snippetRegistry.findByDisplayName(selectedSnippet);
+		if (snippetOpt.isEmpty()) {
+			JOptionPane.showMessageDialog(this,
+					"Selected snippet not found!",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		AddSnippetDialog dialog = new AddSnippetDialog(mainWindow, selectedSnippet, snippetOpt.get().getScript());
+		dialog.setVisible(true);
+		if (dialog.isConfirmed()) {
+			String newName = dialog.getSnippetName();
+			String newScript = dialog.getSnippetScript();
+
+			// Remove old snippet from registry
+			snippetRegistry.unregisterSnippet(selectedSnippet);
+
+			// Remove old snippet from settings
+			List<CustomFridaSnippet> customSnippets = new ArrayList<>(settings.getCustomFridaSnippets());
+			customSnippets.removeIf(s -> s.getName().equals(selectedSnippet));
+
+			// Add new snippet to registry and settings
+			IFridaSnippet newSnippet = new IFridaSnippet() {
+				@Override
+				public String getDisplayName() {
+					return newName;
+				}
+
+				@Override
+				public String getScript() {
+					return newScript;
+				}
+			};
+			snippetRegistry.registerSnippet(newSnippet);
+			customSnippets.add(new CustomFridaSnippet(newName, newScript));
+
+			settings.setCustomFridaSnippets(customSnippets);
+
+			refreshSnippetsComboBox();
+			appendLog("[INFO] Updated custom snippet: " + newName);
 		}
 	}
 

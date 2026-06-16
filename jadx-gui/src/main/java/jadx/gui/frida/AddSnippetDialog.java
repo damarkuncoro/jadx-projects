@@ -2,6 +2,7 @@ package jadx.gui.frida;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
@@ -14,16 +15,22 @@ public class AddSnippetDialog extends JDialog {
 
 	private final JTextField nameField;
 	private final JTextArea scriptArea;
+	private final String originalSnippetName;
 	private String snippetName;
 	private String snippetScript;
 	private boolean confirmed = false;
 
 	public AddSnippetDialog(Window parent) {
-		this(parent, null);
+		this(parent, null, null);
 	}
 
 	public AddSnippetDialog(Window parent, String initialScript) {
-		super(parent, NLS.str("frida.add_snippet"), ModalityType.APPLICATION_MODAL);
+		this(parent, null, initialScript);
+	}
+
+	public AddSnippetDialog(Window parent, String originalName, String initialScript) {
+		super(parent, originalName == null ? NLS.str("frida.add_snippet") : "Edit Snippet", ModalityType.APPLICATION_MODAL);
+		this.originalSnippetName = originalName;
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 		setLocationRelativeTo(parent);
@@ -36,6 +43,9 @@ public class AddSnippetDialog extends JDialog {
 		JPanel namePanel = new JPanel(new BorderLayout(5, 0));
 		namePanel.add(new JLabel(NLS.str("frida.snippet_name")), BorderLayout.WEST);
 		nameField = new JTextField();
+		if (originalName != null) {
+			nameField.setText(originalName);
+		}
 		namePanel.add(nameField, BorderLayout.CENTER);
 		panel.add(namePanel, BorderLayout.NORTH);
 
@@ -60,6 +70,10 @@ public class AddSnippetDialog extends JDialog {
 		buttonPanel.add(cancelButton);
 
 		panel.add(buttonPanel, BorderLayout.SOUTH);
+	}
+
+	public String getOriginalSnippetName() {
+		return originalSnippetName;
 	}
 
 	private void onOkButtonClicked(ActionEvent e) {
