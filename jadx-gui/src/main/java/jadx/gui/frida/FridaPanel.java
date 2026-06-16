@@ -11,6 +11,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import jadx.api.JavaMethod;
 import jadx.frida.*;
 import jadx.gui.ui.MainWindow;
+import jadx.gui.ui.action.JadxAutoCompletion;
 
 public class FridaPanel extends JPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(FridaPanel.class);
@@ -86,6 +88,11 @@ public class FridaPanel extends JPanel {
 		scriptTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
 		scriptTextArea.setCodeFoldingEnabled(true);
 		scriptTextArea.setAntiAliasingEnabled(true);
+
+		// Add Frida API auto-completion
+		AutoCompletion ac = new JadxAutoCompletion(FridaApiCompletionProvider.create());
+		ac.install(scriptTextArea);
+
 		RTextScrollPane scriptScrollPane = new RTextScrollPane(scriptTextArea);
 		scriptPanel.add(scriptScrollPane, BorderLayout.CENTER);
 
