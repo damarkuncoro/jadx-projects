@@ -777,6 +777,22 @@ public class MainWindow extends JFrame {
 		return searchJClassInNode(treeRoot, fullClassName);
 	}
 
+	public void showFridaPanelWithScript(String script) {
+		boolean found = false;
+		for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+			if (tabbedPane.getComponentAt(i) == fridaPanel) {
+				found = true;
+				tabbedPane.setSelectedIndex(i);
+				break;
+			}
+		}
+		if (!found) {
+			tabbedPane.addTab("Frida", fridaPanel);
+			tabbedPane.setSelectedComponent(fridaPanel);
+		}
+		fridaPanel.setScriptText(script);
+	}
+
 	@SuppressWarnings("unchecked")
 	private JClass searchJClassInNode(JNode node, String fullClassName) {
 		if (node instanceof JClass) {

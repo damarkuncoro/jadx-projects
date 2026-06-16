@@ -70,7 +70,7 @@ public class AdDetectorDialog extends JDialog {
 		scanButton.addActionListener(e -> scanForAds());
 		leftPanel.add(scanButton);
 
-		JButton fridaButton = new JButton("Generate Frida Bypass");
+		JButton fridaButton = new JButton("Send to Frida Panel");
 		fridaButton.addActionListener(e -> generateFridaBypassScript());
 		leftPanel.add(fridaButton);
 
@@ -225,7 +225,7 @@ public class AdDetectorDialog extends JDialog {
 
 		scriptBuilder.append("});\n");
 
-		FridaScriptDialog dialog = new FridaScriptDialog(mainWindow, scriptBuilder.toString());
-		dialog.setVisible(true);
+		dispose();
+		mainWindow.showFridaPanelWithScript(scriptBuilder.toString());
 	}
 }

@@ -451,6 +451,10 @@ public class FridaPanel extends JPanel {
 		runFridaScript(target.trim(), script);
 	}
 
+	public void setScriptText(String script) {
+		scriptTextArea.setText(script);
+	}
+
 	public void generateAndDisplayScript(JavaMethod method) {
 		try {
 			String script = scriptGenerator.generateMethodHook(method);
