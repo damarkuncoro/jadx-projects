@@ -1,6 +1,7 @@
 package jadx.frida;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,18 @@ public class FridaSnippetRegistry {
 
 	public void registerSnippet(IFridaSnippet snippet) {
 		snippets.add(snippet);
+	}
+
+	public boolean unregisterSnippet(String displayName) {
+		Iterator<IFridaSnippet> iterator = snippets.iterator();
+		while (iterator.hasNext()) {
+			IFridaSnippet snippet = iterator.next();
+			if (snippet.getDisplayName().equals(displayName)) {
+				iterator.remove();
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public List<IFridaSnippet> getAllSnippets() {

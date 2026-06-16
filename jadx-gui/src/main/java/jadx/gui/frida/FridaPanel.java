@@ -83,9 +83,16 @@ public class FridaPanel extends JPanel {
 		snippetsComboBox.addActionListener(this::onSnippetSelected);
 		snippetsPanel.add(snippetsComboBox, BorderLayout.CENTER);
 
+		JPanel snippetsButtonsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
 		JButton addSnippetButton = new JButton("Add Custom Snippet");
 		addSnippetButton.addActionListener(this::onAddSnippetButtonClicked);
-		snippetsPanel.add(addSnippetButton, BorderLayout.EAST);
+		snippetsButtonsPanel.add(addSnippetButton);
+
+		JButton deleteSnippetButton = new JButton("Delete Snippet");
+		deleteSnippetButton.addActionListener(this::onDeleteSnippetButtonClicked);
+		snippetsButtonsPanel.add(deleteSnippetButton);
+
+		snippetsPanel.add(snippetsButtonsPanel, BorderLayout.EAST);
 
 		topPanel.add(snippetsPanel, BorderLayout.SOUTH);
 		scriptPanel.add(topPanel, BorderLayout.NORTH);
@@ -180,6 +187,50 @@ public class FridaPanel extends JPanel {
 			refreshSnippetsComboBox();
 			appendLog("[INFO] Added custom snippet: " + name);
 		}
+	}
+
+	private void onDeleteSnippetButtonClicked(ActionEvent e) {
+		String selectedSnippet = (String) snippetsComboBox.getSelectedItem();
+		if (selectedSnippet == null || selectedSnippet.equals(SELECT_SNIPPET_TEXT)) {
+			return;
+		}
+
+		// Check if selected snippet is a default one (don't allow deleting default snippets)
+		boolean isDefaultSnippet = false;
+		for (FridaSnippets defaultSnippet : FridaSnippets.values()) {
+			if (defaultSnippet.getDisplayName().equals(selectedSnippet)) {
+				isDefaultSnippet = true;
+				break;
+			}
+		}
+
+		if (isDefaultSnippet) {
+			JOptionPane.showMessageDialog(this,
+					"Cannot delete default Frida snippets!",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// Confirm deletion
+		int confirm = JOptionPane.showConfirmDialog(this,
+				"Are you sure you want to delete snippet \"" + selectedSnippet + "\"?",
+				"Delete Snippet",
+				JOptionPane.YES_NO_OPTION);
+		if (confirm != JOptionPane.YES_OPTION) {
+			return;
+		}
+
+		// Unregister snippet from registry
+		snippetRegistry.unregisterSnippet(selectedSnippet);
+
+		// Update settings
+		List<CustomFridaSnippet> customSnippets = new ArrayList<>(settings.getCustomFridaSnippets());
+		customSnippets.removeIf(s -> s.getName().equals(selectedSnippet));
+		settings.setCustomFridaSnippets(customSnippets);
+
+		refreshSnippetsComboBox();
+		appendLog("[INFO] Deleted custom snippet: " + selectedSnippet);
 	}
 
 	private JPanel createLogPanel() {
