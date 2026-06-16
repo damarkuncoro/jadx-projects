@@ -1,0 +1,170 @@
+{
+  "rules": [
+    {
+      "name": "Google AdMob",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.google.ads",
+        "com.google.android.gms.ads"
+      ]
+    },
+    {
+      "name": "Facebook Audience Network",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.facebook.ads"
+      ]
+    },
+    {
+      "name": "Unity Ads",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.unity3d.ads"
+      ]
+    },
+    {
+      "name": "AppLovin",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.applovin"
+      ]
+    },
+    {
+      "name": "MoPub",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.mopub"
+      ]
+    },
+    {
+      "name": "StartApp",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.startapp"
+      ]
+    },
+    {
+      "name": "IronSource",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.ironsource"
+      ]
+    },
+    {
+      "name": "Vungle",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.vungle"
+      ]
+    },
+    {
+      "name": "AdColony",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.adcolony"
+      ]
+    },
+    {
+      "name": "Chartboost",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.chartboost"
+      ]
+    },
+    {
+      "name": "InMobi",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.inmobi"
+      ]
+    },
+    {
+      "name": "Tapjoy",
+      "category": "Ads",
+      "packagePrefixes": [
+        "com.tapjoy"
+      ]
+    },
+    {
+      "name": "Firebase Analytics",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.google.firebase.analytics",
+        "com.google.android.gms.measurement"
+      ]
+    },
+    {
+      "name": "Google Analytics",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.google.android.gms.analytics"
+      ]
+    },
+    {
+      "name": "Adjust",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.adjust.sdk"
+      ]
+    },
+    {
+      "name": "AppsFlyer",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.appsflyer"
+      ]
+    },
+    {
+      "name": "Mixpanel",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.mixpanel.android"
+      ]
+    },
+    {
+      "name": "Flurry",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.flurry.android"
+      ]
+    },
+    {
+      "name": "Umeng",
+      "category": "Analytics",
+      "packagePrefixes": [
+        "com.umeng.analytics",
+        "com.umeng.commonsdk"
+      ]
+    },
+    {
+      "name": "Firebase Crashlytics",
+      "category": "Crash Reporting",
+      "packagePrefixes": [
+        "com.google.firebase.crashlytics",
+        "com.crashlytics.android"
+      ]
+    },
+    {
+      "name": "Sentry",
+      "category": "Crash Reporting",
+      "packagePrefixes": [
+        "io.sentry"
+      ]
+    },
+    {
+      "name": "Bugsnag",
+      "category": "Crash Reporting",
+      "packagePrefixes": [
+        "com.bugsnag.android"
+      ]
+    },
+    {
+      "name": "LeakCanary",
+      "category": "Developer Tools",
+      "packagePrefixes": [
+        "leakcanary",
+        "com.squareup.leakcanary"
+      ]
+    }
+  ]
+}

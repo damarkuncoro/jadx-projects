@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class AdDetectorDialog extends JDialog {
 		getContentPane().add(panel, BorderLayout.CENTER);
 
 		// Result Tree
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Detected Ad Networks");
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Detected Trackers & Ads");
 		treeModel = new DefaultTreeModel(root);
 		resultTree = new JTree(treeModel);
 		JScrollPane treeScroll = new JScrollPane(resultTree);
@@ -83,27 +84,44 @@ public class AdDetectorDialog extends JDialog {
 		root.removeAllChildren();
 
 		if (findings.isEmpty()) {
-			root.add(new DefaultMutableTreeNode("No ad networks detected!"));
+			root.add(new DefaultMutableTreeNode("No ad networks or trackers detected!"));
 		} else {
+			// Group findings by category
+			java.util.Map<String, List<AdFinding>> grouped = new java.util.LinkedHashMap<>();
 			for (AdFinding finding : findings) {
-				DefaultMutableTreeNode networkNode = new DefaultMutableTreeNode(finding.getNetwork().getName());
-				root.add(networkNode);
-
-				if (!finding.getFoundPackages().isEmpty()) {
-					DefaultMutableTreeNode packagesNode =
-							new DefaultMutableTreeNode("Packages (" + finding.getFoundPackages().size() + ")");
-					for (String pkg : finding.getFoundPackages()) {
-						packagesNode.add(new DefaultMutableTreeNode(pkg));
-					}
-					networkNode.add(packagesNode);
+				String category = finding.getNetwork().getCategory();
+				if (category == null || category.isEmpty()) {
+					category = "Other";
 				}
+				grouped.computeIfAbsent(category, k -> new ArrayList<>()).add(finding);
+			}
 
-				if (!finding.getFoundClasses().isEmpty()) {
-					DefaultMutableTreeNode classesNode = new DefaultMutableTreeNode("Classes (" + finding.getFoundClasses().size() + ")");
-					for (String cls : finding.getFoundClasses()) {
-						classesNode.add(new DefaultMutableTreeNode(cls));
+			for (java.util.Map.Entry<String, List<AdFinding>> entry : grouped.entrySet()) {
+				String category = entry.getKey();
+				List<AdFinding> catFindings = entry.getValue();
+				DefaultMutableTreeNode categoryNode = new DefaultMutableTreeNode(category + " (" + catFindings.size() + ")");
+				root.add(categoryNode);
+
+				for (AdFinding finding : catFindings) {
+					DefaultMutableTreeNode networkNode = new DefaultMutableTreeNode(finding.getNetwork().getName());
+					categoryNode.add(networkNode);
+
+					if (!finding.getFoundPackages().isEmpty()) {
+						DefaultMutableTreeNode packagesNode =
+								new DefaultMutableTreeNode("Packages (" + finding.getFoundPackages().size() + ")");
+						for (String pkg : finding.getFoundPackages()) {
+							packagesNode.add(new DefaultMutableTreeNode(pkg));
+						}
+						networkNode.add(packagesNode);
 					}
-					networkNode.add(classesNode);
+
+					if (!finding.getFoundClasses().isEmpty()) {
+						DefaultMutableTreeNode classesNode = new DefaultMutableTreeNode("Classes (" + finding.getFoundClasses().size() + ")");
+						for (String cls : finding.getFoundClasses()) {
+							classesNode.add(new DefaultMutableTreeNode(cls));
+						}
+						networkNode.add(classesNode);
+					}
 				}
 			}
 		}
@@ -133,7 +151,7 @@ public class AdDetectorDialog extends JDialog {
 		if (!selectedText.contains(".")
 				|| selectedText.startsWith("Packages")
 				|| selectedText.startsWith("Classes")
-				|| selectedText.startsWith("Detected Ad Networks")) {
+				|| selectedText.startsWith("Detected")) {
 			return;
 		}
 
