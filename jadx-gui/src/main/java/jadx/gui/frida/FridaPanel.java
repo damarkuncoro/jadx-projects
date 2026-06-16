@@ -26,6 +26,8 @@ import jadx.frida.*;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.action.JadxAutoCompletion;
+import jadx.gui.utils.BuildStackDetector;
+import jadx.gui.utils.BuildStackDetector.BuildStackInfo;
 
 public class FridaPanel extends JPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(FridaPanel.class);
@@ -439,10 +441,27 @@ public class FridaPanel extends JPanel {
 			return;
 		}
 
-		String target = JOptionPane.showInputDialog(this,
+		String defaultPackage = "";
+		try {
+			BuildStackInfo buildStack = BuildStackDetector.analyzeLoadedProject(
+					mainWindow.getWrapper().getResources(),
+					mainWindow.getWrapper().getRootNode().getClasses(true)
+			);
+			String pkg = buildStack.getManifest().get("package");
+			if (pkg != null) {
+				defaultPackage = pkg;
+			}
+		} catch (Exception ex) {
+			// ignore
+		}
+
+		String target = (String) JOptionPane.showInputDialog(this,
 				"Enter target process name or package name (e.g., com.example.app):",
 				"Run Frida Script",
-				JOptionPane.QUESTION_MESSAGE);
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				null,
+				defaultPackage);
 
 		if (target == null || target.trim().isEmpty()) {
 			return;

@@ -566,18 +566,7 @@ public class MainWindow extends JFrame {
 						JavaNode javaNode = wrapper.getDecompiler().getJavaNodeByRef(codeNodeRef);
 						if (javaNode instanceof JavaMethod) {
 							JavaMethod method = (JavaMethod) javaNode;
-							boolean found = false;
-							for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-								if (tabbedPane.getComponentAt(i) == fridaPanel) {
-									found = true;
-									tabbedPane.setSelectedIndex(i);
-									break;
-								}
-							}
-							if (!found) {
-								tabbedPane.addTab("Frida", fridaPanel);
-								tabbedPane.setSelectedComponent(fridaPanel);
-							}
+							showFridaPanel();
 							fridaPanel.generateAndDisplayScript(method);
 						}
 					} catch (Exception e) {
@@ -778,18 +767,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void showFridaPanelWithScript(String script) {
-		boolean found = false;
-		for (int i = 0; i < tabbedPane.getTabCount(); i++) {
-			if (tabbedPane.getComponentAt(i) == fridaPanel) {
-				found = true;
-				tabbedPane.setSelectedIndex(i);
-				break;
-			}
-		}
-		if (!found) {
-			tabbedPane.addTab("Frida", fridaPanel);
-			tabbedPane.setSelectedComponent(fridaPanel);
-		}
+		showFridaPanel();
 		fridaPanel.setScriptText(script);
 	}
 
