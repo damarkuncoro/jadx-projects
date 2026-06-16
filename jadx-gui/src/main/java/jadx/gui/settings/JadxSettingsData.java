@@ -18,6 +18,7 @@ import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
 import jadx.gui.frida.CustomFridaSnippet;
 import jadx.gui.settings.data.SaveOptionEnum;
+import jadx.gui.tree.TreePreset;
 import jadx.gui.ui.action.ActionModel;
 import jadx.gui.ui.tab.dnd.TabDndGhostType;
 import jadx.gui.utils.LafManager;
@@ -495,6 +496,7 @@ public class JadxSettingsData extends JadxGUIArgs {
 	}
 
 	private List<CustomFridaSnippet> customFridaSnippets = new ArrayList<>();
+	private List<TreePreset> treePresets = new ArrayList<>();
 
 	public List<CustomFridaSnippet> getCustomFridaSnippets() {
 		return customFridaSnippets;
@@ -502,6 +504,14 @@ public class JadxSettingsData extends JadxGUIArgs {
 
 	public void setCustomFridaSnippets(List<CustomFridaSnippet> customFridaSnippets) {
 		this.customFridaSnippets = customFridaSnippets;
+	}
+
+	public List<TreePreset> getTreePresets() {
+		return treePresets;
+	}
+
+	public void setTreePresets(List<TreePreset> treePresets) {
+		this.treePresets = treePresets;
 	}
 
 }

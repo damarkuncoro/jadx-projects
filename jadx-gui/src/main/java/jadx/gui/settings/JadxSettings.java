@@ -38,6 +38,7 @@ import jadx.gui.frida.CustomFridaSnippet;
 import jadx.gui.settings.data.SaveOptionEnum;
 import jadx.gui.settings.data.ShortcutsWrapper;
 import jadx.gui.settings.font.FontSettings;
+import jadx.gui.tree.TreePreset;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.tab.dnd.TabDndGhostType;
 import jadx.gui.utils.LangLocale;
@@ -903,6 +904,14 @@ public class JadxSettings {
 
 	public void setCustomFridaSnippets(List<CustomFridaSnippet> customFridaSnippets) {
 		settingsData.setCustomFridaSnippets(customFridaSnippets);
+	}
+
+	public List<TreePreset> getTreePresets() {
+		return settingsData.getTreePresets();
+	}
+
+	public void setTreePresets(List<TreePreset> treePresets) {
+		settingsData.setTreePresets(treePresets);
 	}
 
 	public void setThreadsCount(int threadsCount) {

@@ -125,6 +125,7 @@ import jadx.gui.settings.JadxSettings;
 import jadx.gui.settings.data.SaveOptionEnum;
 import jadx.gui.settings.ui.JadxSettingsWindow;
 import jadx.gui.tree.TreeExpansionService;
+import jadx.gui.tree.TreePresetManagerDialog;
 import jadx.gui.treemodel.ApkSignatureNode;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.treemodel.JLoadableNode;
@@ -1294,6 +1295,10 @@ public class MainWindow extends JFrame {
 		view.add(dockLog);
 		view.add(fridaPanelMenuItem);
 		view.add(heapUsageBarMenuItem);
+		view.addSeparator();
+		JMenuItem treePresetsItem = new JMenuItem("Tree Presets");
+		treePresetsItem.addActionListener(e -> new TreePresetManagerDialog(this, treeExpansionService).setVisible(true));
+		view.add(treePresetsItem);
 
 		JMenu nav = new JadxMenu(NLS.str("menu.navigation"), shortcutsController);
 		nav.setMnemonic(KeyEvent.VK_N);
