@@ -61,7 +61,6 @@ public class FridaProcessExecutor implements IFridaProcessExecutor {
 		command.add(target);
 		command.add("-l");
 		command.add(tempScriptFile.toAbsolutePath().toString());
-		command.add("--no-pause");
 		return command;
 	}
 
