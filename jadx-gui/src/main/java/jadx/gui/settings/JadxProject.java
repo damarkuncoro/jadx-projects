@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import jadx.api.plugins.utils.CommonFileUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.gui.cache.manager.CacheManager;
+import jadx.gui.settings.data.Bookmark;
 import jadx.gui.settings.data.ProjectData;
 import jadx.gui.settings.data.SaveOptionEnum;
 import jadx.gui.settings.data.TabViewState;
@@ -283,6 +285,40 @@ public class JadxProject {
 
 	public String getName() {
 		return name;
+	}
+
+	public List<Bookmark> getBookmarks() {
+		return data.getBookmarks();
+	}
+
+	public void setBookmarks(List<Bookmark> bookmarks) {
+		if (bookmarks.equals(data.getBookmarks())) {
+			return;
+		}
+		data.setBookmarks(bookmarks);
+		changed();
+	}
+
+	public void addBookmark(Bookmark bookmark) {
+		List<Bookmark> bookmarks = new ArrayList<>(data.getBookmarks());
+		bookmarks.add(bookmark);
+		data.setBookmarks(bookmarks);
+		changed();
+	}
+
+	public void removeBookmark(Bookmark bookmark) {
+		List<Bookmark> bookmarks = new ArrayList<>(data.getBookmarks());
+		bookmarks.remove(bookmark);
+		data.setBookmarks(bookmarks);
+		changed();
+	}
+
+	public void clearBookmarks() {
+		if (data.getBookmarks().isEmpty()) {
+			return;
+		}
+		data.setBookmarks(new ArrayList<>());
+		changed();
 	}
 
 	public boolean isSaveFileSelected() {

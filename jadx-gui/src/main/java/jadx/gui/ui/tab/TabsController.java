@@ -189,6 +189,25 @@ public class TabsController {
 		listeners.forEach(l -> l.onTabCodeJump(selectedTab, currentPosition, pos));
 	}
 
+	public void codeJumpToLine(JClass cls, int lineNum) {
+		loadCodeWithUIAction(cls, () -> {
+			jadx.gui.ui.panel.ContentPanel contentPanel = getMainWindow().getTabbedPane().getSelectedContentPanel();
+			if (contentPanel instanceof jadx.gui.ui.codearea.AbstractCodeContentPanel) {
+				jadx.gui.ui.codearea.AbstractCodeArea codeArea = ((jadx.gui.ui.codearea.AbstractCodeContentPanel) contentPanel).getCodeArea();
+				if (codeArea != null) {
+					try {
+						int lineIndex = lineNum - 1;
+						int startOffset = codeArea.getLineStartOffset(lineIndex);
+						codeArea.setCaretPosition(startOffset);
+						codeArea.centerCurrentLine();
+					} catch (Exception e) {
+						LOG.error("Failed to jump to line: {}", lineNum, e);
+					}
+				}
+			}
+		});
+	}
+
 	public void smaliJump(JClass cls, int pos, boolean debugMode) {
 		selectTab(cls);
 		TabBlueprint blueprint = getTabByNode(cls);

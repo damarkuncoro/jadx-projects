@@ -43,6 +43,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.fife.ui.rtextarea.GutterIconInfo;
+import jadx.api.JavaNode;
+import jadx.api.data.impl.JadxNodeRef;
+import jadx.gui.settings.data.Bookmark;
+import jadx.gui.utils.Icons;
 import jadx.api.ICodeInfo;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
@@ -384,9 +391,46 @@ public abstract class AbstractCodeArea extends RSyntaxTextArea {
 	 */
 	public abstract IBackgroundTask getLoadTask();
 
+	private final Map<Integer, GutterIconInfo> bookmarkIconMap = new HashMap<>();
+
+	public void updateBookmarkIcons() {
+		Gutter gutter = RSyntaxUtilities.getGutter(this);
+		if (gutter == null) {
+			return;
+		}
+		for (GutterIconInfo iconInfo : bookmarkIconMap.values()) {
+			gutter.removeTrackingIcon(iconInfo);
+		}
+		bookmarkIconMap.clear();
+
+		if (node == null) {
+			return;
+		}
+		JavaNode javaNode = node.getJavaNode();
+		if (javaNode == null) {
+			return;
+		}
+		JadxNodeRef nodeRef = JadxNodeRef.forJavaNode(javaNode);
+		if (nodeRef == null) {
+			return;
+		}
+		for (Bookmark bookmark : contentPanel.getMainWindow().getProject().getBookmarks()) {
+			if (Objects.equals(bookmark.getNodeRef(), nodeRef)) {
+				try {
+					int line = bookmark.getLine();
+					GutterIconInfo iconInfo = gutter.addLineTrackingIcon(line - 1, Icons.BOOKMARK);
+					bookmarkIconMap.put(line, iconInfo);
+				} catch (Exception e) {
+					LOG.error("Failed to add bookmark icon", e);
+				}
+			}
+		}
+	}
+
 	public void setLoaded() {
 		this.loaded.set(true);
 		discardAllEdits(); // disable 'undo' action to empty state (before load)
+		updateBookmarkIcons();
 	}
 
 	public void setUnLoaded() {
@@ -419,6 +463,7 @@ public abstract class AbstractCodeArea extends RSyntaxTextArea {
 		Gutter gutter = RSyntaxUtilities.getGutter(area);
 		if (gutter != null) {
 			gutter.setLineNumberFont(settings.getCodeFont());
+			gutter.setBookmarkingEnabled(true);
 		}
 	}
 

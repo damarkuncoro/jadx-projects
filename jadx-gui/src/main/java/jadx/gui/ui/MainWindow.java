@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.swing.AbstractAction;
@@ -99,8 +100,11 @@ import jadx.core.utils.android.AppAttribute;
 import jadx.core.utils.android.ApplicationParams;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
+import jadx.api.data.impl.JadxNodeRef;
 import jadx.gui.JadxWrapper;
+import jadx.gui.ads.AdDetector;
 import jadx.gui.ads.AdDetectorDialog;
+import jadx.gui.ads.AdFinding;
 import jadx.gui.cache.manager.CacheManager;
 import jadx.gui.device.debugger.BreakpointManager;
 import jadx.gui.events.services.RenameService;
@@ -137,8 +141,10 @@ import jadx.gui.treemodel.JResource;
 import jadx.gui.treemodel.JRoot;
 import jadx.gui.ui.action.ActionModel;
 import jadx.gui.ui.action.JadxGuiAction;
+import jadx.gui.settings.data.Bookmark;
 import jadx.gui.ui.codearea.AbstractCodeArea;
 import jadx.gui.ui.codearea.AbstractCodeContentPanel;
+import jadx.gui.ui.codearea.ClassCodeContentPanel;
 import jadx.gui.ui.codearea.EditorViewState;
 import jadx.gui.ui.codearea.theme.EditorThemeManager;
 import jadx.gui.ui.dialog.ADBDialog;
@@ -147,6 +153,7 @@ import jadx.gui.ui.dialog.CharsetDialog;
 import jadx.gui.ui.dialog.DeviceExplorerDialog;
 import jadx.gui.ui.dialog.GotoAddressDialog;
 import jadx.gui.ui.dialog.LogViewerDialog;
+import jadx.gui.ui.dialog.BookmarkManagerDialog;
 import jadx.gui.ui.dialog.SearchDialog;
 import jadx.gui.ui.export.ExportProjectDialog;
 import jadx.gui.ui.filedialog.FileDialogWrapper;
@@ -678,6 +685,7 @@ public class MainWindow extends JFrame {
 					checkIfCodeHasNonPrintableChars();
 					runInitialBackgroundJobs();
 					prepareInitialView();
+					triggerAutomaticAdDetection();
 				});
 		// queue tree state restore after loading task
 		treeExpansionService.load(project.getTreeExpansions());
@@ -694,6 +702,100 @@ public class MainWindow extends JFrame {
 				selectNodeInTree(singleCls);
 			}
 		});
+	}
+
+	public boolean isApkFileLoaded() {
+		for (Path path : project.getFilePaths()) {
+			String name = path.getFileName().toString().toLowerCase();
+			if (name.endsWith(".apk") || name.endsWith(".xapk") || name.endsWith(".apks")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void triggerAutomaticAdDetection() {
+		if (!isApkFileLoaded()) {
+			return;
+		}
+		UiUtils.bgRun(() -> {
+			try {
+				List<AdFinding> findings = AdDetector.detectAds(wrapper.getDecompiler());
+				if (!findings.isEmpty()) {
+					UiUtils.uiRun(() -> {
+						int res = JOptionPane.showConfirmDialog(
+								this,
+								"Ad networks detected in this APK. Would you like to view the details in Ad Detector?",
+								"Ad Detector",
+								JOptionPane.YES_NO_OPTION,
+								JOptionPane.INFORMATION_MESSAGE);
+						if (res == JOptionPane.YES_OPTION) {
+							new AdDetectorDialog(this).setVisible(true);
+						}
+					});
+				}
+			} catch (Exception e) {
+				LOG.error("Failed to run automatic ad detection", e);
+			}
+		});
+	}
+
+	public void toggleBookmark(JClass cls, int line) {
+		JavaClass javaClass = cls.getCls();
+		JadxNodeRef nodeRef = JadxNodeRef.forJavaNode(javaClass);
+		Bookmark found = null;
+		for (Bookmark bm : project.getBookmarks()) {
+			if (bm.getLine() == line && Objects.equals(bm.getNodeRef(), nodeRef)) {
+				found = bm;
+				break;
+			}
+		}
+		if (found != null) {
+			project.removeBookmark(found);
+		} else {
+			Bookmark bm = new Bookmark(nodeRef, line, "");
+			project.addBookmark(bm);
+		}
+		// Refresh gutter icons in all open code areas
+		tabbedPane.getTabs().forEach(v -> {
+			if (v instanceof AbstractCodeContentPanel) {
+				AbstractCodeArea area = ((AbstractCodeContentPanel) v).getCodeArea();
+				if (area != null) {
+					area.updateBookmarkIcons();
+				}
+				if (v instanceof ClassCodeContentPanel) {
+					area = ((ClassCodeContentPanel) v).getSmaliCodeArea();
+					if (area != null) {
+						area.updateBookmarkIcons();
+					}
+				}
+			}
+		});
+	}
+
+	public JClass searchClassByName(String fullClassName) {
+		return searchJClassInNode(treeRoot, fullClassName);
+	}
+
+	@SuppressWarnings("unchecked")
+	private JClass searchJClassInNode(JNode node, String fullClassName) {
+		if (node instanceof JClass) {
+			JClass jClass = (JClass) node;
+			if (jClass.getFullName().equals(fullClassName)) {
+				return jClass;
+			}
+		}
+		java.util.Enumeration<?> children = node.children();
+		while (children.hasMoreElements()) {
+			Object child = children.nextElement();
+			if (child instanceof JNode) {
+				JClass found = searchJClassInNode((JNode) child, fullClassName);
+				if (found != null) {
+					return found;
+				}
+			}
+		}
+		return null;
 	}
 
 	public void passesReloaded() {
@@ -1364,6 +1466,7 @@ public class MainWindow extends JFrame {
 		view.add(treePresetsItem);
 
 		JadxGuiAction goToLineAction = new JadxGuiAction(ActionModel.GO_TO_LINE, this::goToLine);
+		JadxGuiAction showBookmarksAction = new JadxGuiAction(ActionModel.SHOW_BOOKMARKS, () -> new BookmarkManagerDialog(this).setVisible(true));
 		JMenu nav = new JadxMenu(NLS.str("menu.navigation"), shortcutsController);
 		nav.setMnemonic(KeyEvent.VK_N);
 		nav.add(textSearchAction);
@@ -1377,6 +1480,7 @@ public class MainWindow extends JFrame {
 		nav.add(forwardAction);
 		nav.addSeparator();
 		nav.add(goToLineAction);
+		nav.add(showBookmarksAction);
 
 		pluginsMenu = new JadxMenu(NLS.str("menu.plugins"), shortcutsController);
 		pluginsMenu.setMnemonic(KeyEvent.VK_P);

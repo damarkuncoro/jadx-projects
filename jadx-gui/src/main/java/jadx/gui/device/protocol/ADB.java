@@ -47,7 +47,8 @@ public class ADB {
 			return true;
 		}
 		if (Arrays.equals(buf, FAIL)) {
-			// Observed that after FAIL the length in hex follows and afterwards an error message,
+			// Observed that after FAIL the length in hex follows and afterwards an error
+			// message,
 			// but it is unclear if this is true for all cases where isOkay is used.
 			// int msgLen = Integer.parseInt(new String(IOUtils.readNBytes(stream, 4)), 16);
 			// byte[] errorMsg = IOUtils.readNBytes(stream, msgLen);
@@ -84,7 +85,8 @@ public class ADB {
 		return isOkay(inputStream, "execCommandAsync");
 	}
 
-	private static byte[] execCommandSync(OutputStream outputStream, InputStream inputStream, String cmd) throws IOException {
+	private static byte[] execCommandSync(OutputStream outputStream, InputStream inputStream, String cmd)
+			throws IOException {
 		outputStream.write(cmd.getBytes(ADB_CHARSET));
 		if (isOkay(inputStream, "execCommandSync")) {
 			return readServiceProtocol(inputStream);
@@ -125,7 +127,8 @@ public class ADB {
 		outputStream.write(setSerialCmd.getBytes(ADB_CHARSET));
 		boolean ok = isOkay(inputStream, setSerialCmd);
 		if (ok) {
-			// skip the shell-state-id returned by ADB server, it's not important for the following actions.
+			// skip the shell-state-id returned by ADB server, it's not important for the
+			// following actions.
 			inputStream.readNBytes(8);
 		} else {
 			LOG.error("setSerial command {} failed", LogUtils.escape(setSerialCmd));
@@ -133,7 +136,8 @@ public class ADB {
 		return ok;
 	}
 
-	private static byte[] execShellCommandRaw(String cmd, OutputStream outputStream, InputStream inputStream) throws IOException {
+	private static byte[] execShellCommandRaw(String cmd, OutputStream outputStream, InputStream inputStream)
+			throws IOException {
 		cmd = String.format("shell,v2,TERM=xterm-256color,raw:%s", cmd);
 		cmd = String.format("%04x%s", cmd.length(), cmd);
 		outputStream.write(cmd.getBytes(ADB_CHARSET));
@@ -143,7 +147,8 @@ public class ADB {
 		return null;
 	}
 
-	static byte[] execShellCommandRaw(String serial, String cmd, OutputStream outputStream, InputStream inputStream) throws IOException {
+	static byte[] execShellCommandRaw(String serial, String cmd, OutputStream outputStream, InputStream inputStream)
+			throws IOException {
 		if (setSerial(serial, outputStream, inputStream)) {
 			return execShellCommandRaw(cmd, outputStream, inputStream);
 		}
@@ -167,7 +172,8 @@ public class ADB {
 		boolean exited;
 		int exitCode;
 		try {
-			// Wait for the adb server to start. On Windows even on a fast system 6 seconds are not unusual.
+			// Wait for the adb server to start. On Windows even on a fast system 6 seconds
+			// are not unusual.
 			exited = proc.waitFor(10, TimeUnit.SECONDS);
 			exitCode = exited ? proc.exitValue() : -1;
 		} catch (Exception e) {
@@ -280,13 +286,6 @@ public class ADB {
 		return result;
 	}
 
-	private static byte[] appendBytes(byte[] dest, byte[] src, int realSrcSize) {
-		byte[] rst = new byte[dest.length + realSrcSize];
-		System.arraycopy(dest, 0, rst, 0, dest.length);
-		System.arraycopy(src, 0, rst, dest.length, realSrcSize);
-		return rst;
-	}
-
 	private static final Pattern SERIAL_PATTERN = Pattern.compile("^[\\w-]{10,20}$");
 
 	private static void checkSerial(String serial) {
@@ -386,6 +385,7 @@ public class ADB {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private static class ShellProtocol {
 		private static final int ID_STD_IN = 0;
 		private static final int ID_STD_OUT = 1;

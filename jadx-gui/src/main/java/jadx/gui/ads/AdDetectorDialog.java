@@ -31,6 +31,7 @@ public class AdDetectorDialog extends JDialog {
 		this.mainWindow = mainWindow;
 		initUI();
 		UiUtils.addEscapeShortCutToDispose(this);
+		SwingUtilities.invokeLater(this::scanForAds);
 	}
 
 	private void initUI() {
@@ -150,34 +151,6 @@ public class AdDetectorDialog extends JDialog {
 	}
 
 	private JClass findJClassByName(String fullClassName) {
-		// Iterate all nodes in MainWindow's tree to find JClass with matching fullName
-		return searchMainWindowTree(fullClassName);
-	}
-
-	private JClass searchMainWindowTree(String fullClassName) {
-		// Get the root node from MainWindow
-		JNode rootNode = mainWindow.getTreeRoot();
-		return searchJClassInNode(rootNode, fullClassName);
-	}
-
-	@SuppressWarnings("unchecked")
-	private JClass searchJClassInNode(JNode node, String fullClassName) {
-		if (node instanceof JClass) {
-			JClass jClass = (JClass) node;
-			if (jClass.getFullName().equals(fullClassName)) {
-				return jClass;
-			}
-		}
-		Enumeration<?> children = node.children();
-		while (children.hasMoreElements()) {
-			Object child = children.nextElement();
-			if (child instanceof JNode) {
-				JClass found = searchJClassInNode((JNode) child, fullClassName);
-				if (found != null) {
-					return found;
-				}
-			}
-		}
-		return null;
+		return mainWindow.searchClassByName(fullClassName);
 	}
 }

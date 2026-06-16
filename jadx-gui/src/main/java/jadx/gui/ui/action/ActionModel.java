@@ -112,6 +112,10 @@ public enum ActionModel {
 			Shortcut.none()),
 	GO_TO_LINE(MENU_TOOLBAR, "menu.go_to_line", "menu.go_to_line", null,
 			Shortcut.keyboard(KeyEvent.VK_G, UiUtils.ctrlButton())),
+	TOGGLE_BOOKMARK(CODE_AREA, "popup.toggle_bookmark", "popup.toggle_bookmark", null,
+			Shortcut.keyboard(KeyEvent.VK_F2, InputEvent.CTRL_DOWN_MASK)),
+	SHOW_BOOKMARKS(MENU_TOOLBAR, "menu.bookmarks", "menu.bookmarks", null,
+			Shortcut.keyboard(KeyEvent.VK_B, UiUtils.ctrlButton() | KeyEvent.SHIFT_DOWN_MASK)),
 
 	SCRIPT_RUN(PLUGIN_SCRIPT, "script.run", "script.run", "ui/run",
 			Shortcut.keyboard(KeyEvent.VK_F8)),

@@ -25,6 +25,7 @@ public class ProjectData {
 	private List<String> searchHistory = new ArrayList<>();
 	private String searchResourcesFilter = ResourceFilter.DEFAULT_STR;
 	private int searchResourcesSizeLimit = 0; // in MB
+	private List<Bookmark> bookmarks = new ArrayList<>();
 
 	protected Map<String, String> pluginOptions = new HashMap<>();
 
@@ -123,5 +124,13 @@ public class ProjectData {
 
 	public Map<String, String> getPluginOptions() {
 		return pluginOptions;
+	}
+
+	public List<Bookmark> getBookmarks() {
+		return bookmarks;
+	}
+
+	public void setBookmarks(List<Bookmark> bookmarks) {
+		this.bookmarks = Objects.requireNonNull(bookmarks);
 	}
 }
