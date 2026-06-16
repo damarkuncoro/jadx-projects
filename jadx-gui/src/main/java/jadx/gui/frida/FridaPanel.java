@@ -522,11 +522,94 @@ public class FridaPanel extends JPanel {
 		}
 	}
 
+	private void autoStartFridaServer() {
+		try {
+			appendLog("[INFO] Checking connected devices for running frida-server...");
+			String host = settings.getAdbDialogHost();
+			if (host == null || host.isEmpty()) {
+				host = "localhost";
+			}
+			int port = 5037;
+			try {
+				port = Integer.parseInt(settings.getAdbDialogPort());
+			} catch (Exception ex) {
+				// use default
+			}
+
+			List<jadx.gui.device.protocol.ADBDevice> devices = jadx.gui.device.protocol.AdbService.listDevices(host, port);
+			if (devices.isEmpty()) {
+				appendLog("[WARN] No connected Android devices detected via ADB.");
+				return;
+			}
+
+			for (jadx.gui.device.protocol.ADBDevice device : devices) {
+				String serial = device.getSerial();
+				appendLog("[INFO] Inspecting device: " + serial);
+
+				String pgrepResult = "";
+				try {
+					pgrepResult = jadx.gui.device.protocol.AdbService.execShell(device, "pgrep -f frida-server");
+				} catch (Exception ex) {
+					// pgrep might not be available or fails if not running
+				}
+
+				if (pgrepResult != null && !pgrepResult.trim().isEmpty()) {
+					appendLog("[INFO] frida-server is already running on device " + serial + " (PID: " + pgrepResult.trim() + ")");
+					continue;
+				}
+
+				String filesList = "";
+				try {
+					filesList = jadx.gui.device.protocol.AdbService.execShell(device, "ls /data/local/tmp");
+				} catch (Exception ex) {
+					appendLog("[WARN] Could not access /data/local/tmp on device " + serial);
+					continue;
+				}
+
+				String fridaBinary = null;
+				if (filesList != null) {
+					for (String file : filesList.split("\n")) {
+						file = file.trim();
+						if (file.contains("frida-server")) {
+							fridaBinary = file;
+							break;
+						}
+					}
+				}
+
+				if (fridaBinary != null) {
+					appendLog("[INFO] Found frida-server binary on device: /data/local/tmp/" + fridaBinary);
+					appendLog("[INFO] Attempting to start frida-server as root...");
+					
+					try {
+						jadx.gui.device.protocol.AdbService.execShell(device, "su -c 'chmod 755 /data/local/tmp/" + fridaBinary + "'");
+					} catch (Exception ex) {
+						// ignore if already executable
+					}
+
+					try {
+						jadx.gui.device.protocol.AdbService.execShell(device, "su -c '/data/local/tmp/" + fridaBinary + " > /dev/null 2>&1 &'");
+						Thread.sleep(1000);
+						appendLog("[INFO] Started frida-server on device " + serial);
+					} catch (Exception ex) {
+						appendLog("[ERROR] Failed to execute frida-server launch command on device " + serial + ": " + ex.getMessage());
+					}
+				} else {
+					appendLog("[WARN] frida-server binary not found in /data/local/tmp on device " + serial);
+				}
+			}
+		} catch (Exception e) {
+			LOG.error("Failed to automatically start frida-server", e);
+			appendLog("[WARN] Automated frida-server check/start encountered an error: " + e.getMessage());
+		}
+	}
+
 	private void runFridaScript(String target, String script) {
 		runButton.setEnabled(false);
 
 		new Thread(() -> {
 			try {
+				autoStartFridaServer();
 				processExecutor.execute(target, script, this::appendLog);
 			} catch (Exception e) {
 				LOG.error("Failed to run Frida script", e);
