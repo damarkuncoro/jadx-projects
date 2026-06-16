@@ -22,12 +22,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JavaMethod;
+import jadx.api.ResourceFile;
+import jadx.api.ResourceType;
+import jadx.api.JavaClass;
 import jadx.frida.*;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.action.JadxAutoCompletion;
-import jadx.gui.utils.BuildStackDetector;
-import jadx.gui.utils.BuildStackDetector.BuildStackInfo;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FridaPanel extends JPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(FridaPanel.class);
@@ -431,6 +434,53 @@ public class FridaPanel extends JPanel {
 		}
 	}
 
+	private String resolveTargetPackage() {
+		try {
+			String pkg = mainWindow.getWrapper().getDecompiler().getRoot().getAppPackage();
+			if (pkg != null && !pkg.trim().isEmpty()) {
+				LOG.info("[FridaPanel] Resolved target package from root appPackage: {}", pkg);
+				return pkg.trim();
+			}
+		} catch (Exception ex) {
+			LOG.warn("[FridaPanel] Failed to get appPackage from root", ex);
+		}
+
+		try {
+			List<ResourceFile> resources = mainWindow.getWrapper().getDecompiler().getResources();
+			for (ResourceFile rf : resources) {
+				if (rf.getType() == ResourceType.MANIFEST) {
+					String content = rf.loadContent().getText().getCodeStr();
+					Pattern pattern = Pattern.compile("package\\s*=\\s*\"([^\"]+)\"");
+					Matcher matcher = pattern.matcher(content);
+					if (matcher.find()) {
+						String pkg = matcher.group(1).trim();
+						LOG.info("[FridaPanel] Resolved target package from AndroidManifest: {}", pkg);
+						return pkg;
+					}
+				}
+			}
+		} catch (Exception ex) {
+			LOG.warn("[FridaPanel] Failed to parse AndroidManifest.xml for package name", ex);
+		}
+
+		try {
+			List<JavaClass> classes = mainWindow.getWrapper().getClasses();
+			if (!classes.isEmpty()) {
+				String firstClassPkg = classes.get(0).getFullName();
+				int lastDot = firstClassPkg.lastIndexOf('.');
+				if (lastDot != -1) {
+					String pkg = firstClassPkg.substring(0, lastDot);
+					LOG.info("[FridaPanel] Resolved target package fallback from first class: {}", pkg);
+					return pkg;
+				}
+			}
+		} catch (Exception ex) {
+			LOG.warn("[FridaPanel] Failed to get fallback package from classes", ex);
+		}
+
+		return "";
+	}
+
 	private void onRunButtonClicked(ActionEvent e) {
 		String script = scriptTextArea.getText().trim();
 		if (script.isEmpty()) {
@@ -441,19 +491,7 @@ public class FridaPanel extends JPanel {
 			return;
 		}
 
-		String target = "";
-		try {
-			BuildStackInfo buildStack = BuildStackDetector.analyzeLoadedProject(
-					mainWindow.getWrapper().getResources(),
-					mainWindow.getWrapper().getRootNode().getClasses(true)
-			);
-			String pkg = buildStack.getManifest().get("package");
-			if (pkg != null) {
-				target = pkg.trim();
-			}
-		} catch (Exception ex) {
-			// ignore
-		}
+		String target = resolveTargetPackage();
 
 		if (target.isEmpty()) {
 			target = JOptionPane.showInputDialog(this,
