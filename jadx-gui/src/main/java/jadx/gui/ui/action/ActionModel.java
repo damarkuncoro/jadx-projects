@@ -110,6 +110,8 @@ public enum ActionModel {
 			Shortcut.keyboard(KeyEvent.VK_R)),
 	JSON_PRETTIFY(CODE_AREA, "popup.json_prettify", "popup.json_prettify", null,
 			Shortcut.none()),
+	GO_TO_LINE(MENU_TOOLBAR, "menu.go_to_line", "menu.go_to_line", null,
+			Shortcut.keyboard(KeyEvent.VK_G, UiUtils.ctrlButton())),
 
 	SCRIPT_RUN(PLUGIN_SCRIPT, "script.run", "script.run", "ui/run",
 			Shortcut.keyboard(KeyEvent.VK_F8)),

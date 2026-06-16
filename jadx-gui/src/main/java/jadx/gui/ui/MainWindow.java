@@ -57,6 +57,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeWillExpandListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -1103,6 +1104,67 @@ public class MainWindow extends JFrame {
 		}
 	}
 
+	public void goToLine() {
+		// Get the active code area
+		Component activeComponent = getFocusOwner();
+		if (!(activeComponent instanceof AbstractCodeArea)) {
+			// If not directly, check if the tab has a code area
+			ContentPanel contentPanel = tabbedPane.getSelectedContentPanel();
+			if (contentPanel instanceof AbstractCodeContentPanel) {
+				activeComponent = ((AbstractCodeContentPanel) contentPanel).getCodeArea();
+			}
+			if (!(activeComponent instanceof AbstractCodeArea)) {
+				return;
+			}
+		}
+
+		AbstractCodeArea codeArea = (AbstractCodeArea) activeComponent;
+
+		// Show dialog to ask for line number
+		String input = JOptionPane.showInputDialog(this,
+				NLS.str("goto.line_prompt"),
+				NLS.str("goto.line_title"),
+				JOptionPane.QUESTION_MESSAGE);
+
+		if (input == null) {
+			return; // user canceled
+		}
+
+		try {
+			int lineNumber = Integer.parseInt(input.trim());
+			if (lineNumber < 1) {
+				JOptionPane.showMessageDialog(this,
+						NLS.str("goto.line_invalid_min"),
+						NLS.str("goto.error_title"),
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			int maxLine = codeArea.getLineCount();
+			if (lineNumber > maxLine) {
+				JOptionPane.showMessageDialog(this,
+						NLS.str("goto.line_invalid_max", maxLine),
+						NLS.str("goto.error_title"),
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			// Go to the line (convert to 0-indexed)
+			int lineIndex = lineNumber - 1;
+			int startOffset = codeArea.getLineStartOffset(lineIndex);
+			codeArea.setCaretPosition(startOffset);
+			codeArea.moveCaretPosition(codeArea.getLineEndOffset(lineIndex));
+
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this,
+					NLS.str("goto.line_invalid_number"),
+					NLS.str("goto.error_title"),
+					JOptionPane.ERROR_MESSAGE);
+		} catch (BadLocationException ex) {
+			// should not happen as we checked line number range
+		}
+	}
+
 	public void goToApplication() {
 		AndroidManifestParser parser = new AndroidManifestParser(
 				AndroidManifestParser.getAndroidManifest(getWrapper().getResources()),
@@ -1300,6 +1362,7 @@ public class MainWindow extends JFrame {
 		treePresetsItem.addActionListener(e -> new TreePresetManagerDialog(this, treeExpansionService).setVisible(true));
 		view.add(treePresetsItem);
 
+		JadxGuiAction goToLineAction = new JadxGuiAction(ActionModel.GO_TO_LINE, this::goToLine);
 		JMenu nav = new JadxMenu(NLS.str("menu.navigation"), shortcutsController);
 		nav.setMnemonic(KeyEvent.VK_N);
 		nav.add(textSearchAction);
@@ -1311,6 +1374,8 @@ public class MainWindow extends JFrame {
 		nav.addSeparator();
 		nav.add(backAction);
 		nav.add(forwardAction);
+		nav.addSeparator();
+		nav.add(goToLineAction);
 
 		pluginsMenu = new JadxMenu(NLS.str("menu.plugins"), shortcutsController);
 		pluginsMenu.setMnemonic(KeyEvent.VK_P);
