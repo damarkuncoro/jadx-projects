@@ -2,14 +2,20 @@ package jadx.gui.ads;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import jadx.api.JadxDecompiler;
+import jadx.gui.treemodel.JClass;
+import jadx.gui.treemodel.JNode;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.utils.UiUtils;
 
@@ -43,11 +49,24 @@ public class AdDetectorDialog extends JDialog {
 		JScrollPane treeScroll = new JScrollPane(resultTree);
 		panel.add(treeScroll, BorderLayout.CENTER);
 
+		// Add double-click listener for tree
+		resultTree.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					jumpToSelectedClass();
+				}
+			}
+		});
+
 		// Buttons
 		JPanel buttonPanel = new JPanel(new BorderLayout(10, 10));
 		JButton scanButton = new JButton("Scan for Ads");
 		scanButton.addActionListener(e -> scanForAds());
 		buttonPanel.add(scanButton, BorderLayout.WEST);
+		JButton jumpButton = new JButton("Jump to Selected Class");
+		jumpButton.addActionListener(e -> jumpToSelectedClass());
+		buttonPanel.add(jumpButton, BorderLayout.CENTER);
 		JButton closeButton = new JButton("Close");
 		closeButton.addActionListener(e -> dispose());
 		buttonPanel.add(closeButton, BorderLayout.EAST);
@@ -93,5 +112,72 @@ public class AdDetectorDialog extends JDialog {
 		for (int i = 0; i < resultTree.getRowCount(); i++) {
 			resultTree.expandRow(i);
 		}
+	}
+
+	private void jumpToSelectedClass() {
+		TreePath selectedPath = resultTree.getSelectionPath();
+		if (selectedPath == null) {
+			return;
+		}
+
+		DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+		Object userObject = selectedNode.getUserObject();
+
+		if (!(userObject instanceof String)) {
+			return;
+		}
+
+		String selectedText = (String) userObject;
+		// Check if selected text looks like a class name (contains dots, not a header)
+		if (!selectedText.contains(".")
+				|| selectedText.startsWith("Packages")
+				|| selectedText.startsWith("Classes")
+				|| selectedText.startsWith("Detected Ad Networks")) {
+			return;
+		}
+
+		// Try to find the class in the tree
+		JClass jClass = findJClassByName(selectedText);
+		if (jClass != null) {
+			dispose();
+			mainWindow.getTabsController().codeJump(jClass);
+		} else {
+			JOptionPane.showMessageDialog(this,
+					"Class not found in current project: " + selectedText,
+					"Class Not Found",
+					JOptionPane.WARNING_MESSAGE);
+		}
+	}
+
+	private JClass findJClassByName(String fullClassName) {
+		// Iterate all nodes in MainWindow's tree to find JClass with matching fullName
+		return searchMainWindowTree(fullClassName);
+	}
+
+	private JClass searchMainWindowTree(String fullClassName) {
+		// Get the root node from MainWindow
+		JNode rootNode = mainWindow.getTreeRoot();
+		return searchJClassInNode(rootNode, fullClassName);
+	}
+
+	@SuppressWarnings("unchecked")
+	private JClass searchJClassInNode(JNode node, String fullClassName) {
+		if (node instanceof JClass) {
+			JClass jClass = (JClass) node;
+			if (jClass.getFullName().equals(fullClassName)) {
+				return jClass;
+			}
+		}
+		Enumeration<?> children = node.children();
+		while (children.hasMoreElements()) {
+			Object child = children.nextElement();
+			if (child instanceof JNode) {
+				JClass found = searchJClassInNode((JNode) child, fullClassName);
+				if (found != null) {
+					return found;
+				}
+			}
+		}
+		return null;
 	}
 }
