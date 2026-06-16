@@ -16,6 +16,7 @@ import com.google.gson.annotations.SerializedName;
 import jadx.cli.LogHelper;
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
+import jadx.gui.frida.CustomFridaSnippet;
 import jadx.gui.settings.data.SaveOptionEnum;
 import jadx.gui.ui.action.ActionModel;
 import jadx.gui.ui.tab.dnd.TabDndGhostType;
@@ -491,6 +492,16 @@ public class JadxSettingsData extends JadxGUIArgs {
 
 	public void setXposedCodegenLanguage(XposedCodegenLanguage xposedCodegenLanguage) {
 		this.xposedCodegenLanguage = xposedCodegenLanguage;
+	}
+
+	private List<CustomFridaSnippet> customFridaSnippets = new ArrayList<>();
+
+	public List<CustomFridaSnippet> getCustomFridaSnippets() {
+		return customFridaSnippets;
+	}
+
+	public void setCustomFridaSnippets(List<CustomFridaSnippet> customFridaSnippets) {
+		this.customFridaSnippets = customFridaSnippets;
 	}
 
 }

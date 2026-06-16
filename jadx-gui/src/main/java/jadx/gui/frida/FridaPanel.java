@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import jadx.api.JavaMethod;
 import jadx.frida.*;
+import jadx.gui.settings.JadxSettings;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.action.JadxAutoCompletion;
 
@@ -28,6 +31,7 @@ public class FridaPanel extends JPanel {
 	private static final String SELECT_SNIPPET_TEXT = "Select a snippet...";
 
 	private final MainWindow mainWindow;
+	private final JadxSettings settings;
 	private final IFridaProcessExecutor processExecutor;
 	private final IFridaScriptGenerator scriptGenerator;
 	private final FridaSnippetRegistry snippetRegistry;
@@ -39,10 +43,12 @@ public class FridaPanel extends JPanel {
 
 	public FridaPanel(MainWindow mainWindow) {
 		this.mainWindow = mainWindow;
+		this.settings = mainWindow.getSettings();
 		this.processExecutor = new FridaProcessExecutor();
 		this.scriptGenerator = new FridaScriptGenerator();
 		this.snippetRegistry = new FridaSnippetRegistry();
 		this.snippetRegistry.registerDefaultSnippets();
+		loadCustomSnippets();
 		initUI();
 	}
 
@@ -73,12 +79,13 @@ public class FridaPanel extends JPanel {
 		snippetsPanel.add(snippetsLabel, BorderLayout.WEST);
 
 		snippetsComboBox = new JComboBox<>();
-		snippetsComboBox.addItem(SELECT_SNIPPET_TEXT);
-		for (IFridaSnippet snippet : snippetRegistry.getAllSnippets()) {
-			snippetsComboBox.addItem(snippet.getDisplayName());
-		}
+		refreshSnippetsComboBox();
 		snippetsComboBox.addActionListener(this::onSnippetSelected);
 		snippetsPanel.add(snippetsComboBox, BorderLayout.CENTER);
+
+		JButton addSnippetButton = new JButton("Add Custom Snippet");
+		addSnippetButton.addActionListener(this::onAddSnippetButtonClicked);
+		snippetsPanel.add(addSnippetButton, BorderLayout.EAST);
 
 		topPanel.add(snippetsPanel, BorderLayout.SOUTH);
 		scriptPanel.add(topPanel, BorderLayout.NORTH);
@@ -118,6 +125,61 @@ public class FridaPanel extends JPanel {
 		scriptPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		return scriptPanel;
+	}
+
+	private void refreshSnippetsComboBox() {
+		snippetsComboBox.removeAllItems();
+		snippetsComboBox.addItem(SELECT_SNIPPET_TEXT);
+		for (IFridaSnippet snippet : snippetRegistry.getAllSnippets()) {
+			snippetsComboBox.addItem(snippet.getDisplayName());
+		}
+	}
+
+	private void loadCustomSnippets() {
+		List<CustomFridaSnippet> customSnippets = settings.getCustomFridaSnippets();
+		for (CustomFridaSnippet custom : customSnippets) {
+			IFridaSnippet snippet = new IFridaSnippet() {
+				@Override
+				public String getDisplayName() {
+					return custom.getName();
+				}
+
+				@Override
+				public String getScript() {
+					return custom.getScript();
+				}
+			};
+			snippetRegistry.registerSnippet(snippet);
+		}
+	}
+
+	private void onAddSnippetButtonClicked(ActionEvent e) {
+		AddSnippetDialog dialog = new AddSnippetDialog(mainWindow);
+		dialog.setVisible(true);
+		if (dialog.isConfirmed()) {
+			String name = dialog.getSnippetName();
+			String script = dialog.getSnippetScript();
+
+			IFridaSnippet newSnippet = new IFridaSnippet() {
+				@Override
+				public String getDisplayName() {
+					return name;
+				}
+
+				@Override
+				public String getScript() {
+					return script;
+				}
+			};
+			snippetRegistry.registerSnippet(newSnippet);
+
+			List<CustomFridaSnippet> customSnippets = new ArrayList<>(settings.getCustomFridaSnippets());
+			customSnippets.add(new CustomFridaSnippet(name, script));
+			settings.setCustomFridaSnippets(customSnippets);
+
+			refreshSnippetsComboBox();
+			appendLog("[INFO] Added custom snippet: " + name);
+		}
 	}
 
 	private JPanel createLogPanel() {

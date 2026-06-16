@@ -34,6 +34,7 @@ import jadx.cli.config.JadxConfigExclude;
 import jadx.core.utils.GsonUtils;
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
+import jadx.gui.frida.CustomFridaSnippet;
 import jadx.gui.settings.data.SaveOptionEnum;
 import jadx.gui.settings.data.ShortcutsWrapper;
 import jadx.gui.settings.font.FontSettings;
@@ -894,6 +895,14 @@ public class JadxSettings {
 
 	public int getThreadsCount() {
 		return settingsData.getThreadsCount();
+	}
+
+	public List<CustomFridaSnippet> getCustomFridaSnippets() {
+		return settingsData.getCustomFridaSnippets();
+	}
+
+	public void setCustomFridaSnippets(List<CustomFridaSnippet> customFridaSnippets) {
+		settingsData.setCustomFridaSnippets(customFridaSnippets);
 	}
 
 	public void setThreadsCount(int threadsCount) {
