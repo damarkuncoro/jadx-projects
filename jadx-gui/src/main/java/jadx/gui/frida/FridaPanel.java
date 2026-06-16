@@ -1,4 +1,6 @@
 package jadx.gui.frida;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -522,6 +524,125 @@ public class FridaPanel extends JPanel {
 		}
 	}
 
+	private String getLocalFridaVersion() {
+		try {
+			Process process = Runtime.getRuntime().exec(new String[]{"frida", "--version"});
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+				String line = reader.readLine();
+				if (line != null) {
+					return line.trim();
+				}
+			}
+		} catch (Exception e) {
+			LOG.error("Failed to detect local frida version", e);
+		}
+		return "17.12.0"; // default fallback matching user's log
+	}
+
+	private String mapAbiToFridaArch(String abi) {
+		if (abi == null) {
+			return "arm64";
+		}
+		abi = abi.toLowerCase();
+		if (abi.contains("arm64") || abi.contains("aarch64")) {
+			return "arm64";
+		} else if (abi.contains("arm") || abi.contains("abi")) {
+			return "arm";
+		} else if (abi.contains("x86_64") || abi.contains("amd64")) {
+			return "x86_64";
+		} else if (abi.contains("x86") || abi.contains("i386") || abi.contains("i686")) {
+			return "x86";
+		}
+		return "arm64"; // fallback
+	}
+
+	private String downloadAndPushFridaServer(jadx.gui.device.protocol.ADBDevice device) {
+		try {
+			String abi = jadx.gui.device.protocol.AdbService.execShell(device, "getprop ro.product.cpu.abi").trim();
+			String arch = mapAbiToFridaArch(abi);
+			String version = getLocalFridaVersion();
+			
+			String binaryName = "frida-server-" + version;
+			File localDir = new File(System.getProperty("user.home"), ".jadx/frida");
+			if (!localDir.exists()) {
+				localDir.mkdirs();
+			}
+			File localBinary = new File(localDir, binaryName + "-android-" + arch);
+			
+			if (!localBinary.exists()) {
+				appendLog("[INFO] Downloading frida-server " + version + " for " + arch + "...");
+				String downloadUrl = "https://github.com/frida/frida/releases/download/" + version + "/frida-server-" + version + "-android-" + arch + ".xz";
+				File tempXz = File.createTempFile("frida_server_", ".xz");
+				
+				// Select Python 3 binary
+				String pythonBin = new File("/usr/bin/python3").exists() ? "/usr/bin/python3" : "python3";
+				
+				String pyCmd = "import urllib.request, lzma; urllib.request.urlretrieve('" + downloadUrl + "', '" + tempXz.getAbsolutePath() + "'); " +
+							   "open('" + localBinary.getAbsolutePath() + "', 'wb').write(lzma.open('" + tempXz.getAbsolutePath() + "').read())";
+				
+				Process process = Runtime.getRuntime().exec(new String[]{pythonBin, "-c", pyCmd});
+				int exitCode = process.waitFor();
+				tempXz.delete();
+				
+				if (exitCode != 0) {
+					throw new IOException("Python download process exited with code " + exitCode);
+				}
+				appendLog("[INFO] Successfully downloaded frida-server binary to host: " + localBinary.getAbsolutePath());
+			}
+
+			// Push to device
+			appendLog("[INFO] Pushing frida-server to /data/local/tmp/" + binaryName + "...");
+			String adbPath = jadx.gui.device.protocol.AdbService.detectAdbPath();
+			Process pushProcess = Runtime.getRuntime().exec(new String[]{
+				adbPath, "-s", device.getSerial(), "push", localBinary.getAbsolutePath(), "/data/local/tmp/" + binaryName
+			});
+			int pushExit = pushProcess.waitFor();
+			if (pushExit != 0) {
+				throw new IOException("ADB push failed with exit code " + pushExit);
+			}
+			appendLog("[INFO] Successfully pushed frida-server to device.");
+			return binaryName;
+		} catch (Exception e) {
+			LOG.error("Failed to download and push frida-server", e);
+			appendLog("[ERROR] Failed to download and push frida-server: " + e.getMessage());
+			return null;
+		}
+	}
+
+	private void downloadFridaGadget(String arch, String version) {
+		try {
+			File gadgetDir = new File(System.getProperty("user.home"), ".cache/frida");
+			if (!gadgetDir.exists()) {
+				gadgetDir.mkdirs();
+			}
+			File gadgetFile = new File(gadgetDir, "gadget-android-" + arch + ".so");
+			if (gadgetFile.exists()) {
+				return;
+			}
+			
+			appendLog("[INFO] Downloading frida-gadget " + version + " for " + arch + "...");
+			String downloadUrl = "https://github.com/frida/frida/releases/download/" + version + "/frida-gadget-" + version + "-android-" + arch + ".so.xz";
+			File tempXz = File.createTempFile("frida_gadget_", ".xz");
+			
+			String pythonBin = new File("/usr/bin/python3").exists() ? "/usr/bin/python3" : "python3";
+			
+			String pyCmd = "import urllib.request, lzma; urllib.request.urlretrieve('" + downloadUrl + "', '" + tempXz.getAbsolutePath() + "'); " +
+						   "open('" + gadgetFile.getAbsolutePath() + "', 'wb').write(lzma.open('" + tempXz.getAbsolutePath() + "').read())";
+			
+			Process process = Runtime.getRuntime().exec(new String[]{pythonBin, "-c", pyCmd});
+			int exitCode = process.waitFor();
+			tempXz.delete();
+			
+			if (exitCode != 0) {
+				throw new IOException("Python download process exited with code " + exitCode);
+			}
+			appendLog("[INFO] Successfully downloaded frida-gadget to: " + gadgetFile.getAbsolutePath());
+		} catch (Exception e) {
+			LOG.error("Failed to download frida-gadget", e);
+			appendLog("[ERROR] Failed to download frida-gadget: " + e.getMessage());
+		}
+	}
+
 	private void autoStartFridaServer() {
 		try {
 			appendLog("[INFO] Checking connected devices for running frida-server...");
@@ -546,6 +667,30 @@ public class FridaPanel extends JPanel {
 				String serial = device.getSerial();
 				appendLog("[INFO] Inspecting device: " + serial);
 
+				// Determine device architecture & local Frida version
+				String abi = jadx.gui.device.protocol.AdbService.execShell(device, "getprop ro.product.cpu.abi").trim();
+				String arch = mapAbiToFridaArch(abi);
+				String version = getLocalFridaVersion();
+
+				// Check if the device is rooted
+				boolean isRooted = false;
+				try {
+					String suTest = jadx.gui.device.protocol.AdbService.execShell(device, "which su");
+					if (suTest != null && suTest.contains("su")) {
+						isRooted = true;
+					}
+				} catch (Exception ex) {
+					// su not found or exec fails
+				}
+
+				if (!isRooted) {
+					appendLog("[WARN] Device " + serial + " is not rooted. Automated frida-server startup is not supported on jailed devices.");
+					appendLog("[INFO] Preparing Frida Gadget fallback on the host...");
+					downloadFridaGadget(arch, version);
+					continue;
+				}
+
+				// Device is rooted. Check if frida-server is already running
 				String pgrepResult = "";
 				try {
 					pgrepResult = jadx.gui.device.protocol.AdbService.execShell(device, "pgrep -f frida-server");
@@ -558,6 +703,7 @@ public class FridaPanel extends JPanel {
 					continue;
 				}
 
+				// Look for a frida-server binary in /data/local/tmp
 				String filesList = "";
 				try {
 					filesList = jadx.gui.device.protocol.AdbService.execShell(device, "ls /data/local/tmp");
@@ -575,6 +721,11 @@ public class FridaPanel extends JPanel {
 							break;
 						}
 					}
+				}
+
+				if (fridaBinary == null) {
+					appendLog("[INFO] frida-server binary not found on device " + serial + ". Downloading matching binary...");
+					fridaBinary = downloadAndPushFridaServer(device);
 				}
 
 				if (fridaBinary != null) {
@@ -595,7 +746,7 @@ public class FridaPanel extends JPanel {
 						appendLog("[ERROR] Failed to execute frida-server launch command on device " + serial + ": " + ex.getMessage());
 					}
 				} else {
-					appendLog("[WARN] frida-server binary not found in /data/local/tmp on device " + serial);
+					appendLog("[WARN] Failed to setup frida-server binary in /data/local/tmp on device " + serial);
 				}
 			}
 		} catch (Exception e) {
