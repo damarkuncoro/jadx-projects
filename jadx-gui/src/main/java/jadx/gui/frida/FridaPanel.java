@@ -643,6 +643,459 @@ public class FridaPanel extends JPanel {
 		}
 	}
 
+	private String findApktoolPath() {
+		File optHb = new File("/opt/homebrew/bin/apktool");
+		if (optHb.exists()) return optHb.getAbsolutePath();
+		File usrLoc = new File("/usr/local/bin/apktool");
+		if (usrLoc.exists()) return usrLoc.getAbsolutePath();
+		return "apktool";
+	}
+
+	private String findBuildToolsBinary(String binaryName) {
+		File buildToolsDir = new File(System.getProperty("user.home"), "Library/Android/sdk/build-tools");
+		if (buildToolsDir.exists()) {
+			File[] versions = buildToolsDir.listFiles(File::isDirectory);
+			if (versions != null && versions.length > 0) {
+				java.util.Arrays.sort(versions, (a, b) -> b.getName().compareTo(a.getName()));
+				File binary = new File(versions[0], binaryName);
+				if (binary.exists()) {
+					return binary.getAbsolutePath();
+				}
+			}
+		}
+		return binaryName;
+	}
+
+	private String getFullyQualifiedClassName(org.w3c.dom.Document doc, String className) {
+		if (className == null || className.isEmpty()) {
+			return className;
+		}
+		if (className.contains(".") && !className.startsWith(".")) {
+			return className;
+		}
+		String pkg = doc.getDocumentElement().getAttribute("package");
+		if (pkg == null || pkg.isEmpty()) {
+			return className;
+		}
+		if (className.startsWith(".")) {
+			return pkg + className;
+		}
+		return pkg + "." + className;
+	}
+
+	private boolean isLauncherActivity(org.w3c.dom.Element element) {
+		org.w3c.dom.NodeList intentFilters = element.getElementsByTagName("intent-filter");
+		for (int j = 0; j < intentFilters.getLength(); j++) {
+			org.w3c.dom.Element filter = (org.w3c.dom.Element) intentFilters.item(j);
+			boolean hasMain = false;
+			boolean hasLauncher = false;
+			org.w3c.dom.NodeList actions = filter.getElementsByTagName("action");
+			for (int k = 0; k < actions.getLength(); k++) {
+				if ("android.intent.action.MAIN".equals(((org.w3c.dom.Element) actions.item(k)).getAttribute("android:name"))) {
+					hasMain = true;
+				}
+			}
+			org.w3c.dom.NodeList categories = filter.getElementsByTagName("category");
+			for (int k = 0; k < categories.getLength(); k++) {
+				if ("android.intent.category.LAUNCHER".equals(((org.w3c.dom.Element) categories.item(k)).getAttribute("android:name"))) {
+					hasLauncher = true;
+				}
+			}
+			if (hasMain && hasLauncher) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private String findMainActivityFromJadx() {
+		try {
+			List<ResourceFile> resources = mainWindow.getWrapper().getDecompiler().getResources();
+			for (ResourceFile rf : resources) {
+				if (rf.getType() == ResourceType.MANIFEST) {
+					String content = rf.loadContent().getText().getCodeStr();
+					javax.xml.parsers.DocumentBuilderFactory factory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
+					javax.xml.parsers.DocumentBuilder builder = factory.newDocumentBuilder();
+					org.w3c.dom.Document doc = builder.parse(new org.xml.sax.InputSource(new java.io.StringReader(content)));
+					
+					// Try <activity> nodes first
+					org.w3c.dom.NodeList activityNodes = doc.getElementsByTagName("activity");
+					for (int i = 0; i < activityNodes.getLength(); i++) {
+						org.w3c.dom.Element activity = (org.w3c.dom.Element) activityNodes.item(i);
+						if (isLauncherActivity(activity)) {
+							String name = activity.getAttribute("android:name");
+							return getFullyQualifiedClassName(doc, name);
+						}
+					}
+					
+					// Try <activity-alias> nodes if not found in <activity>
+					org.w3c.dom.NodeList aliasNodes = doc.getElementsByTagName("activity-alias");
+					for (int i = 0; i < aliasNodes.getLength(); i++) {
+						org.w3c.dom.Element alias = (org.w3c.dom.Element) aliasNodes.item(i);
+						if (isLauncherActivity(alias)) {
+							String target = alias.getAttribute("android:targetActivity");
+							return getFullyQualifiedClassName(doc, target);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOG.error("Failed to parse JADX manifest for main activity", e);
+		}
+		return null;
+	}
+
+	private File findSmaliFile(File decompiledDir, String className) {
+		String relativePath = className.replace('.', '/') + ".smali";
+		File[] subDirs = decompiledDir.listFiles(f -> f.isDirectory() && f.getName().startsWith("smali"));
+		if (subDirs != null) {
+			for (File dir : subDirs) {
+				File smaliFile = new File(dir, relativePath);
+				if (smaliFile.exists()) {
+					return smaliFile;
+				}
+			}
+		}
+		return null;
+	}
+
+	private void injectFridaGadgetLoad(File smaliFile) throws IOException {
+		List<String> lines = Files.readAllLines(smaliFile.toPath(), StandardCharsets.UTF_8);
+		List<String> newLines = new ArrayList<>();
+		boolean inClinit = false;
+		boolean injected = false;
+		boolean hasClinit = false;
+
+		for (String line : lines) {
+			if (line.trim().startsWith(".method static constructor <clinit>()V")) {
+				hasClinit = true;
+				break;
+			}
+		}
+
+		if (hasClinit) {
+			for (int i = 0; i < lines.size(); i++) {
+				String line = lines.get(i);
+				newLines.add(line);
+				if (line.trim().startsWith(".method static constructor <clinit>()V")) {
+					inClinit = true;
+				} else if (inClinit) {
+					String trimmed = line.trim();
+					if (trimmed.startsWith(".registers") || trimmed.startsWith(".locals")) {
+						// Ensure we have at least 1 register/local
+						String[] parts = trimmed.split("\\s+");
+						if (parts.length >= 2) {
+							try {
+								int val = Integer.parseInt(parts[1]);
+								if (val < 1) {
+									newLines.remove(newLines.size() - 1);
+									newLines.add(parts[0] + " 1");
+								}
+							} catch (NumberFormatException e) {
+								// ignore, keep as is
+							}
+						}
+						newLines.add("");
+						newLines.add("    const-string v0, \"frida-gadget\"");
+						newLines.add("    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V");
+						newLines.add("");
+						injected = true;
+						inClinit = false;
+					} else if (trimmed.startsWith(".end method") || (!trimmed.isEmpty() && !trimmed.startsWith("."))) {
+						// We found an instruction or the end of the method before registers/locals declaration
+						// This means they are missing. Let's inject registers and load call before this line.
+						newLines.remove(newLines.size() - 1); // remove the current line
+						newLines.add("    .registers 1");
+						newLines.add("");
+						newLines.add("    const-string v0, \"frida-gadget\"");
+						newLines.add("    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V");
+						newLines.add("");
+						newLines.add(line); // re-add the current line
+						injected = true;
+						inClinit = false;
+					}
+				}
+			}
+		} else {
+			for (String line : lines) {
+				newLines.add(line);
+			}
+			newLines.add("");
+			newLines.add(".method static constructor <clinit>()V");
+			newLines.add("    .registers 1");
+			newLines.add("    const-string v0, \"frida-gadget\"");
+			newLines.add("    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V");
+			newLines.add("    return-void");
+			newLines.add(".end method");
+			injected = true;
+		}
+
+		if (injected) {
+			Files.write(smaliFile.toPath(), newLines, StandardCharsets.UTF_8);
+			LOG.info("[FridaPanel] Injected frida-gadget loader into smali file: {}", smaliFile.getAbsolutePath());
+		} else {
+			throw new IOException("Failed to inject frida-gadget loading code into Smali");
+		}
+	}
+
+	private void copyFridaGadgetLib(File decompiledDir, String arch) throws IOException {
+		File libDir = new File(decompiledDir, "lib");
+		if (!libDir.exists()) {
+			libDir.mkdirs();
+		}
+		
+		File[] existingDirs = libDir.listFiles(File::isDirectory);
+		if (existingDirs != null && existingDirs.length > 0) {
+			for (File dir : existingDirs) {
+				String dirName = dir.getName();
+				String targetArch = null;
+				if (dirName.equals("arm64-v8a")) targetArch = "arm64";
+				else if (dirName.equals("armeabi-v7a") || dirName.equals("armeabi")) targetArch = "arm";
+				else if (dirName.equals("x86")) targetArch = "x86";
+				else if (dirName.equals("x86_64")) targetArch = "x86_64";
+				
+				if (targetArch != null) {
+					String version = getLocalFridaVersion();
+					downloadFridaGadget(targetArch, version);
+					File gadgetSrc = new File(System.getProperty("user.home"), ".cache/frida/gadget-android-" + targetArch + ".so");
+					if (gadgetSrc.exists()) {
+						File destFile = new File(dir, "libfrida-gadget.so");
+						Files.copy(gadgetSrc.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+						LOG.info("[FridaPanel] Copied frida-gadget ({}) to: {}", targetArch, destFile.getAbsolutePath());
+					}
+				}
+			}
+		} else {
+			// No existing lib dirs, create one matching the connected device arch
+			String abi = "arm64-v8a";
+			if (arch.equals("arm")) abi = "armeabi-v7a";
+			else if (arch.equals("x86")) abi = "x86";
+			else if (arch.equals("x86_64")) abi = "x86_64";
+			
+			File dir = new File(libDir, abi);
+			dir.mkdirs();
+			String version = getLocalFridaVersion();
+			downloadFridaGadget(arch, version);
+			File gadgetSrc = new File(System.getProperty("user.home"), ".cache/frida/gadget-android-" + arch + ".so");
+			if (gadgetSrc.exists()) {
+				File destFile = new File(dir, "libfrida-gadget.so");
+				Files.copy(gadgetSrc.toPath(), destFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+				LOG.info("[FridaPanel] Created and copied frida-gadget ({}) to: {}", arch, destFile.getAbsolutePath());
+			}
+		}
+	}
+
+	private void generateDebugKeystore(File keystoreFile) throws Exception {
+		String keytoolPath = "keytool";
+		String javaHome = System.getProperty("java.home");
+		if (javaHome != null) {
+			File kt = new File(javaHome, "bin/keytool");
+			if (kt.exists()) {
+				keytoolPath = kt.getAbsolutePath();
+			}
+		}
+		int exitCode = runCommand(new String[]{
+			keytoolPath, "-genkey", "-v", "-keystore", keystoreFile.getAbsolutePath(),
+			"-alias", "jadx", "-keyalg", "RSA", "-keysize", "2048", "-validity", "10000",
+			"-storepass", "android", "-keypass", "android", "-dname", "CN=JadxPatch"
+		}, "keytool");
+		if (exitCode != 0) {
+			throw new IOException("Failed to generate debug keystore using keytool");
+		}
+	}
+
+	private void signApk(File unsignedApk, File signedApk, File keystoreFile) throws Exception {
+		String apksigner = findBuildToolsBinary("apksigner");
+		int exitCode = runCommand(new String[]{
+			apksigner, "sign", "--ks", keystoreFile.getAbsolutePath(),
+			"--ks-pass", "pass:android", "--out", signedApk.getAbsolutePath(),
+			unsignedApk.getAbsolutePath()
+		}, "apksigner");
+		if (exitCode != 0) {
+			throw new IOException("Apksigner failed with exit code " + exitCode);
+		}
+	}
+
+	private java.nio.file.Path findBaseApkPath(List<java.nio.file.Path> filePaths) {
+		if (filePaths.size() == 1) {
+			return filePaths.get(0);
+		}
+		// Look for exact "base.apk"
+		for (java.nio.file.Path p : filePaths) {
+			if (p.getFileName().toString().equalsIgnoreCase("base.apk")) {
+				return p;
+			}
+		}
+		// Look for filename containing "base"
+		for (java.nio.file.Path p : filePaths) {
+			if (p.getFileName().toString().toLowerCase().contains("base")) {
+				return p;
+			}
+		}
+		// Look for filename NOT containing "split"
+		for (java.nio.file.Path p : filePaths) {
+			if (!p.getFileName().toString().toLowerCase().contains("split")) {
+				return p;
+			}
+		}
+		// Fallback to the first one
+		return filePaths.get(0);
+	}
+
+	private int runCommand(String[] command, String taskName) throws Exception {
+		LOG.info("Running command for {}: {}", taskName, String.join(" ", command));
+		SwingUtilities.invokeLater(() -> appendLog("[INFO] Running " + taskName + "..."));
+		ProcessBuilder pb = new ProcessBuilder(command);
+		pb.redirectErrorStream(true);
+		Process process = pb.start();
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String finalLine = line;
+				SwingUtilities.invokeLater(() -> appendLog("[" + taskName + "] " + finalLine));
+				LOG.info("[{}] {}", taskName, line);
+			}
+		}
+		return process.waitFor();
+	}
+
+	private void autoPatchAndInstallApk(jadx.gui.device.protocol.ADBDevice device, String arch, String version) {
+		new Thread(() -> {
+			File tempDir = null;
+			List<File> signedApksToInstall = new ArrayList<>();
+			try {
+				appendLog("[INFO] Starting automatic APK patching process...");
+				List<java.nio.file.Path> filePaths = mainWindow.getProject().getFilePaths();
+				if (filePaths.isEmpty()) {
+					appendLog("[ERROR] No APK file is loaded in the project.");
+					return;
+				}
+
+				java.nio.file.Path baseApkPath = findBaseApkPath(filePaths);
+				appendLog("[INFO] Base APK identified: " + baseApkPath.getFileName().toString());
+
+				tempDir = Files.createTempDirectory("jadx_patch_").toFile();
+				appendLog("[INFO] Decompiling base APK using apktool...");
+
+				String apktoolPath = findApktoolPath();
+				int decExit = runCommand(new String[]{
+					apktoolPath, "d", "-r", "-f", "-o", tempDir.getAbsolutePath(), baseApkPath.toAbsolutePath().toString()
+				}, "apktool-d");
+				if (decExit != 0) {
+					throw new IOException("Apktool decompilation failed with exit code " + decExit);
+				}
+
+				String mainActivity = findMainActivityFromJadx();
+				if (mainActivity == null) {
+					throw new IOException("MainActivity not found in AndroidManifest.xml");
+				}
+				appendLog("[INFO] Found MainActivity: " + mainActivity);
+
+				File smaliFile = findSmaliFile(tempDir, mainActivity);
+				if (smaliFile == null) {
+					throw new IOException("MainActivity smali file not found");
+				}
+				injectFridaGadgetLoad(smaliFile);
+				copyFridaGadgetLib(tempDir, arch);
+
+				appendLog("[INFO] Rebuilding base APK using apktool...");
+				File unsignedBaseApk = new File(tempDir.getParentFile(), "patched_base_unsigned.apk");
+				int compExit = runCommand(new String[]{
+					apktoolPath, "b", tempDir.getAbsolutePath(), "-o", unsignedBaseApk.getAbsolutePath()
+				}, "apktool-b");
+				if (compExit != 0) {
+					throw new IOException("Apktool build failed with exit code " + compExit);
+				}
+
+				File keystoreFile = new File(tempDir.getParentFile(), "debug.keystore");
+				if (!keystoreFile.exists()) {
+					appendLog("[INFO] Generating debug keystore...");
+					generateDebugKeystore(keystoreFile);
+				}
+
+				appendLog("[INFO] Signing base APK...");
+				File signedBaseApk = new File(tempDir.getParentFile(), "patched_base_signed.apk");
+				signApk(unsignedBaseApk, signedBaseApk, keystoreFile);
+				unsignedBaseApk.delete();
+				signedApksToInstall.add(signedBaseApk);
+
+				// Process other split APKs (resign them with the same keystore)
+				for (java.nio.file.Path path : filePaths) {
+					if (path.equals(baseApkPath)) {
+						continue;
+					}
+					String splitName = path.getFileName().toString();
+					appendLog("[INFO] Resigning split APK: " + splitName + "...");
+					File signedSplit = new File(tempDir.getParentFile(), "signed_" + splitName);
+					signApk(path.toFile(), signedSplit, keystoreFile);
+					signedApksToInstall.add(signedSplit);
+				}
+
+				// Uninstall the original package to avoid signature mismatch
+				String adbPath = jadx.gui.device.protocol.AdbService.detectAdbPath();
+				String packageName = resolveTargetPackage();
+				if (packageName != null && !packageName.isEmpty()) {
+					appendLog("[INFO] Uninstalling existing app to prevent signature mismatch: " + packageName + "...");
+					runCommand(new String[]{
+						adbPath, "-s", device.getSerial(), "uninstall", packageName
+					}, "adb-uninstall");
+				}
+
+				// Install all signed APKs (base + splits)
+				appendLog("[INFO] Installing patched APK(s) to device " + device.getSerial() + "...");
+				List<String> installCmd = new ArrayList<>();
+				installCmd.add(adbPath);
+				installCmd.add("-s");
+				installCmd.add(device.getSerial());
+				if (signedApksToInstall.size() > 1) {
+					installCmd.add("install-multiple");
+					installCmd.add("-r");
+					for (File f : signedApksToInstall) {
+						installCmd.add(f.getAbsolutePath());
+					}
+				} else {
+					installCmd.add("install");
+					installCmd.add("-r");
+					installCmd.add(signedBaseApk.getAbsolutePath());
+				}
+
+				int instExit = runCommand(installCmd.toArray(new String[0]), "adb-install");
+				if (instExit != 0) {
+					throw new IOException("Installation failed with exit code " + instExit);
+				}
+
+				appendLog("[INFO] APK(s) successfully patched, signed, and installed!");
+				appendLog("[INFO] Please open the application on your device to launch the Frida Gadget and run the script again.");
+			} catch (Exception ex) {
+				LOG.error("Failed to auto patch APK", ex);
+				appendLog("[ERROR] Failed to auto patch APK: " + ex.getMessage());
+			} finally {
+				if (tempDir != null) {
+					deleteDirectory(tempDir);
+				}
+				for (File f : signedApksToInstall) {
+					if (f.exists()) {
+						f.delete();
+					}
+				}
+			}
+		}).start();
+	}
+
+	private void deleteDirectory(File dir) {
+		File[] files = dir.listFiles();
+		if (files != null) {
+			for (File f : files) {
+				if (f.isDirectory()) {
+					deleteDirectory(f);
+				} else {
+					f.delete();
+				}
+			}
+		}
+		dir.delete();
+	}
+
 	private void autoStartFridaServer() {
 		try {
 			appendLog("[INFO] Checking connected devices for running frida-server...");
@@ -687,6 +1140,17 @@ public class FridaPanel extends JPanel {
 					appendLog("[WARN] Device " + serial + " is not rooted. Automated frida-server startup is not supported on jailed devices.");
 					appendLog("[INFO] Preparing Frida Gadget fallback on the host...");
 					downloadFridaGadget(arch, version);
+					
+					// Auto patch prompt
+					int choice = JOptionPane.showConfirmDialog(FridaPanel.this,
+							"Device is not rooted. Would you like JADX to automatically patch, sign, install, and run this APK with Frida Gadget?",
+							"Non-Rooted Device Detected",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.QUESTION_MESSAGE);
+					if (choice == JOptionPane.YES_OPTION) {
+						autoPatchAndInstallApk(device, arch, version);
+						throw new RuntimeException("Patching APK with Frida Gadget. Please wait for install and then click 'Run Frida Script' again.");
+					}
 					continue;
 				}
 
