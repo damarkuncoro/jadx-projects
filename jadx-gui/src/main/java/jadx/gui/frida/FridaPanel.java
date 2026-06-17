@@ -31,6 +31,8 @@ import jadx.frida.*;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.action.JadxAutoCompletion;
+import jadx.gui.device.adb.ADBDevice;
+import jadx.gui.device.adb.AdbService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -556,9 +558,9 @@ public class FridaPanel extends JPanel {
 		return "arm64"; // fallback
 	}
 
-	private String downloadAndPushFridaServer(jadx.gui.device.protocol.ADBDevice device) {
+	private String downloadAndPushFridaServer(ADBDevice device) {
 		try {
-			String abi = jadx.gui.device.protocol.AdbService.execShell(device, "getprop ro.product.cpu.abi").trim();
+			String abi = AdbService.execShell(device, "getprop ro.product.cpu.abi").trim();
 			String arch = mapAbiToFridaArch(abi);
 			String version = getLocalFridaVersion();
 			
@@ -592,7 +594,7 @@ public class FridaPanel extends JPanel {
 
 			// Push to device
 			appendLog("[INFO] Pushing frida-server to /data/local/tmp/" + binaryName + "...");
-			String adbPath = jadx.gui.device.protocol.AdbService.detectAdbPath();
+			String adbPath = AdbService.detectAdbPath();
 			Process pushProcess = Runtime.getRuntime().exec(new String[]{
 				adbPath, "-s", device.getSerial(), "push", localBinary.getAbsolutePath(), "/data/local/tmp/" + binaryName
 			});
@@ -959,7 +961,7 @@ public class FridaPanel extends JPanel {
 		return process.waitFor();
 	}
 
-	private void autoPatchAndInstallApk(jadx.gui.device.protocol.ADBDevice device, String arch, String version) {
+	private void autoPatchAndInstallApk(ADBDevice device, String arch, String version) {
 		new Thread(() -> {
 			File tempDir = null;
 			List<File> signedApksToInstall = new ArrayList<>();
@@ -1032,7 +1034,7 @@ public class FridaPanel extends JPanel {
 				}
 
 				// Uninstall the original package to avoid signature mismatch
-				String adbPath = jadx.gui.device.protocol.AdbService.detectAdbPath();
+				String adbPath = AdbService.detectAdbPath();
 				String packageName = resolveTargetPackage();
 				if (packageName != null && !packageName.isEmpty()) {
 					appendLog("[INFO] Uninstalling existing app to prevent signature mismatch: " + packageName + "...");
@@ -1096,7 +1098,7 @@ public class FridaPanel extends JPanel {
 		dir.delete();
 	}
 
-	private void autoStartFridaServer() {
+	private boolean autoStartFridaServer() {
 		try {
 			appendLog("[INFO] Checking connected devices for running frida-server...");
 			String host = settings.getAdbDialogHost();
@@ -1110,25 +1112,26 @@ public class FridaPanel extends JPanel {
 				// use default
 			}
 
-			List<jadx.gui.device.protocol.ADBDevice> devices = jadx.gui.device.protocol.AdbService.listDevices(host, port);
+			List<ADBDevice> devices = AdbService.listDevices(host, port);
 			if (devices.isEmpty()) {
 				appendLog("[WARN] No connected Android devices detected via ADB.");
-				return;
+				return false;
 			}
 
-			for (jadx.gui.device.protocol.ADBDevice device : devices) {
+			boolean isReady = false;
+			for (ADBDevice device : devices) {
 				String serial = device.getSerial();
 				appendLog("[INFO] Inspecting device: " + serial);
 
 				// Determine device architecture & local Frida version
-				String abi = jadx.gui.device.protocol.AdbService.execShell(device, "getprop ro.product.cpu.abi").trim();
+				String abi = AdbService.execShell(device, "getprop ro.product.cpu.abi").trim();
 				String arch = mapAbiToFridaArch(abi);
 				String version = getLocalFridaVersion();
 
 				// Check if the device is rooted
 				boolean isRooted = false;
 				try {
-					String suTest = jadx.gui.device.protocol.AdbService.execShell(device, "which su");
+					String suTest = AdbService.execShell(device, "which su");
 					if (suTest != null && suTest.contains("su")) {
 						isRooted = true;
 					}
@@ -1140,7 +1143,7 @@ public class FridaPanel extends JPanel {
 					appendLog("[WARN] Device " + serial + " is not rooted. Automated frida-server startup is not supported on jailed devices.");
 					
 					// Setup port forwarding
-					String adbPath = jadx.gui.device.protocol.AdbService.detectAdbPath();
+					String adbPath = AdbService.detectAdbPath();
 					try {
 						Process forwardProc = Runtime.getRuntime().exec(new String[]{
 							adbPath, "-s", serial, "forward", "tcp:27042", "tcp:27042"
@@ -1154,7 +1157,7 @@ public class FridaPanel extends JPanel {
 					// Check if port 27042 is already listening on the device (meaning gadget is loaded)
 					boolean isGadgetListening = false;
 					try {
-						String netstat = jadx.gui.device.protocol.AdbService.execShell(device, "cat /proc/net/tcp");
+						String netstat = AdbService.execShell(device, "cat /proc/net/tcp");
 						if (netstat != null && netstat.toLowerCase().contains("69a2")) {
 							isGadgetListening = true;
 						}
@@ -1164,7 +1167,7 @@ public class FridaPanel extends JPanel {
 
 					if (isGadgetListening) {
 						appendLog("[INFO] Frida Gadget is already listening on device. Bypassing patch dialog.");
-						return; // bypass prompt!
+						return true; // bypass prompt!
 					}
 
 					appendLog("[INFO] Preparing Frida Gadget fallback on the host...");
@@ -1172,13 +1175,15 @@ public class FridaPanel extends JPanel {
 					
 					// Auto patch prompt
 					int choice = JOptionPane.showConfirmDialog(FridaPanel.this,
-							"Device is not rooted. Would you like JADX to automatically patch, sign, install, and run this APK with Frida Gadget?",
+							"Device is not rooted. If the app is already patched, make sure it is open on your device.\n" +
+							"Would you like JADX to patch, sign, install, and run this APK with Frida Gadget?",
 							"Non-Rooted Device Detected",
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
 					if (choice == JOptionPane.YES_OPTION) {
 						autoPatchAndInstallApk(device, arch, version);
-						throw new RuntimeException("Patching APK with Frida Gadget. Please wait for install and then click 'Run Frida Script' again.");
+						appendLog("[INFO] Patching APK with Frida Gadget. Please wait for install, open the app, then click 'Run Frida Script' again.");
+						return false;
 					}
 					continue;
 				}
@@ -1186,20 +1191,21 @@ public class FridaPanel extends JPanel {
 				// Device is rooted. Check if frida-server is already running
 				String pgrepResult = "";
 				try {
-					pgrepResult = jadx.gui.device.protocol.AdbService.execShell(device, "pgrep -f frida-server");
+					pgrepResult = AdbService.execShell(device, "pgrep -f frida-server");
 				} catch (Exception ex) {
 					// pgrep might not be available or fails if not running
 				}
 
 				if (pgrepResult != null && !pgrepResult.trim().isEmpty()) {
 					appendLog("[INFO] frida-server is already running on device " + serial + " (PID: " + pgrepResult.trim() + ")");
+					isReady = true;
 					continue;
 				}
 
 				// Look for a frida-server binary in /data/local/tmp
 				String filesList = "";
 				try {
-					filesList = jadx.gui.device.protocol.AdbService.execShell(device, "ls /data/local/tmp");
+					filesList = AdbService.execShell(device, "ls /data/local/tmp");
 				} catch (Exception ex) {
 					appendLog("[WARN] Could not access /data/local/tmp on device " + serial);
 					continue;
@@ -1226,15 +1232,16 @@ public class FridaPanel extends JPanel {
 					appendLog("[INFO] Attempting to start frida-server as root...");
 					
 					try {
-						jadx.gui.device.protocol.AdbService.execShell(device, "su -c 'chmod 755 /data/local/tmp/" + fridaBinary + "'");
+						AdbService.execShell(device, "su -c 'chmod 755 /data/local/tmp/" + fridaBinary + "'");
 					} catch (Exception ex) {
 						// ignore if already executable
 					}
 
 					try {
-						jadx.gui.device.protocol.AdbService.execShell(device, "su -c '/data/local/tmp/" + fridaBinary + " > /dev/null 2>&1 &'");
+						AdbService.execShell(device, "su -c '/data/local/tmp/" + fridaBinary + " > /dev/null 2>&1 &'");
 						Thread.sleep(1000);
 						appendLog("[INFO] Started frida-server on device " + serial);
+						isReady = true;
 					} catch (Exception ex) {
 						appendLog("[ERROR] Failed to execute frida-server launch command on device " + serial + ": " + ex.getMessage());
 					}
@@ -1242,9 +1249,11 @@ public class FridaPanel extends JPanel {
 					appendLog("[WARN] Failed to setup frida-server binary in /data/local/tmp on device " + serial);
 				}
 			}
+			return isReady;
 		} catch (Exception e) {
 			LOG.error("Failed to automatically start frida-server", e);
 			appendLog("[WARN] Automated frida-server check/start encountered an error: " + e.getMessage());
+			return false;
 		}
 	}
 
@@ -1260,12 +1269,12 @@ public class FridaPanel extends JPanel {
 			} catch (Exception ex) {
 				// use default
 			}
-			List<jadx.gui.device.protocol.ADBDevice> devices = jadx.gui.device.protocol.AdbService.listDevices(host, port);
+			List<ADBDevice> devices = AdbService.listDevices(host, port);
 			if (devices.isEmpty()) {
 				return false;
 			}
-			for (jadx.gui.device.protocol.ADBDevice device : devices) {
-				String suTest = jadx.gui.device.protocol.AdbService.execShell(device, "which su");
+			for (ADBDevice device : devices) {
+				String suTest = AdbService.execShell(device, "which su");
 				if (suTest != null && suTest.contains("su")) {
 					return false; // rooted
 				}
@@ -1282,7 +1291,9 @@ public class FridaPanel extends JPanel {
 
 		new Thread(() -> {
 			try {
-				autoStartFridaServer();
+				if (!autoStartFridaServer()) {
+					return;
+				}
 				String finalTarget = target;
 				if (isJailedDevice()) {
 					finalTarget = "Gadget";

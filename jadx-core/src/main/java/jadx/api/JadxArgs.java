@@ -72,6 +72,8 @@ public class JadxArgs implements Closeable {
 
 	private Function<JadxArgs, ICodeWriter> codeWriterProvider = AnnotatedCodeWriter::new;
 
+	private Function<JadxArgs, jadx.core.codegen.ICodeGenerator> codeGeneratorProvider = null;
+
 	private int threadsCount = DEFAULT_THREADS_COUNT;
 
 	private boolean cfgOutput = false;
@@ -707,6 +709,14 @@ public class JadxArgs implements Closeable {
 
 	public void setCodeWriterProvider(Function<JadxArgs, ICodeWriter> codeWriterProvider) {
 		this.codeWriterProvider = codeWriterProvider;
+	}
+
+	public Function<JadxArgs, jadx.core.codegen.ICodeGenerator> getCodeGeneratorProvider() {
+		return codeGeneratorProvider;
+	}
+
+	public void setCodeGeneratorProvider(Function<JadxArgs, jadx.core.codegen.ICodeGenerator> codeGeneratorProvider) {
+		this.codeGeneratorProvider = codeGeneratorProvider;
 	}
 
 	public IUsageInfoCache getUsageInfoCache() {

@@ -43,8 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.gui.device.debugger.LogcatController;
-import jadx.gui.device.protocol.ADB;
-import jadx.gui.device.protocol.ADBDevice;
+import jadx.gui.device.adb.ADB;
+import jadx.gui.device.adb.ADBDevice;
 import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
 import jadx.gui.utils.ui.NodeLabel;

@@ -23,7 +23,7 @@ import jadx.plugins.tools.JadxExternalPluginsLoader;
 public class JadxCLI {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxCLI.class);
 	private static final String DEVICE_EXPLORER_COMMAND = "device-explorer";
-	private static final String DEVICE_EXPLORER_CLI_CLASS = "jadx.gui.device.protocol.DeviceExplorerCLI";
+	private static final String DEVICE_EXPLORER_CLI_CLASS = "jadx.gui.device.cli.DeviceExplorerCLI";
 
 	public static void main(String[] args) {
 		int result = 1;
@@ -42,6 +42,9 @@ public class JadxCLI {
 		try {
 			if (isDeviceExplorerCommand(args)) {
 				return runDeviceExplorer(args);
+			}
+			if (isDecompilerDaemonCommand(args)) {
+				return DecompilerDaemonCLI.run(args);
 			}
 			JadxCLIArgs cliArgs = JadxCLIArgs.processArgs(args,
 					new JadxCLIArgs(),
@@ -65,6 +68,10 @@ public class JadxCLI {
 
 	private static boolean isDeviceExplorerCommand(String[] args) {
 		return args.length > 0 && DEVICE_EXPLORER_COMMAND.equals(args[0]);
+	}
+
+	private static boolean isDecompilerDaemonCommand(String[] args) {
+		return args.length > 0 && ("decompiler-daemon".equals(args[0]) || "lsp".equals(args[0]));
 	}
 
 	private static int runDeviceExplorer(String[] args) {

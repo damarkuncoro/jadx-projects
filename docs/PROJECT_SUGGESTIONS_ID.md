@@ -15,6 +15,13 @@ Proyek JADX sekarang memiliki modul `jadx-frida-integration` yang mengintegrasik
 4. (Opsional) Pilih snippet predefined dari dropdown
 5. Klik "Run Frida Script" untuk menjalankan script pada target process
 
+## 0.1. LSP & JSON-RPC Daemon Mode (Fitur Baru)
+
+Proyek JADX sekarang mendukung mode **LSP (Language Server Protocol) JSON-RPC Daemon** melalui perintah `lsp` atau `decompiler-daemon`. Fitur ini sangat ramah untuk integrasi dengan VS Code, IntelliJ, atau Android Studio.
+*   **Kecepatan Tinggi**: Menghilangkan latensi startup JVM dengan menjaga satu proses JVM tetap aktif di latar belakang.
+*   **Fitur Terintegrasi**: Mendukung resolusi definisi (`textDocument/definition`), pelacakan referensi (`textDocument/references`), hover signature (`textDocument/hover`), pencarian simbol fuzzy global (`workspace/symbol`), serta pelaporan warning/error dekompilasi (`diagnostics`).
+*   **Pemrosesan Asinkron**: Pemrosesan query asinkron berbasis Thread Pool memastikan antarmuka komunikasi tidak memblokir input/output utama daemon.
+
 ## 1. Ringkasan Perubahan yang Sudah Dilakukan
 
 Berikut adalah perubahan yang telah diterapkan pada proyek ini:
@@ -23,6 +30,8 @@ Berikut adalah perubahan yang telah diterapkan pada proyek ini:
 - **Menyiapkan Direktori Aman**: Membuat folder `~/.jadx/config` dan `~/.jadx/cache` untuk menyimpan konfigurasi dan cache JADX tanpa masalah izin
 - **Menyetel Environment Variable Permanen**: Menambahkan variabel `JADX_CONFIG_DIR` dan `JADX_CACHE_DIR` di `~/.zshrc`
 - **Menambahkan Frida Integration**: Menambahkan modul `jadx-frida-integration` dan panel Frida di GUI
+- **Penerapan Clean Architecture & SOLID di jadx-core**: Mendekopel kelas inti `ClassNode` dan presentasi output `CodeGen` melalui antarmuka dinamis `ICodeGenerator`.
+- **Implementasi LSP Daemon Mode di jadx-cli**: Menambahkan driver komunikasi JSON-RPC asinkron, router perintah, layanan inti JADX (`DaemonService`), dan layanan pemetaan protokol LSP (`LspService`).
 
 ## 2. Cara Menjalankan JADX GUI
 

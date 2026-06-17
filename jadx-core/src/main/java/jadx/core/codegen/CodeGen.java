@@ -10,9 +10,10 @@ import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
-public class CodeGen {
+public class CodeGen implements ICodeGenerator {
 
-	public static ICodeInfo generate(ClassNode cls) {
+	@Override
+	public ICodeInfo generate(ClassNode cls) {
 		if (cls.contains(AFlag.DONT_GENERATE)) {
 			return ICodeInfo.EMPTY;
 		}
@@ -57,6 +58,7 @@ public class CodeGen {
 		}
 	}
 
-	private CodeGen() {
+	public CodeGen() {
+		// public constructor for external and internal code generation integration
 	}
 }

@@ -150,7 +150,7 @@ import jadx.gui.ui.codearea.theme.EditorThemeManager;
 import jadx.gui.ui.dialog.ADBDialog;
 import jadx.gui.ui.dialog.AboutDialog;
 import jadx.gui.ui.dialog.CharsetDialog;
-import jadx.gui.ui.dialog.DeviceExplorerDialog;
+import jadx.gui.device.ui.DeviceExplorerDialog;
 import jadx.gui.ui.dialog.GotoAddressDialog;
 import jadx.gui.ui.dialog.LogViewerDialog;
 import jadx.gui.ui.dialog.BookmarkManagerDialog;

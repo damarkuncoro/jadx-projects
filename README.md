@@ -138,6 +138,7 @@ dexforge[-gui] [command] [options] <input files> (.apk, .dex, .jar, .class, .sma
 commands (use '<command> --help' for command options):
   plugins         - manage jadx plugins
   device-explorer - pull and decompile APKs from Android devices via ADB
+  lsp             - launch the high-performance Language Server Protocol JSON-RPC daemon (alias: decompiler-daemon)
 
 options:
   -d, --output-dir                              - output directory
@@ -312,6 +313,26 @@ dexforge device-explorer list-packages SERIAL 0 user --format json
 dexforge device-explorer pull-and-decompile SERIAL id.net.cakramedia.attendance ./workspace 0 --format json
 ```
 
+
+### LSP JSON-RPC Daemon (`lsp` / `decompiler-daemon`)
+Exposes JADX decompiler capabilities as an LSP-compliant JSON-RPC service over stdin/stdout, allowing standard editor integrations (VS Code & IntelliJ) to load inputs, decompile classes, navigate symbols, and hover signatures with sub-millisecond response times.
+
+**Commands Supported:**
+* `initialize` - Registers server capabilities (`hoverProvider`, `definitionProvider`, `referencesProvider`, `workspaceSymbolProvider`).
+* `load` - Loads the path of an APK/JAR.
+* `list-classes` - Lists all loaded class metadata.
+* `decompile` - Decompiles a class, returning the code, line mappings, and diagnostics (warnings/errors).
+* `textDocument/definition` - Resolves the definition location of a symbol.
+* `textDocument/references` - Resolves all usage reference locations of a symbol.
+* `textDocument/hover` - Exposes the formatted Java signature of a symbol.
+* `workspace/symbol` - Fuzzy searches all classes, methods, and fields globally.
+* `exit` - Shuts down the daemon.
+
+**Example execution:**
+```bash
+dexforge lsp
+```
+Send standard JSON lines on stdin (e.g. `{"id": 1, "method": "initialize"}`) to receive JSON-RPC responses on stdout.
 
 ### Troubleshooting
 Please check wiki page [Troubleshooting Q&A](https://github.com/skylot/jadx/wiki/Troubleshooting-Q&A)

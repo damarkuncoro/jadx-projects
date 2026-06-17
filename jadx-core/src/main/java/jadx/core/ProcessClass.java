@@ -14,6 +14,7 @@ import jadx.api.ICodeInfo;
 import jadx.api.JadxArgs;
 import jadx.api.impl.SimpleCodeInfo;
 import jadx.core.codegen.CodeGen;
+import jadx.core.codegen.ICodeGenerator;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.DecompileModeOverrideAttr;
@@ -86,7 +87,11 @@ public class ProcessClass {
 				}
 				if (codegen) {
 					Utils.checkThreadInterrupt();
-					ICodeInfo code = CodeGen.generate(cls);
+					JadxArgs args = cls.root().getArgs();
+					java.util.function.Function<JadxArgs, ICodeGenerator> provider = args.getCodeGeneratorProvider();
+					// Fallback to default CodeGen implementation if no custom provider is registered
+					ICodeGenerator generator = provider != null ? provider.apply(args) : new CodeGen();
+					ICodeInfo code = generator.generate(cls);
 					if (!cls.contains(AFlag.DONT_UNLOAD_CLASS)) {
 						cls.unload();
 						cls.setState(GENERATED_AND_UNLOADED);

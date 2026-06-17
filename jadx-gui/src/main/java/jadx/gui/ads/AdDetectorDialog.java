@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,6 +24,8 @@ import jadx.gui.utils.UiUtils;
 
 public class AdDetectorDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
+	private static final Pattern FRIDA_OVERLOADS_PATTERN = Pattern.compile(
+			"(\\b[A-Za-z_$][\\w$]*)\\.([A-Za-z_$][\\w$]*)\\.overloads\\.forEach");
 
 	private final MainWindow mainWindow;
 	private JTree resultTree;
@@ -205,12 +208,13 @@ public class AdDetectorDialog extends JDialog {
 		scriptBuilder.append("*/\n\n");
 		scriptBuilder.append("Java.perform(function () {\n");
 		scriptBuilder.append("    console.log(\"[*] Dynamic Ad & Tracker Blocker script loaded\");\n\n");
+		appendFridaHelperFunctions(scriptBuilder);
 
 		boolean hasTemplates = false;
 		for (AdFinding finding : findings) {
 			String template = finding.getNetwork().getFridaTemplate();
 			if (template != null && !template.trim().isEmpty()) {
-				scriptBuilder.append(template).append("\n\n");
+				scriptBuilder.append(hardenFridaTemplate(template)).append("\n\n");
 				hasTemplates = true;
 			}
 		}
@@ -227,5 +231,20 @@ public class AdDetectorDialog extends JDialog {
 
 		dispose();
 		mainWindow.showFridaPanelWithScript(scriptBuilder.toString());
+	}
+
+	private String hardenFridaTemplate(String template) {
+		return FRIDA_OVERLOADS_PATTERN.matcher(template)
+				.replaceAll("jadxGetOverloads($1, \"$2\", \"$1.$2\").forEach");
+	}
+
+	private void appendFridaHelperFunctions(StringBuilder scriptBuilder) {
+		scriptBuilder.append("    function jadxGetOverloads(owner, methodName, label) {\n");
+		scriptBuilder.append("        if (!owner || !owner[methodName] || !owner[methodName].overloads) {\n");
+		scriptBuilder.append("            console.log(\"[-] \" + label + \" not found; skipping hook\");\n");
+		scriptBuilder.append("            return [];\n");
+		scriptBuilder.append("        }\n");
+		scriptBuilder.append("        return owner[methodName].overloads;\n");
+		scriptBuilder.append("    }\n\n");
 	}
 }
