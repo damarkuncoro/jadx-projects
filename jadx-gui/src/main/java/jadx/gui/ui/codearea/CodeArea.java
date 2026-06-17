@@ -188,7 +188,6 @@ public final class CodeArea extends AbstractCodeArea implements CodeAreaSyncerAb
 		popup.add(new FindUsageAction(this));
 		popup.add(new UsageDialogPlusAction(this));
 		popup.add(new GoToDeclarationAction(this));
-		popup.add(new ToggleBookmarkAction(this));
 		popup.add(new CommentAction(this));
 		popup.add(new CommentSearchAction(this));
 		popup.add(new RenameAction(this));

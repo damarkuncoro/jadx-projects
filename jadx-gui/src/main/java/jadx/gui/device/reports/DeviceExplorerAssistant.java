@@ -23,7 +23,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import jadx.gui.utils.BuildStackDetector;
+import jadx.gui.buildstack.BuildStackDetector;
 
 public class DeviceExplorerAssistant {
 	private static final Logger LOG = LoggerFactory.getLogger(DeviceExplorerAssistant.class);

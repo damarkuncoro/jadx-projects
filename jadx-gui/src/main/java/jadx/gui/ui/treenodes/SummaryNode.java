@@ -32,9 +32,9 @@ import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.panel.ContentPanel;
 import jadx.gui.ui.panel.HtmlPanel;
 import jadx.gui.ui.tab.TabbedPane;
-import jadx.gui.utils.BuildStackDetector;
-import jadx.gui.utils.BuildStackDetector.BuildStackInfo;
-import jadx.gui.utils.BuildStackDetector.FrameworkDetection;
+import jadx.gui.buildstack.BuildStackDetector;
+import jadx.gui.buildstack.BuildStackInfo;
+import jadx.gui.buildstack.FrameworkDetection;
 import jadx.gui.utils.UiUtils;
 
 public class SummaryNode extends JNode {
