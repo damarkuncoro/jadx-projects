@@ -1,12 +1,12 @@
 <img src="https://raw.githubusercontent.com/skylot/jadx/master/jadx-gui/src/main/resources/logos/jadx-logo.png" width="64" align="left" />
 
-> **Note:** this repository is a local fork of `skylot/jadx` maintained by `damarkuncoro`.
+> **Note:** this repository is the DexForge Engine, based on the upstream `skylot/jadx` project and maintained by `damarkuncoro`.
 > This fork includes custom build and release tooling, and is intended for local development and binary-only release packaging.
 >
 > To run the GUI from source, use `./gradlew :jadx-gui:run`.
 > To create a GitHub release asset, use `./gradlew dist` and `./scripts/release.sh <tag>`.
 
-## JADX
+## DexForge Engine
 
 ![GitHub release](https://img.shields.io/github/v/release/damarkuncoro/jadx-projects?label=release&logo=github)
 ![GitHub downloads](https://img.shields.io/github/downloads/damarkuncoro/jadx-projects/total)
@@ -14,33 +14,33 @@
 ![Java 11+](https://img.shields.io/badge/Java-11%2B-blue)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-**jadx** - Dex to Java decompiler
+**DexForge Engine** - Dex to Java decompiler, powered by JADX
 
 Command line and GUI tools for producing Java source code from Android Dex and Apk files
 
 > [!WARNING]
-> Please note that jadx may not decompile 100% of code in all cases, so errors can occur.
+> Please note that DexForge/JADX may not decompile 100% of code in all cases, so errors can occur.
 > For troubleshooting, upstream `skylot/jadx` wiki resources often contain useful guidance.
 
 **Main features:**
 - decompile Dalvik bytecode to Java code from APK, dex, aar, aab and zip files
 - decode `AndroidManifest.xml` and other resources from `resources.arsc`
 - deobfuscator included
-- **JADX Device Explorer**: pull APKs (including split APK packages) directly from Android devices via ADB, with automatic workspace creation, decompile runners, and security analysis assistant scanning
+- **DexForge Device Explorer**: pull APKs (including split APK packages) directly from Android devices via ADB, with automatic workspace creation, decompile runners, and security analysis assistant scanning
 - **ELF Header Parser & Hex Viewer**: view ELF file headers (Class, OS/ABI, Machine, Entry point, etc.) and raw hexadecimal contents of native libraries (`.so` files)
 - **Automatic Binary XML Decoder**: signature-based detection and decoding of binary Android XML files (layout/drawable) even without standard extensions
-- **Frida Integration**: generate and run Frida scripts directly from Jadx GUI, with predefined snippets for common tasks like SSL pinning bypass, root detection bypass, etc.
+- **Frida Integration**: generate and run Frida scripts directly from DexForge GUI, with predefined snippets for common tasks like SSL pinning bypass, root detection bypass, etc.
 
-**jadx-gui features:**
+**DexForge GUI features:**
 - view decompiled code with highlighted syntax
 - jump to declaration
 - find usage
 - full text search
 - smali debugger, check the upstream wiki for setup and usage
-- JADX Device Explorer UI under menu `File` -> `Open from Android Device...` to visually browse packages, select split APK configuration, pull, and decompile
+- DexForge Device Explorer UI under menu `File` -> `Open from Android Device...` to visually browse packages, select split APK configuration, pull, and decompile
 - Frida integration: right-click a method in the decompiled code to generate a Frida hook script, or open the Frida panel via the menu to use predefined snippets
 
-Jadx-gui key bindings can be found in the upstream wiki.
+DexForge GUI key bindings currently follow jadx-gui defaults and can be found in the upstream wiki.
 
 See these features in action in the upstream jadx documentation.
 
@@ -49,11 +49,13 @@ See these features in action in the upstream jadx documentation.
 ### Download
 - release
   from [GitHub release](https://github.com/damarkuncoro/jadx-projects/releases/latest)
-- built artifact available from `./gradlew dist` as `build/jadx-dev.zip`
+- built artifact available from `./gradlew dist` as `build/dexforge-engine-dev.zip`
 
 After unpacking the zip file, run from `bin`:
+- `dexforge` - DexForge command line alias
+- `dexforge-gui` - DexForge GUI alias
 - `jadx` - command line version
-- `jadx-gui` - UI version
+- `jadx-gui` - compatibility GUI version
 
 On Windows, run the corresponding `.bat` files.
 **Note:** ensure you have Java 11 or later installed.
@@ -100,8 +102,10 @@ If you only need to run the GUI during development:
 ### Project requirements
 For the local fork, see [`docs/PROJECT_REQUIREMENTS.md`](docs/PROJECT_REQUIREMENTS.md) for environment setup, build prerequisites, and runtime dependencies.
 
-Scripts for run jadx will be placed in `build/jadx/bin`
-and also packed to `build/jadx-<version>.zip`
+For the DexForge Engine / IDE repository split, see [`docs/DEXFORGE_REPOSITORIES.md`](docs/DEXFORGE_REPOSITORIES.md).
+
+Scripts for running DexForge and jadx compatibility aliases will be placed in `build/jadx/bin`
+and also packed to `build/dexforge-engine-<version>.zip`
 
 ### Binary release helper
 This repository includes a helper script to create GitHub Releases from the generated distribution asset.
@@ -118,19 +122,19 @@ Then create a release (example):
 ./scripts/release.sh v1.5.6
 ```
 
-The helper will use `build/jadx-dev.zip` by default when it exists.
+The helper will use `build/dexforge-engine-dev.zip` by default when it exists.
 
 To attach custom release notes:
 
 ```bash
-./scripts/release.sh v1.5.6 --artifact build/jadx-dev.zip --notes-file release-notes.md
+./scripts/release.sh v1.5.6 --artifact build/dexforge-engine-dev.zip --notes-file release-notes.md
 ```
 
 Latest release notes are stored in `release-notes.md`.
 
 ### Usage
 ```
-jadx[-gui] [command] [options] <input files> (.apk, .dex, .jar, .class, .smali, .zip, .aar, .arsc, .aab, .xapk, .apkm, .jadx.kts)
+dexforge[-gui] [command] [options] <input files> (.apk, .dex, .jar, .class, .smali, .zip, .aar, .arsc, .aab, .xapk, .apkm, .jadx.kts)
 commands (use '<command> --help' for command options):
   plugins         - manage jadx plugins
   device-explorer - pull and decompile APKs from Android devices via ADB
@@ -268,7 +272,7 @@ Examples:
   jadx --log-level ERROR app.apk
   jadx -Pdex-input.verify-checksum=no app.apk
 ```
-These options also work in jadx-gui running from command line and override options from preferences' dialog
+These options also work in DexForge GUI running from command line and override options from preferences' dialog
 
 Usage for `plugins` command
 ```
@@ -289,7 +293,7 @@ options:
 
 Usage for `device-explorer` command
 ```
-usage: device-explorer <command> [options]
+usage: dexforge device-explorer <command> [options] [--format json]
 commands:
   list-devices                                                  - list connected devices via ADB
   list-users <serial>                                           - list Android users/profiles on device
@@ -297,6 +301,15 @@ commands:
   paths <serial> <package_name>                                 - resolve APK paths for package name
   pull <serial> <package_name> <out_dir> [user_id]              - pull APK and split APK components into workspace
   pull-and-decompile <serial> <package_name> <out_dir> [user_id] - pull APK splits, decompile them, and generate security reports
+```
+
+Add `--format json` to any `device-explorer` command to get machine-readable output for IDE integrations.
+
+Examples for IDE integrations:
+```bash
+dexforge device-explorer list-devices --format json
+dexforge device-explorer list-packages SERIAL 0 user --format json
+dexforge device-explorer pull-and-decompile SERIAL id.net.cakramedia.attendance ./workspace 0 --format json
 ```
 
 

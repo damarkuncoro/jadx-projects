@@ -1,5 +1,7 @@
 package jadx.cli;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +22,8 @@ import jadx.plugins.tools.JadxExternalPluginsLoader;
 
 public class JadxCLI {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxCLI.class);
+	private static final String DEVICE_EXPLORER_COMMAND = "device-explorer";
+	private static final String DEVICE_EXPLORER_CLI_CLASS = "jadx.gui.device.protocol.DeviceExplorerCLI";
 
 	public static void main(String[] args) {
 		int result = 1;
@@ -36,6 +40,9 @@ public class JadxCLI {
 
 	public static int execute(String[] args, @Nullable Consumer<JadxArgs> argsMod) {
 		try {
+			if (isDeviceExplorerCommand(args)) {
+				return runDeviceExplorer(args);
+			}
 			JadxCLIArgs cliArgs = JadxCLIArgs.processArgs(args,
 					new JadxCLIArgs(),
 					new JadxConfigAdapter<>(JadxCLIArgs.class, "cli"));
@@ -52,6 +59,29 @@ public class JadxCLI {
 			return 1;
 		} catch (Throwable e) {
 			LOG.error("Process error:", e);
+			return 1;
+		}
+	}
+
+	private static boolean isDeviceExplorerCommand(String[] args) {
+		return args.length > 0 && DEVICE_EXPLORER_COMMAND.equals(args[0]);
+	}
+
+	private static int runDeviceExplorer(String[] args) {
+		try {
+			Class<?> cliClass = Class.forName(DEVICE_EXPLORER_CLI_CLASS);
+			Method mainMethod = cliClass.getMethod("main", String[].class);
+			mainMethod.invoke(null, (Object) args);
+			return 0;
+		} catch (ClassNotFoundException e) {
+			LOG.error("Device Explorer is not available in this distribution. Use the DexForge Engine bundle.");
+			return 1;
+		} catch (NoSuchMethodException | IllegalAccessException e) {
+			LOG.error("Failed to start Device Explorer CLI", e);
+			return 1;
+		} catch (InvocationTargetException e) {
+			Throwable cause = e.getCause();
+			LOG.error("Device Explorer CLI failed", cause == null ? e : cause);
 			return 1;
 		}
 	}

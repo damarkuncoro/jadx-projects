@@ -29,16 +29,19 @@ public class AboutDialog extends JDialog {
 
 	public final void initUI() {
 		URL logoURL = getClass().getResource("/logos/jadx-logo-48px.png");
-		Icon logo = new ImageIcon(logoURL, "JADX logo");
+		Icon logo = new ImageIcon(logoURL, "DexForge logo");
 
-		JLabel name = new JLabel("JADX", logo, SwingConstants.CENTER);
+		JLabel name = new JLabel("DexForge GUI", logo, SwingConstants.CENTER);
 		name.setAlignmentX(0.5f);
 
-		JLabel desc = new JLabel("Dex to Java decompiler");
+		JLabel desc = new JLabel("DexForge Engine - Dex to Java decompiler");
 		desc.setAlignmentX(0.5f);
 
-		JLabel version = new JLabel("JADX version: " + JadxDecompiler.getVersion());
+		JLabel version = new JLabel("Engine version: " + JadxDecompiler.getVersion());
 		version.setAlignmentX(0.5f);
+
+		JLabel poweredBy = new JLabel("Powered by JADX");
+		poweredBy.setAlignmentX(0.5f);
 
 		String javaVm = System.getProperty("java.vm.name");
 		String javaVer = System.getProperty("java.version");
@@ -61,6 +64,8 @@ public class AboutDialog extends JDialog {
 		textPane.add(desc);
 		textPane.add(Box.createRigidArea(new Dimension(0, 10)));
 		textPane.add(version);
+		textPane.add(Box.createRigidArea(new Dimension(0, 10)));
+		textPane.add(poweredBy);
 		textPane.add(Box.createRigidArea(new Dimension(0, 20)));
 		textPane.add(javaVmLabel);
 		textPane.add(javaVerLabel);

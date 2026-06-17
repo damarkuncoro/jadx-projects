@@ -19,14 +19,21 @@ import jadx.api.JadxDecompiler;
 import jadx.api.impl.NoOpCodeCache;
 import jadx.api.impl.SimpleCodeWriter;
 import jadx.api.usage.impl.EmptyUsageInfoCache;
+import jadx.cli.LogHelper;
 import jadx.cli.plugins.JadxFilesGetter;
 import jadx.gui.device.protocol.AdbService.AdbUser;
 import jadx.plugins.tools.JadxExternalPluginsLoader;
 
 public class DeviceExplorerCLI {
 	private static final Logger LOG = LoggerFactory.getLogger(DeviceExplorerCLI.class);
+	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public static void main(String[] args) {
+		CliOptions options = CliOptions.parse(args);
+		args = options.getArgs();
+		if (options.getFormat().isJson()) {
+			LogHelper.setLogLevel(LogHelper.LogLevelEnum.ERROR);
+		}
 		if (args.length < 2) {
 			printUsage();
 			System.exit(1);
@@ -36,7 +43,7 @@ public class DeviceExplorerCLI {
 		try {
 			switch (command) {
 				case "list-devices":
-					executeListDevices();
+					executeListDevices(options.getFormat());
 					break;
 				case "list-users":
 					if (args.length < 3) {
@@ -44,7 +51,7 @@ public class DeviceExplorerCLI {
 						printUsage();
 						System.exit(1);
 					}
-					executeListUsers(args[2]);
+					executeListUsers(args[2], options.getFormat());
 					break;
 				case "list-packages":
 					if (args.length < 4) {
@@ -53,7 +60,7 @@ public class DeviceExplorerCLI {
 						System.exit(1);
 					}
 					String filter = args.length >= 5 ? args[4] : "all";
-					executeListPackages(args[2], Integer.parseInt(args[3]), filter);
+					executeListPackages(args[2], Integer.parseInt(args[3]), filter, options.getFormat());
 					break;
 				case "paths":
 					if (args.length < 4) {
@@ -61,7 +68,7 @@ public class DeviceExplorerCLI {
 						printUsage();
 						System.exit(1);
 					}
-					executePaths(args[2], args[3]);
+					executePaths(args[2], args[3], options.getFormat());
 					break;
 				case "pull":
 					if (args.length < 5) {
@@ -70,7 +77,10 @@ public class DeviceExplorerCLI {
 						System.exit(1);
 					}
 					int userIdPull = args.length >= 6 ? Integer.parseInt(args[5]) : 0;
-					executePull(args[2], args[3], args[4], userIdPull);
+					PullResult pullResult = executePull(args[2], args[3], args[4], userIdPull, options.getFormat());
+					if (options.getFormat().isJson()) {
+						printJson(pullResult.getSummary());
+					}
 					break;
 				case "pull-and-decompile":
 					if (args.length < 5) {
@@ -79,7 +89,11 @@ public class DeviceExplorerCLI {
 						System.exit(1);
 					}
 					int userIdDecompile = args.length >= 6 ? Integer.parseInt(args[5]) : 0;
-					executePullAndDecompile(args[2], args[3], args[4], userIdDecompile);
+					Map<String, Object> decompileResult = executePullAndDecompile(args[2], args[3], args[4],
+							userIdDecompile, options.getFormat());
+					if (options.getFormat().isJson()) {
+						printJson(decompileResult);
+					}
 					break;
 				default:
 					System.err.println("Unknown command: " + command);
@@ -87,6 +101,10 @@ public class DeviceExplorerCLI {
 					System.exit(1);
 			}
 		} catch (Exception e) {
+			if (options.getFormat().isJson()) {
+				printJson(createError(command, e));
+				System.exit(1);
+			}
 			System.err.println("Error executing command '" + command + "': " + e.getMessage());
 			LOG.error("Command execution failed", e);
 			System.exit(1);
@@ -94,15 +112,15 @@ public class DeviceExplorerCLI {
 	}
 
 	private static void printUsage() {
-		System.out.println("JADX Device Explorer CLI Helper Usage:");
-		System.out.println("  ./gradlew :jadx-gui:run --args=\"device-explorer list-devices\"");
-		System.out.println("  ./gradlew :jadx-gui:run --args=\"device-explorer list-users <serial>\"");
+		System.out.println("DexForge Device Explorer CLI Helper Usage:");
+		System.out.println("  dexforge device-explorer list-devices [--format json]");
+		System.out.println("  dexforge device-explorer list-users <serial> [--format json]");
 		System.out.println(
-				"  ./gradlew :jadx-gui:run --args=\"device-explorer list-packages <serial> <user_id> [filter]\" (filters: all, user, system)");
-		System.out.println("  ./gradlew :jadx-gui:run --args=\"device-explorer paths <serial> <package_name>\"");
-		System.out.println("  ./gradlew :jadx-gui:run --args=\"device-explorer pull <serial> <package_name> <out_dir> [user_id]\"");
+				"  dexforge device-explorer list-packages <serial> <user_id> [filter] [--format json] (filters: all, user, system)");
+		System.out.println("  dexforge device-explorer paths <serial> <package_name> [--format json]");
+		System.out.println("  dexforge device-explorer pull <serial> <package_name> <out_dir> [user_id] [--format json]");
 		System.out.println(
-				"  ./gradlew :jadx-gui:run --args=\"device-explorer pull-and-decompile <serial> <package_name> <out_dir> [user_id]\"");
+				"  dexforge device-explorer pull-and-decompile <serial> <package_name> <out_dir> [user_id] [--format json]");
 	}
 
 	private static ADBDevice findDevice(String serial) throws IOException, AdbException {
@@ -115,9 +133,23 @@ public class DeviceExplorerCLI {
 		throw new AdbException("Device with serial '" + serial + "' not found.");
 	}
 
-	private static void executeListDevices() throws IOException {
-		System.out.println("[*] Fetching connected devices...");
+	private static void executeListDevices(OutputFormat format) throws IOException {
+		printStatus(format, "[*] Fetching connected devices...");
 		List<ADBDevice> devices = AdbService.listDevices("localhost", 5037);
+		if (format.isJson()) {
+			List<Map<String, Object>> result = new ArrayList<>();
+			for (ADBDevice device : devices) {
+				ADBDeviceInfo info = device.getDeviceInfo();
+				Map<String, Object> deviceJson = new LinkedHashMap<>();
+				deviceJson.put("serial", info.getSerial());
+				deviceJson.put("status", info.getState());
+				deviceJson.put("model", info.getModel());
+				deviceJson.put("androidVersion", device.getAndroidReleaseVersion());
+				result.add(deviceJson);
+			}
+			printJson(result);
+			return;
+		}
 		if (devices.isEmpty()) {
 			System.out.println("No devices connected.");
 			return;
@@ -128,18 +160,31 @@ public class DeviceExplorerCLI {
 		}
 	}
 
-	private static void executeListUsers(String serial) throws IOException, AdbException {
+	private static void executeListUsers(String serial, OutputFormat format) throws IOException, AdbException {
 		ADBDevice device = findDevice(serial);
-		System.out.println("[*] Fetching users for device: " + serial);
+		printStatus(format, "[*] Fetching users for device: " + serial);
 		List<AdbUser> users = AdbService.listUsers(device);
+		if (format.isJson()) {
+			List<Map<String, Object>> result = new ArrayList<>();
+			for (AdbUser user : users) {
+				Map<String, Object> userJson = new LinkedHashMap<>();
+				userJson.put("id", user.getId());
+				userJson.put("name", user.getName());
+				result.add(userJson);
+			}
+			printJson(result);
+			return;
+		}
 		for (AdbUser user : users) {
 			System.out.printf("User ID: %d | Name: %s\n", user.getId(), user.getName());
 		}
 	}
 
-	private static void executeListPackages(String serial, int userId, String filter) throws IOException, AdbException {
+	private static void executeListPackages(String serial, int userId, String filter, OutputFormat format)
+			throws IOException, AdbException {
 		ADBDevice device = findDevice(serial);
-		System.out.printf("[*] Fetching packages for device: %s, User ID: %d, Filter: %s\n", serial, userId, filter);
+		printStatus(format, String.format("[*] Fetching packages for device: %s, User ID: %d, Filter: %s",
+				serial, userId, filter));
 		List<AdbPackage> packages;
 		try {
 			packages = AdbService.listPackages(device, userId, filter);
@@ -152,6 +197,14 @@ public class DeviceExplorerCLI {
 				throw e;
 			}
 		}
+		if (format.isJson()) {
+			List<Map<String, Object>> result = new ArrayList<>();
+			for (AdbPackage pkg : packages) {
+				result.add(toPackageJson(pkg, userId));
+			}
+			printJson(result);
+			return;
+		}
 		if (packages.isEmpty()) {
 			System.out.println("No packages found.");
 			return;
@@ -161,10 +214,15 @@ public class DeviceExplorerCLI {
 		}
 	}
 
-	private static void executePaths(String serial, String packageName) throws IOException, AdbException {
+	private static void executePaths(String serial, String packageName, OutputFormat format)
+			throws IOException, AdbException {
 		ADBDevice device = findDevice(serial);
-		System.out.printf("[*] Resolving APK paths for package '%s'...\n", packageName);
+		printStatus(format, String.format("[*] Resolving APK paths for package '%s'...", packageName));
 		List<ApkPath> paths = AdbService.resolveApkPaths(device, packageName, 0);
+		if (format.isJson()) {
+			printJson(toApkPathJson(paths));
+			return;
+		}
 		if (paths.isEmpty()) {
 			System.out.println("No paths resolved.");
 			return;
@@ -174,11 +232,12 @@ public class DeviceExplorerCLI {
 		}
 	}
 
-	private static List<ApkPath> executePull(String serial, String packageName, String outDir, int userId)
+	private static PullResult executePull(String serial, String packageName, String outDir, int userId,
+			OutputFormat format)
 			throws IOException, AdbException {
 		ADBDevice device = findDevice(serial);
 		String adbPath = AdbService.detectAdbPath();
-		System.out.printf("[*] Pulling APKs for package '%s' to '%s'...\n", packageName, outDir);
+		printStatus(format, String.format("[*] Pulling APKs for package '%s' to '%s'...", packageName, outDir));
 
 		List<ApkPath> paths;
 		try {
@@ -203,7 +262,7 @@ public class DeviceExplorerCLI {
 
 		for (ApkPath path : paths) {
 			File localFile = new File(apksDir, path.getLocalName());
-			System.out.printf("Pulling: %s -> %s\n", path.getRemotePath(), localFile.getAbsolutePath());
+			printStatus(format, String.format("Pulling: %s -> %s", path.getRemotePath(), localFile.getAbsolutePath()));
 			AdbService.pullApk(adbPath, device, path.getRemotePath(), localFile);
 		}
 
@@ -231,19 +290,20 @@ public class DeviceExplorerCLI {
 		}
 		report.put("apkFiles", apkFilesList);
 
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		File reportFile = new File(reportsDir, "pull-report.json");
 		try (FileWriter writer = new FileWriter(reportFile)) {
-			gson.toJson(report, writer);
+			GSON.toJson(report, writer);
 		}
-		System.out.println("[*] Metadata pull report saved to " + reportFile.getAbsolutePath());
+		printStatus(format, "[*] Metadata pull report saved to " + reportFile.getAbsolutePath());
 
-		return paths;
+		return new PullResult(paths, createPullSummary(packageName, serial, userId, outDir, paths, reportFile));
 	}
 
-	private static void executePullAndDecompile(String serial, String packageName, String outDir, int userId)
+	private static Map<String, Object> executePullAndDecompile(String serial, String packageName, String outDir,
+			int userId, OutputFormat format)
 			throws IOException, AdbException {
-		List<ApkPath> paths = executePull(serial, packageName, outDir, userId);
+		PullResult pullResult = executePull(serial, packageName, outDir, userId, format);
+		List<ApkPath> paths = pullResult.getPaths();
 
 		File apksDir = new File(outDir, "apks");
 		List<File> apkFiles = new ArrayList<>();
@@ -256,12 +316,12 @@ public class DeviceExplorerCLI {
 
 		if (apkFiles.isEmpty()) {
 			System.err.println("Error: No APK files were pulled.");
-			return;
+			return pullResult.getSummary();
 		}
 
-		File jadxOutputDir = new File(outDir, "jadx-output");
+		File jadxOutputDir = new File(outDir, "decompiled");
 		long startTime = System.currentTimeMillis();
-		decompileApks(apkFiles, jadxOutputDir);
+		decompileApks(apkFiles, jadxOutputDir, format);
 		long duration = System.currentTimeMillis() - startTime;
 
 		// Write decompile-report.json (Milestone v0.4)
@@ -283,24 +343,38 @@ public class DeviceExplorerCLI {
 		report.put("inputApkFiles", inputs);
 		report.put("generatedAt", java.time.Instant.now().toString());
 
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		File reportFile = new File(reportsDir, "decompile-report.json");
 		try (FileWriter writer = new FileWriter(reportFile)) {
-			gson.toJson(report, writer);
+			GSON.toJson(report, writer);
 		}
-		System.out.println("[*] Metadata decompilation report saved to " + reportFile.getAbsolutePath());
+		printStatus(format, "[*] Metadata decompilation report saved to " + reportFile.getAbsolutePath());
 
-		File assistantReportFile = new File(reportsDir, "assistant-report.json");
-		System.out.println("[*] Running Security Assistant analysis...");
+		File manifestReportFile = new File(reportsDir, "manifest.json");
+		writeManifestReport(jadxOutputDir, manifestReportFile);
+		printStatus(format, "[*] Manifest report saved to " + manifestReportFile.getAbsolutePath());
+
+		File securityReportFile = new File(reportsDir, "security.json");
+		printStatus(format, "[*] Running Security Assistant analysis...");
 		try {
-			DeviceExplorerAssistant.runAnalysis(jadxOutputDir, assistantReportFile);
-			System.out.println("[*] Security Assistant report saved to " + assistantReportFile.getAbsolutePath());
+			DeviceExplorerAssistant.runAnalysis(jadxOutputDir, securityReportFile);
+			printStatus(format, "[*] Security Assistant report saved to " + securityReportFile.getAbsolutePath());
 		} catch (Exception e) {
 			System.err.println("[!] Security Assistant analysis failed: " + e.getMessage());
 		}
+
+		Map<String, Object> result = pullResult.getSummary();
+		result.put("decompiledDir", "decompiled");
+		result.put("decompiledPath", jadxOutputDir.getAbsolutePath());
+		result.put("durationMs", duration);
+		@SuppressWarnings("unchecked")
+		Map<String, Object> reports = (Map<String, Object>) result.get("reports");
+		reports.put("decompile", "reports/" + reportFile.getName());
+		reports.put("manifest", "reports/manifest.json");
+		reports.put("security", "reports/" + securityReportFile.getName());
+		return result;
 	}
 
-	private static void decompileApks(List<File> apkFiles, File outDir) {
+	private static void decompileApks(List<File> apkFiles, File outDir, OutputFormat format) {
 		JadxArgs jadxArgs = new JadxArgs();
 		jadxArgs.setInputFiles(apkFiles);
 		jadxArgs.setOutDir(outDir);
@@ -315,17 +389,192 @@ public class DeviceExplorerCLI {
 		jadxArgs.setUsageInfoCache(new EmptyUsageInfoCache());
 		jadxArgs.setCodeWriterProvider(SimpleCodeWriter::new);
 
-		System.out.println("[*] Starting decompilation...");
+		printStatus(format, "[*] Starting decompilation...");
 		try (JadxDecompiler decompiler = new JadxDecompiler(jadxArgs)) {
 			decompiler.load();
 			decompiler.save(500, (done, total) -> {
+				if (format.isJson()) {
+					return;
+				}
 				int progress = (int) (done * 100.0 / total);
 				System.out.printf("INFO  - progress: %d of %d (%d%%)\r", done, total, progress);
 			});
-			System.out.println("\n[*] Decompilation finished. Saved to: " + outDir.getAbsolutePath());
+			printStatus(format, "\n[*] Decompilation finished. Saved to: " + outDir.getAbsolutePath());
 		} catch (Exception e) {
 			System.err.println("[!] Decompilation failed: " + e.getMessage());
 			LOG.error("Decompilation failed", e);
+		}
+	}
+
+	static Map<String, Object> createPullSummary(String packageName, String serial, int userId, String outDir,
+			List<ApkPath> paths, File pullReportFile) {
+		Map<String, Object> result = new LinkedHashMap<>();
+		result.put("packageName", packageName);
+		result.put("deviceSerial", serial);
+		result.put("androidUser", userId);
+		result.put("workspace", new File(outDir).getAbsolutePath());
+
+		List<String> apks = new ArrayList<>();
+		for (ApkPath path : paths) {
+			apks.add(path.getLocalName());
+		}
+		result.put("apks", apks);
+		result.put("apkPaths", toApkPathJson(paths));
+
+		Map<String, Object> reports = new LinkedHashMap<>();
+		reports.put("pull", "reports/" + pullReportFile.getName());
+		result.put("reports", reports);
+		return result;
+	}
+
+	static void writeManifestReport(File decompiledDir, File manifestReportFile) throws IOException {
+		File manifestFile = findFile(decompiledDir, "AndroidManifest.xml");
+		Map<String, Object> manifestReport = new LinkedHashMap<>();
+		manifestReport.put("status", manifestFile == null ? "MISSING" : "FOUND");
+		if (manifestFile != null) {
+			manifestReport.put("path", decompiledDir.toPath().relativize(manifestFile.toPath()).toString());
+			manifestReport.put("absolutePath", manifestFile.getAbsolutePath());
+		}
+		File parent = manifestReportFile.getParentFile();
+		if (parent != null && !parent.exists()) {
+			parent.mkdirs();
+		}
+		try (FileWriter writer = new FileWriter(manifestReportFile)) {
+			GSON.toJson(manifestReport, writer);
+		}
+	}
+
+	private static File findFile(File dir, String fileName) {
+		if (dir == null || !dir.exists()) {
+			return null;
+		}
+		File[] files = dir.listFiles();
+		if (files == null) {
+			return null;
+		}
+		for (File file : files) {
+			if (file.isFile() && fileName.equals(file.getName())) {
+				return file;
+			}
+			if (file.isDirectory()) {
+				File found = findFile(file, fileName);
+				if (found != null) {
+					return found;
+				}
+			}
+		}
+		return null;
+	}
+
+	static List<Map<String, Object>> toApkPathJson(List<ApkPath> paths) {
+		List<Map<String, Object>> result = new ArrayList<>();
+		for (ApkPath path : paths) {
+			Map<String, Object> pathJson = new LinkedHashMap<>();
+			pathJson.put("type", path.getType());
+			pathJson.put("remotePath", path.getRemotePath());
+			pathJson.put("localName", path.getLocalName());
+			result.add(pathJson);
+		}
+		return result;
+	}
+
+	static Map<String, Object> toPackageJson(AdbPackage pkg, int userId) {
+		Map<String, Object> packageJson = new LinkedHashMap<>();
+		packageJson.put("packageName", pkg.getPackageName());
+		packageJson.put("label", pkg.getPackageName());
+		packageJson.put("userId", userId);
+		packageJson.put("type", pkg.isSystem() ? "system" : "user");
+		packageJson.put("path", pkg.getPath());
+		return packageJson;
+	}
+
+	private static void printJson(Object value) {
+		System.out.println(GSON.toJson(value));
+	}
+
+	static Map<String, Object> createError(String command, Exception e) {
+		Map<String, Object> error = new LinkedHashMap<>();
+		error.put("status", "ERROR");
+		error.put("command", command);
+		error.put("message", e.getMessage());
+		return error;
+	}
+
+	private static void printStatus(OutputFormat format, String message) {
+		if (format.isJson()) {
+			return;
+		}
+		System.out.println(message);
+	}
+
+	private enum OutputFormat {
+		TEXT,
+		JSON;
+
+		boolean isJson() {
+			return this == JSON;
+		}
+	}
+
+	private static final class CliOptions {
+		private final String[] args;
+		private final OutputFormat format;
+
+		private CliOptions(String[] args, OutputFormat format) {
+			this.args = args;
+			this.format = format;
+		}
+
+		static CliOptions parse(String[] args) {
+			List<String> normalizedArgs = new ArrayList<>();
+			OutputFormat format = OutputFormat.TEXT;
+			for (int i = 0; i < args.length; i++) {
+				String arg = args[i];
+				if ("--format".equals(arg)) {
+					if (i + 1 >= args.length) {
+						throw new IllegalArgumentException("Missing value for --format. Expected: text or json.");
+					}
+					String value = args[++i];
+					if ("json".equalsIgnoreCase(value)) {
+						format = OutputFormat.JSON;
+					} else if ("text".equalsIgnoreCase(value)) {
+						format = OutputFormat.TEXT;
+					} else {
+						throw new IllegalArgumentException("Unsupported --format value: " + value);
+					}
+				} else if ("--json".equals(arg)) {
+					format = OutputFormat.JSON;
+				} else {
+					normalizedArgs.add(arg);
+				}
+			}
+			return new CliOptions(normalizedArgs.toArray(new String[0]), format);
+		}
+
+		String[] getArgs() {
+			return args;
+		}
+
+		OutputFormat getFormat() {
+			return format;
+		}
+	}
+
+	private static final class PullResult {
+		private final List<ApkPath> paths;
+		private final Map<String, Object> summary;
+
+		private PullResult(List<ApkPath> paths, Map<String, Object> summary) {
+			this.paths = paths;
+			this.summary = summary;
+		}
+
+		List<ApkPath> getPaths() {
+			return paths;
+		}
+
+		Map<String, Object> getSummary() {
+			return summary;
 		}
 	}
 }

@@ -158,6 +158,27 @@ val copyArtifacts by tasks.registering(Copy::class) {
 		include("**/*.jar")
 		rename("jadx-gui-(.*)-all.jar", "jadx-$1-all.jar")
 	}
+	from(tasks.getByPath(":jadx-cli:installShadowDist")) {
+		include("bin/jadx", "bin/jadx.bat")
+		filter { line ->
+			jarCliPattern
+				.matcher(line)
+				.replaceAll("jadx-$1-all.jar")
+				.replace("-jar \"\\\"\$CLASSPATH\\\"\"", "-cp \"\\\"\$CLASSPATH\\\"\" jadx.cli.JadxCLI")
+				.replace("-jar \"%CLASSPATH%\"", "-cp \"%CLASSPATH%\" jadx.cli.JadxCLI")
+		}
+		rename("jadx(\\.bat)?", "dexforge$1")
+	}
+	from(tasks.getByPath(":jadx-gui:installShadowDist")) {
+		include("bin/jadx-gui", "bin/jadx-gui.bat")
+		filter { line ->
+			jarGuiPattern
+				.matcher(line)
+				.replaceAll("jadx-$1-all.jar")
+				.replace("start \"jadx-gui\"", "start \"dexforge-gui\"")
+		}
+		rename("jadx-gui(\\.bat)?", "dexforge-gui$1")
+	}
 	from(layout.projectDirectory) {
 		include("README.md")
 		include("LICENSE")
@@ -168,10 +189,10 @@ val copyArtifacts by tasks.registering(Copy::class) {
 
 val pack by tasks.registering(Zip::class) {
 	from(copyArtifacts)
-	archiveFileName.set("jadx-$jadxVersion.zip")
+	archiveFileName.set("dexforge-engine-$jadxVersion.zip")
 	destinationDirectory.set(layout.buildDirectory)
 	eachFile {
-		if (path == "bin/jadx" || path == "bin/jadx-gui") {
+		if (path == "bin/jadx" || path == "bin/jadx-gui" || path == "bin/dexforge" || path == "bin/dexforge-gui") {
 			permissions {
 				unix("rwxr-xr-x")
 			}
@@ -186,7 +207,7 @@ val distWin by tasks.registering(Zip::class) {
 	from(distWinConfiguration)
 
 	destinationDirectory.set(layout.buildDirectory.dir("distWin"))
-	archiveFileName.set("jadx-gui-$jadxVersion-win.zip")
+	archiveFileName.set("dexforge-gui-$jadxVersion-win.zip")
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -196,13 +217,13 @@ val distWinWithJre by tasks.registering(Zip::class) {
 	from(distWinWithJreConfiguration)
 
 	destinationDirectory.set(layout.buildDirectory.dir("distWinWithJre"))
-	archiveFileName.set("jadx-gui-$jadxVersion-with-jre-win.zip")
+	archiveFileName.set("dexforge-gui-$jadxVersion-with-jre-win.zip")
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 val dist by tasks.registering {
 	group = "jadx"
-	description = "Build jadx distribution zip bundles"
+	description = "Build DexForge Engine distribution zip bundles"
 
 	dependsOn(pack)
 

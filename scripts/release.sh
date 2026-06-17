@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Simple release helper for jadx GitHub binary assets
+# Simple release helper for DexForge Engine GitHub binary assets
 # Usage:
 #   ./scripts/release.sh v1.0.0
 #   ./scripts/release.sh v1.0.0 --notes-file release-notes.md
@@ -35,20 +35,20 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$ARTIFACT" ]]; then
-  ARTIFACT="build/jadx-$TAG.zip"
+  ARTIFACT="build/dexforge-engine-$TAG.zip"
 fi
 
 if [[ ! -f "$ARTIFACT" ]]; then
-  if [[ -f "build/jadx-dev.zip" ]]; then
-    echo "Using existing build artifact build/jadx-dev.zip"
+  if [[ -f "build/dexforge-engine-dev.zip" ]]; then
+    echo "Using existing build artifact build/dexforge-engine-dev.zip"
+    ARTIFACT="build/dexforge-engine-dev.zip"
+  elif [[ -f "build/jadx-dev.zip" ]]; then
+    echo "Using existing compatibility build artifact build/jadx-dev.zip"
     ARTIFACT="build/jadx-dev.zip"
-  elif [[ -f "build/jadx/jadx-dev.zip" ]]; then
-    echo "Using existing build artifact build/jadx/jadx-dev.zip"
-    ARTIFACT="build/jadx/jadx-dev.zip"
   elif [[ -d "build/jadx" ]]; then
     echo "Packaging build/jadx into $ARTIFACT"
     mkdir -p "$(dirname "$ARTIFACT")"
-    python3 - <<'PY'
+    python3 - "$ARTIFACT" <<'PY'
 import os
 import zipfile
 import sys
@@ -61,7 +61,6 @@ with zipfile.ZipFile(target, 'w', compression=zipfile.ZIP_DEFLATED) as archive:
             path = os.path.join(dirpath, filename)
             archive.write(path, os.path.relpath(path, root))
 PY
- "$ARTIFACT"
   fi
 fi
 
