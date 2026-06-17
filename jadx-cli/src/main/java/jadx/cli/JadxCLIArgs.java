@@ -249,7 +249,7 @@ public class JadxCLIArgs implements IJadxConfig {
 			names = { "--use-headers-for-detect-resource-extensions" },
 			description = "Use headers for detect resource extensions if resource obfuscated"
 	)
-	protected boolean useHeadersForDetectResourceExtensions = false;
+	protected boolean useHeadersForDetectResourceExtensions = true;
 
 	@Parameter(
 			names = { "--exclude-zz" },
