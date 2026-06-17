@@ -35,6 +35,7 @@ import jadx.gui.ui.codearea.BinaryContentPanel;
 import jadx.gui.ui.codearea.CodeContentPanel;
 import jadx.gui.ui.panel.ContentPanel;
 import jadx.gui.ui.panel.FontPanel;
+import jadx.gui.ui.panel.HtmlPanel;
 import jadx.gui.ui.panel.ImagePanel;
 import jadx.gui.ui.popupmenu.JResourcePopupMenu;
 import jadx.gui.ui.tab.TabbedPane;
@@ -222,6 +223,9 @@ public class JResource extends JLoadableNode {
 			return null;
 		}
 		// TODO: allow to register custom viewers
+		if (isHtml()) {
+			return new HtmlPanel(tabbedPane, this);
+		}
 		if (resFile.getType() == ResourceType.IMG || isImageMagic()) {
 			return new ImagePanel(tabbedPane, this);
 		}
@@ -639,6 +643,14 @@ public class JResource extends JLoadableNode {
 			isBinaryXml = false;
 			return false;
 		}
+	}
+
+	public boolean isHtml() {
+		if (resFile == null || type != JResType.FILE) {
+			return false;
+		}
+		String name = resFile.getDeobfName().toLowerCase();
+		return name.endsWith(".html") || name.endsWith(".htm");
 	}
 
 	public boolean isDexMagic() {
