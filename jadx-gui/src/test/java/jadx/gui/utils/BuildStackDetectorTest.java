@@ -27,9 +27,16 @@ class BuildStackDetectorTest {
 		Path sourcesDir = outputDir.resolve("sources");
 		Files.createDirectories(resourcesDir.resolve("META-INF/proguard"));
 		Files.createDirectories(resourcesDir.resolve("assets/www"));
+		Files.createDirectories(resourcesDir.resolve("assets"));
 		Files.createDirectories(sourcesDir.resolve("okhttp3"));
 		Files.createDirectories(sourcesDir.resolve("retrofit2"));
 		Files.createDirectories(sourcesDir.resolve("dagger"));
+		Files.createDirectories(sourcesDir.resolve("org/cocos2dx"));
+		Files.createDirectories(sourcesDir.resolve("com/epicgames/ue4"));
+		Files.createDirectories(sourcesDir.resolve("org/koin"));
+		Files.createDirectories(sourcesDir.resolve("io/reactivex"));
+		Files.createDirectories(sourcesDir.resolve("com/bumptech/glide"));
+		Files.createDirectories(sourcesDir.resolve("com/airbnb/lottie"));
 
 		write(resourcesDir.resolve("AndroidManifest.xml"), "<manifest package=\"com.example.app\" "
 				+ "android:compileSdkVersion=\"35\"><uses-sdk android:minSdkVersion=\"26\" "
@@ -44,6 +51,10 @@ class BuildStackDetectorTest {
 				+ "\"targetCompatibility\":\"17\"}}}]}");
 		write(resourcesDir.resolve("google-services.json"), "{}");
 		write(resourcesDir.resolve("assets/www/index.html"), "<html></html>");
+		write(resourcesDir.resolve("assets/tauri.conf.json"), "{}");
+		write(resourcesDir.resolve("libtauri.so"), "");
+		write(resourcesDir.resolve("libcocos2d.so"), "");
+		write(resourcesDir.resolve("libUE4.so"), "");
 		write(resourcesDir.resolve("META-INF/androidx.core_core-ktx.version"), "1.13.1");
 		write(resourcesDir.resolve("META-INF/androidx.compose.ui_ui.version"), "1.6.0");
 		write(resourcesDir.resolve("META-INF/androidx.room_room-runtime.version"), "2.6.1");
@@ -51,10 +62,20 @@ class BuildStackDetectorTest {
 		write(resourcesDir.resolve("META-INF/com.squareup.retrofit2_retrofit.version"), "2.11.0");
 		write(resourcesDir.resolve("META-INF/com.squareup.okhttp3_okhttp.version"), "4.12.0");
 		write(resourcesDir.resolve("META-INF/com.google.dagger_hilt-android.version"), "2.51.1");
+		write(resourcesDir.resolve("META-INF/org.insert-koin_koin-core.version"), "3.5.0");
+		write(resourcesDir.resolve("META-INF/io.reactivex.rxjava3_rxjava.version"), "3.1.8");
+		write(resourcesDir.resolve("META-INF/com.github.bumptech.glide_glide.version"), "4.16.0");
+		write(resourcesDir.resolve("META-INF/com.airbnb.android_lottie.version"), "6.4.0");
 		write(resourcesDir.resolve("META-INF/proguard/coroutines.pro"), "-keep class kotlinx.coroutines.**");
 		write(sourcesDir.resolve("okhttp3/OkHttpClient.java"), "package okhttp3; public class OkHttpClient {}");
 		write(sourcesDir.resolve("retrofit2/Retrofit.java"), "package retrofit2; public class Retrofit {}");
 		write(sourcesDir.resolve("dagger/Component.java"), "package dagger; public @interface Component {}");
+		write(sourcesDir.resolve("org/cocos2dx/Cocos2dxActivity.java"), "package org.cocos2dx; public class Cocos2dxActivity {}");
+		write(sourcesDir.resolve("com/epicgames/ue4/UE4Activity.java"), "package com.epicgames.ue4; public class UE4Activity {}");
+		write(sourcesDir.resolve("org/koin/Core.java"), "package org.koin; public class Core {}");
+		write(sourcesDir.resolve("io/reactivex/Observable.java"), "package io.reactivex; public class Observable {}");
+		write(sourcesDir.resolve("com/bumptech/glide/Glide.java"), "package com.bumptech.glide; public class Glide {}");
+		write(sourcesDir.resolve("com/airbnb/lottie/LottieAnimationView.java"), "package com.airbnb.lottie; public class LottieAnimationView {}");
 
 		BuildStackInfo info = BuildStackDetector.analyzeExportedProject(outputDir.toFile());
 		Map<String, FrameworkDetection> frameworks = info.getFrameworks().stream()
@@ -71,12 +92,23 @@ class BuildStackDetectorTest {
 		assertDetected(frameworks, "Retrofit");
 		assertDetected(frameworks, "OkHttp");
 		assertDetected(frameworks, "Dagger / Hilt");
+		assertDetected(frameworks, "Tauri");
+		assertDetected(frameworks, "Cocos2d");
+		assertDetected(frameworks, "Unreal Engine");
+		assertDetected(frameworks, "Koin");
+		assertDetected(frameworks, "RxJava");
+		assertDetected(frameworks, "Glide");
+		assertDetected(frameworks, "Lottie");
 		assertDetected(frameworks, "WebView / Hybrid");
 		assertDetected(frameworks, "R8 / ProGuard");
 		assertNotDetected(frameworks, "Flutter");
 		assertThat(info.getBuildMetadata()).containsEntry("buildSystemVersion", "8.9");
 		assertThat(info.getManifest()).containsEntry("package", "com.example.app");
 		assertThat(info.getLibraryVersions()).containsEntry("androidx.room_room-runtime", "2.6.1");
+		assertThat(info.getLibraryVersions()).containsEntry("org.insert-koin_koin-core", "3.5.0");
+		assertThat(info.getLibraryVersions()).containsEntry("io.reactivex.rxjava3_rxjava", "3.1.8");
+		assertThat(info.getLibraryVersions()).containsEntry("com.github.bumptech.glide_glide", "4.16.0");
+		assertThat(info.getLibraryVersions()).containsEntry("com.airbnb.android_lottie", "6.4.0");
 		assertThat(info.toMap().get("evidence").toString())
 				.contains("resources/google-services.json", "resources/META-INF/proguard/coroutines.pro");
 	}

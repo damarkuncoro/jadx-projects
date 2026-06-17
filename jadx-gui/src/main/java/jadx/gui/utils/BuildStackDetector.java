@@ -11,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +39,9 @@ public class BuildStackDetector {
 			"Cordova",
 			"Capacitor",
 			"Xamarin",
+			"Tauri",
+			"Cocos2d",
+			"Unreal Engine",
 			"Kotlin runtime",
 			"AndroidX / Jetpack",
 			"Jetpack Compose",
@@ -46,6 +50,10 @@ public class BuildStackDetector {
 			"Retrofit",
 			"OkHttp",
 			"Dagger / Hilt",
+			"Koin",
+			"RxJava",
+			"Glide",
+			"Lottie",
 			"WebView / Hybrid",
 			"R8 / ProGuard");
 
@@ -244,87 +252,22 @@ public class BuildStackDetector {
 			Set<String> resourceNames,
 			Set<String> classNames,
 			Map<String, String> libraryVersions) {
+		RuleContext ctx = new RuleContext(resourceNames, classNames, libraryVersions);
 		List<FrameworkDetection> frameworks = new ArrayList<>();
-		addFramework(frameworks, "Native Android", resourceNames.contains("AndroidManifest.xml"), "HIGH", List.of("AndroidManifest.xml"));
-		addFramework(frameworks, "Flutter",
-				resourceNames.stream().anyMatch(name -> name.startsWith("flutter_assets/"))
-						|| containsResource(resourceNames, "libflutter.so"),
-				"HIGH", matchingResources(resourceNames, name -> name.startsWith("flutter_assets/") || name.endsWith("/libflutter.so")));
-		addFramework(frameworks, "React Native",
-				resourceNames.contains("assets/index.android.bundle")
-						|| classNames.contains("com/facebook/react/ReactActivity")
-						|| classNames.contains("com/facebook/react/ReactNativeHost"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/index.android.bundle"),
-						List.of("com/facebook/react/ReactActivity", "com/facebook/react/ReactNativeHost")));
-		addFramework(frameworks, "Unity",
-				containsResource(resourceNames, "libunity.so") || classNames.contains("com/unity3d/player/UnityPlayerActivity"),
-				"HIGH",
-				matchingEvidence(resourceNames, classNames, List.of("libunity.so"), List.of("com/unity3d/player/UnityPlayerActivity")));
-		addFramework(frameworks, "Cordova",
-				resourceNames.contains("assets/www/cordova.js") || classNames.contains("org/apache/cordova/CordovaActivity"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/www/cordova.js"),
-						List.of("org/apache/cordova/CordovaActivity")));
-		addFramework(frameworks, "Capacitor",
-				resourceNames.contains("assets/capacitor.config.json") || classNames.contains("com/getcapacitor/BridgeActivity"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("assets/capacitor.config.json"),
-						List.of("com/getcapacitor/BridgeActivity")));
-		addFramework(frameworks, "Xamarin",
-				classNames.contains("mono/android/Runtime") || containsResource(resourceNames, "libmonodroid.so"),
-				"HIGH", matchingEvidence(resourceNames, classNames, List.of("libmonodroid.so"), List.of("mono/android/Runtime")));
-		addFramework(frameworks, "Kotlin runtime",
-				resourceNames.contains("kotlin-tooling-metadata.json") || classNames.stream().anyMatch(cls -> cls.startsWith("kotlin/")),
-				"MEDIUM", matchingEvidence(resourceNames, classNames, List.of("kotlin-tooling-metadata.json"), List.of("kotlin")));
-		addFramework(frameworks, "AndroidX / Jetpack",
-				resourceNames.contains("META-INF/androidx.core_core-ktx.version")
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("androidx/")),
-				"HIGH",
-				matchingEvidence(resourceNames, classNames, List.of("META-INF/androidx.core_core-ktx.version"), List.of("androidx")));
-		addFramework(frameworks, "Jetpack Compose",
-				hasLibrary(libraryVersions, "androidx.compose.")
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("androidx/compose/")),
-				"HIGH", matchingLibraryAndClassEvidence(libraryVersions, classNames, "androidx.compose.", "androidx/compose"));
-		addFramework(frameworks, "Room",
-				hasLibrary(libraryVersions, "androidx.room") || classNames.stream().anyMatch(cls -> cls.startsWith("androidx/room/")),
-				"HIGH", matchingLibraryAndClassEvidence(libraryVersions, classNames, "androidx.room", "androidx/room"));
-		addFramework(frameworks, "Firebase",
-				resourceNames.contains("google-services.json")
-						|| hasLibrary(libraryVersions, "com.google.firebase")
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("com/google/firebase/")),
-				"HIGH", matchingFirebaseEvidence(resourceNames, libraryVersions, classNames));
-		addFramework(frameworks, "Retrofit",
-				hasLibrary(libraryVersions, "com.squareup.retrofit")
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("retrofit2/")),
-				"HIGH", matchingLibraryAndClassEvidence(libraryVersions, classNames, "com.squareup.retrofit", "retrofit2"));
-		addFramework(frameworks, "OkHttp",
-				hasLibrary(libraryVersions, "com.squareup.okhttp")
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("okhttp3/")),
-				"HIGH", matchingLibraryAndClassEvidence(libraryVersions, classNames, "com.squareup.okhttp", "okhttp3"));
-		addFramework(frameworks, "Dagger / Hilt",
-				hasLibrary(libraryVersions, "com.google.dagger")
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("dagger/") || cls.startsWith("javax/inject/")),
-				"HIGH", matchingDaggerEvidence(libraryVersions, classNames));
-		addFramework(frameworks, "WebView / Hybrid",
-				resourceNames.stream().anyMatch(name -> name.startsWith("assets/www/") || name.startsWith("assets/public/"))
-						|| classNames.stream().anyMatch(cls -> cls.endsWith("/WebViewActivity") || cls.endsWith("/WebViewFragment")),
-				"MEDIUM", matchingWebViewEvidence(resourceNames, classNames));
-		addFramework(frameworks, "R8 / ProGuard",
-				resourceNames.stream().anyMatch(name -> name.startsWith("META-INF/proguard/") || name.endsWith("proguard-project.txt"))
-						|| classNames.stream().anyMatch(cls -> cls.startsWith("com/android/tools/r8/")),
-				"MEDIUM", matchingR8Evidence(resourceNames, classNames));
+		for (FrameworkRule rule : RULES) {
+			boolean detected = rule.detect(ctx);
+			frameworks.add(new FrameworkDetection(
+					rule.getName(),
+					detected ? "DETECTED" : "NOT_DETECTED",
+					detected ? rule.getConfidence() : "NONE",
+					detected ? rule.getEvidence(ctx) : List.of()
+			));
+		}
 		return frameworks.stream()
 				.sorted(Comparator.comparingInt(framework -> FRAMEWORK_ORDER.indexOf(framework.getName())))
 				.collect(Collectors.toList());
 	}
 
-	private static void addFramework(
-			List<FrameworkDetection> frameworks,
-			String name,
-			boolean detected,
-			String confidence,
-			List<String> evidence) {
-		frameworks.add(new FrameworkDetection(name, detected ? "DETECTED" : "NOT_DETECTED",
-				detected ? confidence : "NONE", detected ? evidence : List.of()));
-	}
 
 	private static boolean containsResource(Set<String> resourceNames, String fileName) {
 		return resourceNames.stream().anyMatch(name -> name.equals(fileName) || name.endsWith('/' + fileName));
@@ -353,7 +296,7 @@ public class BuildStackDetector {
 		for (String cls : classEvidence) {
 			if (classNames.contains(cls)) {
 				evidence.add("class:" + cls);
-			} else if (!cls.contains("/") && classNames.stream().anyMatch(name -> name.startsWith(cls + "/"))) {
+			} else if (classNames.stream().anyMatch(name -> name.startsWith(cls + "/"))) {
 				evidence.add("package:" + cls);
 			}
 		}
@@ -467,7 +410,11 @@ public class BuildStackDetector {
 				|| name.startsWith("com.google.firebase")
 				|| name.startsWith("com.squareup.retrofit")
 				|| name.startsWith("com.squareup.okhttp")
-				|| name.startsWith("com.google.dagger");
+				|| name.startsWith("com.google.dagger")
+				|| name.startsWith("org.insert-koin")
+				|| name.startsWith("com.airbnb.android")
+				|| name.startsWith("io.reactivex")
+				|| name.startsWith("com.github.bumptech.glide");
 	}
 
 	@FunctionalInterface
@@ -617,5 +564,182 @@ public class BuildStackDetector {
 			return "sources/" + item.substring("package:".length());
 		}
 		return resourcePrefix + item;
+	}
+
+	private static class RuleContext {
+		private final Set<String> resourceNames;
+		private final Set<String> classNames;
+		private final Map<String, String> libraryVersions;
+
+		public RuleContext(Set<String> resourceNames, Set<String> classNames, Map<String, String> libraryVersions) {
+			this.resourceNames = resourceNames;
+			this.classNames = classNames;
+			this.libraryVersions = libraryVersions;
+		}
+
+		public Set<String> getResourceNames() {
+			return resourceNames;
+		}
+
+		public Set<String> getClassNames() {
+			return classNames;
+		}
+
+		public Map<String, String> getLibraryVersions() {
+			return libraryVersions;
+		}
+	}
+
+	private interface FrameworkRule {
+		String getName();
+		String getConfidence();
+		boolean detect(RuleContext ctx);
+		List<String> getEvidence(RuleContext ctx);
+	}
+
+	private static class DefaultFrameworkRule implements FrameworkRule {
+		private final String name;
+		private final String confidence;
+		private final Predicate<RuleContext> detectFunc;
+		private final Function<RuleContext, List<String>> evidenceFunc;
+
+		public DefaultFrameworkRule(String name, String confidence, Predicate<RuleContext> detectFunc, Function<RuleContext, List<String>> evidenceFunc) {
+			this.name = name;
+			this.confidence = confidence;
+			this.detectFunc = detectFunc;
+			this.evidenceFunc = evidenceFunc;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public String getConfidence() {
+			return confidence;
+		}
+
+		@Override
+		public boolean detect(RuleContext ctx) {
+			return detectFunc.test(ctx);
+		}
+
+		@Override
+		public List<String> getEvidence(RuleContext ctx) {
+			return evidenceFunc.apply(ctx);
+		}
+	}
+
+	private static FrameworkRule checkPresence(String name, String confidence, List<String> resourceEvidence, List<String> classEvidence) {
+		return new DefaultFrameworkRule(name, confidence,
+				ctx -> {
+					for (String r : resourceEvidence) {
+						if (r.contains("/") && ctx.getResourceNames().contains(r)) {
+							return true;
+						}
+						if (!r.contains("/") && containsResource(ctx.getResourceNames(), r)) {
+							return true;
+						}
+					}
+					for (String c : classEvidence) {
+						if (ctx.getClassNames().contains(c)) {
+							return true;
+						}
+						if (ctx.getClassNames().stream().anyMatch(clsName -> clsName.startsWith(c + "/"))) {
+							return true;
+						}
+					}
+					return false;
+				},
+				ctx -> matchingEvidence(ctx.getResourceNames(), ctx.getClassNames(), resourceEvidence, classEvidence)
+		);
+	}
+
+	private static FrameworkRule checkLibraryAndClass(String name, String confidence, String libraryPrefix, String classPrefix) {
+		return new DefaultFrameworkRule(name, confidence,
+				ctx -> hasLibrary(ctx.getLibraryVersions(), libraryPrefix)
+						|| ctx.getClassNames().stream().anyMatch(cls -> cls.startsWith(classPrefix + "/")),
+				ctx -> matchingLibraryAndClassEvidence(ctx.getLibraryVersions(), ctx.getClassNames(), libraryPrefix, classPrefix)
+		);
+	}
+
+	private static final List<FrameworkRule> RULES = new ArrayList<>();
+	static {
+		RULES.add(checkPresence("Native Android", "HIGH", List.of("AndroidManifest.xml"), List.of()));
+		RULES.add(new DefaultFrameworkRule("Flutter", "HIGH",
+				ctx -> ctx.getResourceNames().stream().anyMatch(name -> name.startsWith("flutter_assets/"))
+						|| containsResource(ctx.getResourceNames(), "libflutter.so"),
+				ctx -> matchingResources(ctx.getResourceNames(), name -> name.startsWith("flutter_assets/") || name.endsWith("/libflutter.so"))
+		));
+		RULES.add(checkPresence("React Native", "HIGH",
+				List.of("assets/index.android.bundle"),
+				List.of("com/facebook/react/ReactActivity", "com/facebook/react/ReactNativeHost")
+		));
+		RULES.add(checkPresence("Unity", "HIGH",
+				List.of("libunity.so"),
+				List.of("com/unity3d/player/UnityPlayerActivity")
+		));
+		RULES.add(checkPresence("Cordova", "HIGH",
+				List.of("assets/www/cordova.js"),
+				List.of("org/apache/cordova/CordovaActivity")
+		));
+		RULES.add(checkPresence("Capacitor", "HIGH",
+				List.of("assets/capacitor.config.json"),
+				List.of("com/getcapacitor/BridgeActivity")
+		));
+		RULES.add(checkPresence("Xamarin", "HIGH",
+				List.of("libmonodroid.so"),
+				List.of("mono/android/Runtime")
+		));
+		RULES.add(checkPresence("Tauri", "HIGH",
+				List.of("assets/tauri.conf.json", "libtauri.so"),
+				List.of()
+		));
+		RULES.add(checkPresence("Cocos2d", "HIGH",
+				List.of("libcocos2d.so", "libcocos2djs.so"),
+				List.of("org/cocos2dx", "org/cocos2d")
+		));
+		RULES.add(checkPresence("Unreal Engine", "HIGH",
+				List.of("libUE4.so", "libUnreal.so"),
+				List.of("com/epicgames/ue4", "com/epicgames/unreal")
+		));
+		RULES.add(checkPresence("Kotlin runtime", "MEDIUM",
+				List.of("kotlin-tooling-metadata.json"),
+				List.of("kotlin")
+		));
+		RULES.add(checkPresence("AndroidX / Jetpack", "HIGH",
+				List.of("META-INF/androidx.core_core-ktx.version"),
+				List.of("androidx")
+		));
+		RULES.add(checkLibraryAndClass("Jetpack Compose", "HIGH", "androidx.compose.", "androidx/compose"));
+		RULES.add(checkLibraryAndClass("Room", "HIGH", "androidx.room", "androidx/room"));
+		RULES.add(new DefaultFrameworkRule("Firebase", "HIGH",
+				ctx -> ctx.getResourceNames().contains("google-services.json")
+						|| hasLibrary(ctx.getLibraryVersions(), "com.google.firebase")
+						|| ctx.getClassNames().stream().anyMatch(cls -> cls.startsWith("com/google/firebase/")),
+				ctx -> matchingFirebaseEvidence(ctx.getResourceNames(), ctx.getLibraryVersions(), ctx.getClassNames())
+		));
+		RULES.add(checkLibraryAndClass("Retrofit", "HIGH", "com.squareup.retrofit", "retrofit2"));
+		RULES.add(checkLibraryAndClass("OkHttp", "HIGH", "com.squareup.okhttp", "okhttp3"));
+		RULES.add(new DefaultFrameworkRule("Dagger / Hilt", "HIGH",
+				ctx -> hasLibrary(ctx.getLibraryVersions(), "com.google.dagger")
+						|| ctx.getClassNames().stream().anyMatch(cls -> cls.startsWith("dagger/") || cls.startsWith("javax/inject/")),
+				ctx -> matchingDaggerEvidence(ctx.getLibraryVersions(), ctx.getClassNames())
+		));
+		RULES.add(checkLibraryAndClass("Koin", "HIGH", "org.insert-koin", "org/koin"));
+		RULES.add(checkLibraryAndClass("RxJava", "HIGH", "io.reactivex", "io/reactivex"));
+		RULES.add(checkLibraryAndClass("Glide", "HIGH", "com.github.bumptech.glide", "com/bumptech/glide"));
+		RULES.add(checkLibraryAndClass("Lottie", "HIGH", "com.airbnb.android", "com/airbnb/lottie"));
+		RULES.add(new DefaultFrameworkRule("WebView / Hybrid", "MEDIUM",
+				ctx -> ctx.getResourceNames().stream().anyMatch(name -> name.startsWith("assets/www/") || name.startsWith("assets/public/"))
+						|| ctx.getClassNames().stream().anyMatch(cls -> cls.endsWith("/WebViewActivity") || cls.endsWith("/WebViewFragment")),
+				ctx -> matchingWebViewEvidence(ctx.getResourceNames(), ctx.getClassNames())
+		));
+		RULES.add(new DefaultFrameworkRule("R8 / ProGuard", "MEDIUM",
+				ctx -> ctx.getResourceNames().stream().anyMatch(name -> name.startsWith("META-INF/proguard/") || name.endsWith("proguard-project.txt"))
+						|| ctx.getClassNames().stream().anyMatch(cls -> cls.startsWith("com/android/tools/r8/")),
+				ctx -> matchingR8Evidence(ctx.getResourceNames(), ctx.getClassNames())
+		));
 	}
 }
