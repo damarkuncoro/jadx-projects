@@ -9,12 +9,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.dexforge.layoutviewer.parser.DrawableXmlParser;
+import com.dexforge.layoutviewer.parser.SecureXml;
+
 import jadx.api.ICodeInfo;
 import jadx.api.ResourceFile;
 import jadx.core.xmlgen.ResContainer;
-
-import com.dexforge.layoutviewer.parser.DrawableXmlParser;
-import com.dexforge.layoutviewer.parser.SecureXml;
 
 public class AndroidResourceLoader {
 	public ResourceResolver load(List<ResourceFile> resources) {

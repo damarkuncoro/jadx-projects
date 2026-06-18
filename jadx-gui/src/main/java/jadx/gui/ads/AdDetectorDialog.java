@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -18,7 +17,6 @@ import javax.swing.tree.TreePath;
 
 import jadx.api.JadxDecompiler;
 import jadx.gui.treemodel.JClass;
-import jadx.gui.treemodel.JNode;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.utils.UiUtils;
 
@@ -133,7 +131,8 @@ public class AdDetectorDialog extends JDialog {
 					}
 
 					if (!finding.getFoundClasses().isEmpty()) {
-						DefaultMutableTreeNode classesNode = new DefaultMutableTreeNode("Classes (" + finding.getFoundClasses().size() + ")");
+						DefaultMutableTreeNode classesNode =
+								new DefaultMutableTreeNode("Classes (" + finding.getFoundClasses().size() + ")");
 						for (String cls : finding.getFoundClasses()) {
 							classesNode.add(new DefaultMutableTreeNode(cls));
 						}

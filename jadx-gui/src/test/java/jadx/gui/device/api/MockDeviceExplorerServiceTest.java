@@ -2,13 +2,9 @@ package jadx.gui.device.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -99,7 +95,7 @@ class MockDeviceExplorerServiceTest {
 	void testPullApk(@TempDir Path tempDir) throws Exception {
 		File outDir = tempDir.resolve("pull-out").toFile();
 		PullResult result = service.pullApk("mock-device-1", "com.mock.app1", outDir.getAbsolutePath(), 0);
-		
+
 		assertThat(result.getPaths()).hasSize(2);
 		assertThat(new File(outDir, "base.apk")).exists();
 		assertThat(new File(outDir, "split_config.arm64_v8a.apk")).exists();

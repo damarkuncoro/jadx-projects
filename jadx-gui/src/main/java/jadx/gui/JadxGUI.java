@@ -16,6 +16,7 @@ import jadx.gui.logs.LogCollector;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.settings.JadxSettingsData;
 import jadx.gui.ui.MainWindow;
+import jadx.gui.utils.DexForgeBrand;
 import jadx.gui.utils.LafManager;
 import jadx.gui.utils.NLS;
 
@@ -23,6 +24,7 @@ public class JadxGUI {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxGUI.class);
 
 	public static void main(String[] args) {
+		System.setProperty("apple.awt.application.name", DexForgeBrand.GUI_NAME);
 		if (args.length > 0 && args[0].equals("device-explorer")) {
 			jadx.gui.device.cli.DeviceExplorerCLI.main(args);
 			return;

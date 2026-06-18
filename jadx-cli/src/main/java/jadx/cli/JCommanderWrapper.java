@@ -133,12 +133,12 @@ public class JCommanderWrapper {
 	public void printUsage() {
 		LogHelper.setLogLevel(LogHelper.LogLevelEnum.ERROR); // mute logger while printing help
 
-		// print usage in not sorted fields order (by default sorted by description)
 		PrintStream out = System.out;
 		out.println();
-		out.println("jadx - dex to java decompiler, version: " + JadxDecompiler.getVersion());
+		out.println("DexForge CLI - dex to java decompiler, powered by JADX, version: " + JadxDecompiler.getVersion());
+		out.println("The `jadx` command is kept as a compatibility alias.");
 		out.println();
-		out.println("usage: jadx [command] [options] " + jc.getMainParameterDescription());
+		out.println("usage: dexforge [command] [options] " + jc.getMainParameterDescription());
 
 		out.println("commands (use '<command> --help' for command options):");
 		for (String command : jc.getCommands().keySet()) {
@@ -158,11 +158,11 @@ public class JCommanderWrapper {
 		out.println("  JADX_TMP_DIR - custom temp directory, using system by default");
 		out.println();
 		out.println("Examples:");
-		out.println("  jadx -d out classes.dex");
-		out.println("  jadx --rename-flags \"none\" classes.dex");
-		out.println("  jadx --rename-flags \"valid, printable\" classes.dex");
-		out.println("  jadx --log-level ERROR app.apk");
-		out.println("  jadx -Pdex-input.verify-checksum=no app.apk");
+		out.println("  dexforge -d out classes.dex");
+		out.println("  dexforge --rename-flags \"none\" classes.dex");
+		out.println("  dexforge --rename-flags \"valid, printable\" classes.dex");
+		out.println("  dexforge --log-level ERROR app.apk");
+		out.println("  dexforge -Pdex-input.verify-checksum=no app.apk");
 	}
 
 	public void printUsage(JCommander subCommander) {

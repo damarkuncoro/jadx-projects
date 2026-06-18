@@ -1,22 +1,25 @@
 package jadx.gui.device.cli;
 
 import java.util.List;
-import jadx.gui.device.cli.dto.DeviceDto;
-import jadx.gui.device.cli.dto.UserDto;
-import jadx.gui.device.cli.dto.PackageDto;
+
 import jadx.gui.device.cli.dto.ApkPathDto;
-import jadx.gui.device.cli.dto.PullResultDto;
 import jadx.gui.device.cli.dto.ContractDto;
+import jadx.gui.device.cli.dto.DeviceDto;
+import jadx.gui.device.cli.dto.PackageDto;
+import jadx.gui.device.cli.dto.PullResultDto;
+import jadx.gui.device.cli.dto.UserDto;
 
 public final class DeviceExplorerTextWriter {
-	private DeviceExplorerTextWriter() {}
+	private DeviceExplorerTextWriter() {
+	}
 
 	public static void printUsage() {
 		System.out.println("DexForge Device Explorer CLI Helper Usage:");
 		System.out.println("  dexforge device-explorer contract [--format json]");
 		System.out.println("  dexforge device-explorer list-devices [--format json]");
 		System.out.println("  dexforge device-explorer list-users <serial> [--format json]");
-		System.out.println("  dexforge device-explorer list-packages <serial> <user_id> [filter] [--format json] (filters: all, user, system)");
+		System.out.println(
+				"  dexforge device-explorer list-packages <serial> <user_id> [filter] [--format json] (filters: all, user, system)");
 		System.out.println("  dexforge device-explorer paths <serial> <package_name> [--format json]");
 		System.out.println("  dexforge device-explorer pull <serial> <package_name> <out_dir> [user_id] [--format json]");
 		System.out.println("  dexforge device-explorer pull-and-decompile <serial> <package_name> <out_dir> [user_id] [--format json]");

@@ -14,6 +14,7 @@ import com.google.gson.GsonBuilder;
 import jadx.gui.device.api.AndroidPackage;
 import jadx.gui.device.api.AndroidUser;
 import jadx.gui.device.api.ApkPath;
+import jadx.gui.device.api.DeviceExplorerException;
 import jadx.gui.device.api.DeviceInfo;
 import jadx.gui.device.cli.dto.ApkPathDto;
 import jadx.gui.device.cli.dto.DeviceDto;
@@ -21,7 +22,6 @@ import jadx.gui.device.cli.dto.ErrorDto;
 import jadx.gui.device.cli.dto.PackageDto;
 import jadx.gui.device.cli.dto.PullResultDto;
 import jadx.gui.device.cli.dto.UserDto;
-import jadx.gui.device.api.DeviceExplorerException;
 import jadx.gui.device.workspace.DexForgeWorkspaceLayout;
 
 public final class DeviceExplorerJsonWriter {
@@ -83,8 +83,7 @@ public final class DeviceExplorerJsonWriter {
 				pkg.getPackageName(),
 				userId,
 				pkg.isSystem() ? "system" : "user",
-				pkg.getPath()
-		);
+				pkg.getPath());
 	}
 
 	public static List<ApkPathDto> toApkPathsDto(List<ApkPath> paths) {
@@ -112,19 +111,18 @@ public final class DeviceExplorerJsonWriter {
 				layout.getRootDir().getAbsolutePath(),
 				apks,
 				toApkPathsDto(paths),
-				reports
-		);
+				reports);
 	}
 
 	public static ErrorDto createError(String command, Exception e) {
 		String code = "INTERNAL_ERROR";
 		String msg = e.getMessage();
-		
+
 		Throwable target = e;
 		while (target != null && !(target instanceof DeviceExplorerException)) {
 			target = target.getCause();
 		}
-		
+
 		if (target instanceof DeviceExplorerException) {
 			DeviceExplorerException.DeviceExplorerErrorCode err = ((DeviceExplorerException) target).getErrorCode();
 			if (err != DeviceExplorerException.DeviceExplorerErrorCode.INTERNAL_ERROR) {
@@ -135,7 +133,7 @@ public final class DeviceExplorerJsonWriter {
 		} else if (msg != null && msg.toLowerCase().contains("not found")) {
 			code = "ADB_NOT_FOUND";
 		}
-		
+
 		return new ErrorDto("ERROR", command, code, msg, new LinkedHashMap<>());
 	}
 }

@@ -1,13 +1,17 @@
 package jadx.gui.device.cli;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.Gson;
 
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
@@ -28,21 +32,18 @@ import jadx.gui.device.cli.dto.ContractDto;
 import jadx.gui.device.cli.dto.DeviceDto;
 import jadx.gui.device.cli.dto.PackageDto;
 import jadx.gui.device.cli.dto.PullResultDto;
-import jadx.gui.device.cli.dto.UserDto;
-import jadx.gui.device.workspace.DexForgeWorkspaceLayout;
-import jadx.gui.device.reports.DeviceReportWriter;
-import jadx.gui.device.reports.DeviceExplorerAssistant;
-import jadx.plugins.tools.JadxExternalPluginsLoader;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import com.google.gson.Gson;
 import jadx.gui.device.cli.dto.RequestDto;
 import jadx.gui.device.cli.dto.ResponseDto;
+import jadx.gui.device.cli.dto.UserDto;
+import jadx.gui.device.reports.DeviceExplorerAssistant;
+import jadx.gui.device.reports.DeviceReportWriter;
+import jadx.gui.device.workspace.DexForgeWorkspaceLayout;
+import jadx.plugins.tools.JadxExternalPluginsLoader;
 
 public class DeviceExplorerCLI {
 	private static final Logger LOG = LoggerFactory.getLogger(DeviceExplorerCLI.class);
 
-	private static final DeviceExplorerService service = new DeviceExplorerServiceImpl();
+	private static final DeviceExplorerService SERVICE = new DeviceExplorerServiceImpl();
 
 	public static void main(String[] args) {
 		CliOptions options = CliOptions.parse(args);
@@ -146,8 +147,7 @@ public class DeviceExplorerCLI {
 				"list-packages",
 				"paths",
 				"pull",
-				"pull-and-decompile"
-		);
+				"pull-and-decompile");
 		ContractDto contract = new ContractDto("1", commands);
 		if (format.isJson()) {
 			DeviceExplorerJsonWriter.print(contract);
@@ -158,7 +158,7 @@ public class DeviceExplorerCLI {
 
 	private static void executeListDevices(OutputFormat format) throws IOException {
 		printStatus(format, "[*] Fetching connected devices...");
-		List<DeviceInfo> devices = service.listDevices();
+		List<DeviceInfo> devices = SERVICE.listDevices();
 		List<DeviceDto> dtos = DeviceExplorerJsonWriter.toDevicesDto(devices);
 		if (format.isJson()) {
 			DeviceExplorerJsonWriter.print(dtos);
@@ -169,7 +169,7 @@ public class DeviceExplorerCLI {
 
 	private static void executeListUsers(String serial, OutputFormat format) throws Exception {
 		printStatus(format, "[*] Fetching users for device: " + serial);
-		List<AndroidUser> users = service.listUsers(serial);
+		List<AndroidUser> users = SERVICE.listUsers(serial);
 		List<UserDto> dtos = DeviceExplorerJsonWriter.toUsersDto(users);
 		if (format.isJson()) {
 			DeviceExplorerJsonWriter.print(dtos);
@@ -182,7 +182,7 @@ public class DeviceExplorerCLI {
 			throws Exception {
 		printStatus(format, String.format("[*] Fetching packages for device: %s, User ID: %d, Filter: %s",
 				serial, userId, filter));
-		List<AndroidPackage> packages = service.listPackages(serial, userId, filter);
+		List<AndroidPackage> packages = SERVICE.listPackages(serial, userId, filter);
 		List<PackageDto> dtos = DeviceExplorerJsonWriter.toPackagesDto(packages, userId);
 		if (format.isJson()) {
 			DeviceExplorerJsonWriter.print(dtos);
@@ -194,7 +194,7 @@ public class DeviceExplorerCLI {
 	private static void executePaths(String serial, String packageName, OutputFormat format)
 			throws Exception {
 		printStatus(format, String.format("[*] Resolving APK paths for package '%s'...", packageName));
-		List<ApkPath> paths = service.resolveApkPaths(serial, packageName, 0);
+		List<ApkPath> paths = SERVICE.resolveApkPaths(serial, packageName, 0);
 		List<ApkPathDto> dtos = DeviceExplorerJsonWriter.toApkPathsDto(paths);
 		if (format.isJson()) {
 			DeviceExplorerJsonWriter.print(dtos);
@@ -207,7 +207,7 @@ public class DeviceExplorerCLI {
 			OutputFormat format)
 			throws Exception {
 		printStatus(format, String.format("[*] Pulling APKs for package '%s' to '%s'...", packageName, outDir));
-		PullResult pullResult = service.pullApk(serial, packageName, outDir, userId);
+		PullResult pullResult = SERVICE.pullApk(serial, packageName, outDir, userId);
 
 		DexForgeWorkspaceLayout layout = new DexForgeWorkspaceLayout(outDir);
 		File apksDir = layout.getApksDir();
@@ -390,6 +390,7 @@ public class DeviceExplorerCLI {
 			return format;
 		}
 	}
+
 	private static void executeDaemon() {
 		Gson gson = new Gson();
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -445,25 +446,25 @@ public class DeviceExplorerCLI {
 	private static Object dispatchDaemonMethod(String method, Map<String, Object> params) throws Exception {
 		switch (method) {
 			case "list-devices": {
-				List<DeviceInfo> devices = service.listDevices();
+				List<DeviceInfo> devices = SERVICE.listDevices();
 				return DeviceExplorerJsonWriter.toDevicesDto(devices);
 			}
 			case "list-users": {
 				String serial = getRequiredParam(params, "serial");
-				List<AndroidUser> users = service.listUsers(serial);
+				List<AndroidUser> users = SERVICE.listUsers(serial);
 				return DeviceExplorerJsonWriter.toUsersDto(users);
 			}
 			case "list-packages": {
 				String serial = getRequiredParam(params, "serial");
 				int userId = getIntParam(params, "userId", 0);
 				String filter = getStringParam(params, "filter", "all");
-				List<AndroidPackage> packages = service.listPackages(serial, userId, filter);
+				List<AndroidPackage> packages = SERVICE.listPackages(serial, userId, filter);
 				return DeviceExplorerJsonWriter.toPackagesDto(packages, userId);
 			}
 			case "paths": {
 				String serial = getRequiredParam(params, "serial");
 				String packageName = getRequiredParam(params, "packageName");
-				List<ApkPath> paths = service.resolveApkPaths(serial, packageName, 0);
+				List<ApkPath> paths = SERVICE.resolveApkPaths(serial, packageName, 0);
 				return DeviceExplorerJsonWriter.toApkPathsDto(paths);
 			}
 			case "pull": {

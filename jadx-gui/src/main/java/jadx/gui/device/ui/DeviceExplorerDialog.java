@@ -587,6 +587,7 @@ public class DeviceExplorerDialog extends JDialog {
 			}
 		});
 	}
+
 	private int effectiveUserId;
 
 	private void browseDirectory() {

@@ -132,13 +132,16 @@ public class FridaProcessExecutor implements IFridaProcessExecutor {
 
 	private void logFridaExitHints(String target, int exitCode, int outputStatus, LogListener logListener) {
 		if ((outputStatus & OUTPUT_FAILED_TO_SPAWN) != 0) {
-			logListener.onLog("[HINT] Frida failed before the script was attached. For non-rooted devices, install/open the patched APK first, then attach to Gadget.");
+			logListener.onLog(
+					"[HINT] Frida failed before the script was attached. For non-rooted devices, install/open the patched APK first, then attach to Gadget.");
 		}
 		if ((outputStatus & OUTPUT_CONNECTION_TERMINATED) != 0) {
-			logListener.onLog("[HINT] The Frida connection was terminated by the target or Gadget. Check adb logcat for app crashes, anti-tamper exits, or libfrida-gadget load errors.");
+			logListener.onLog(
+					"[HINT] The Frida connection was terminated by the target or Gadget. Check adb logcat for app crashes, anti-tamper exits, or libfrida-gadget load errors.");
 		}
 		if (exitCode != 0 && "Gadget".equalsIgnoreCase(target)) {
-			logListener.onLog("[HINT] Gadget mode expects the patched app to be running and listening on the forwarded port before attaching.");
+			logListener.onLog(
+					"[HINT] Gadget mode expects the patched app to be running and listening on the forwarded port before attaching.");
 		}
 	}
 

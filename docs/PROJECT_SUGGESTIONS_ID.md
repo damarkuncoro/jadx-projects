@@ -1,9 +1,9 @@
-# Saran dan Panduan untuk Proyek JADX
+# Saran dan Panduan untuk Proyek DexForge
 
 ## 0. Frida Integration (Modul Baru)
 
-Proyek JADX sekarang memiliki modul `jadx-frida-integration` yang mengintegrasikan fungsi runtime hooking dan tracing menggunakan **Frida**! Dengan fitur ini, kamu bisa:
-- Generate script Frida langsung dari method yang dipilih di JADX GUI (klik kanan method → "Generate Frida Hook Script")
+Proyek DexForge sekarang memiliki modul `jadx-frida-integration` yang mengintegrasikan fungsi runtime hooking dan tracing menggunakan **Frida**! Dengan fitur ini, kamu bisa:
+- Generate script Frida langsung dari method yang dipilih di DexForge GUI (klik kanan method → "Generate Frida Hook Script")
 - Menggunakan panel Frida di JADX GUI untuk mengedit dan menjalankan script
 - Akses snippet predefined untuk tugas umum seperti bypass SSL pinning, bypass root detection, dll.
 - Dukung multi-platform: Android, iOS, Linux, macOS, Windows
@@ -17,7 +17,7 @@ Proyek JADX sekarang memiliki modul `jadx-frida-integration` yang mengintegrasik
 
 ## 0.1. LSP & JSON-RPC Daemon Mode (Fitur Baru)
 
-Proyek JADX sekarang mendukung mode **LSP (Language Server Protocol) JSON-RPC Daemon** melalui perintah `lsp` atau `decompiler-daemon`. Fitur ini sangat ramah untuk integrasi dengan VS Code, IntelliJ, atau Android Studio.
+Proyek DexForge sekarang mendukung mode **LSP (Language Server Protocol) JSON-RPC Daemon** melalui perintah `lsp` atau `decompiler-daemon`. Fitur ini sangat ramah untuk integrasi dengan VS Code, IntelliJ, atau Android Studio.
 *   **Kecepatan Tinggi**: Menghilangkan latensi startup JVM dengan menjaga satu proses JVM tetap aktif di latar belakang.
 *   **Fitur Terintegrasi**: Mendukung resolusi definisi (`textDocument/definition`), pelacakan referensi (`textDocument/references`), hover signature (`textDocument/hover`), pencarian simbol fuzzy global (`workspace/symbol`), serta pelaporan warning/error dekompilasi (`diagnostics`).
 *   **Pemrosesan Asinkron**: Pemrosesan query asinkron berbasis Thread Pool memastikan antarmuka komunikasi tidak memblokir input/output utama daemon.
@@ -33,7 +33,7 @@ Berikut adalah perubahan yang telah diterapkan pada proyek ini:
 - **Penerapan Clean Architecture & SOLID di jadx-core**: Mendekopel kelas inti `ClassNode` dan presentasi output `CodeGen` melalui antarmuka dinamis `ICodeGenerator`.
 - **Implementasi LSP Daemon Mode di jadx-cli**: Menambahkan driver komunikasi JSON-RPC asinkron, router perintah, layanan inti JADX (`DaemonService`), dan layanan pemetaan protokol LSP (`LspService`).
 
-## 2. Cara Menjalankan JADX GUI
+## 2. Cara Menjalankan DexForge GUI
 
 ### Cara Cepat (Sudah Dikonfigurasi)
 ```bash
@@ -88,5 +88,5 @@ Untuk menjalankan test (opsional):
 Catatan: Test bisa memakan waktu cukup lama.
 
 ## 5. Referensi
-- Dokumentasi utama JADX: [README.md](../README.md)
+- Dokumentasi utama DexForge: [README.md](../README.md)
 - Panduan kontribusi: [CONTRIBUTING.md](../CONTRIBUTING.md)

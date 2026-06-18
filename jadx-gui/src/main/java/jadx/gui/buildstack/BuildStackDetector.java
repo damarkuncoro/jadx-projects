@@ -1,11 +1,5 @@
 package jadx.gui.buildstack;
 
-import jadx.api.ResourceFile;
-import jadx.api.ResourcesLoader;
-import jadx.core.dex.nodes.ClassNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,6 +12,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import jadx.api.ResourceFile;
+import jadx.api.ResourcesLoader;
+import jadx.core.dex.nodes.ClassNode;
 
 /**
  * Detektor utama untuk build stack.
@@ -84,8 +85,7 @@ public class BuildStackDetector {
 				manifest,
 				frameworks,
 				libraryVersions,
-				evidence.stream().sorted().toList()
-		);
+				evidence.stream().sorted().toList());
 	}
 
 	/**

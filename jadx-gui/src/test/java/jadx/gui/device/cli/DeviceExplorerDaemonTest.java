@@ -44,7 +44,7 @@ class DeviceExplorerDaemonTest {
 				+ "{\"id\": 2, \"method\": \"exit\"}\n";
 		setInput(input);
 
-		DeviceExplorerCLI.main(new String[]{"device-explorer", "daemon"});
+		DeviceExplorerCLI.main(new String[] { "device-explorer", "daemon" });
 
 		String output = testOut.toString(StandardCharsets.UTF_8);
 		String[] lines = output.split("\n");
@@ -71,7 +71,7 @@ class DeviceExplorerDaemonTest {
 				+ "{\"id\": 6, \"method\": \"exit\"}\n";
 		setInput(input);
 
-		DeviceExplorerCLI.main(new String[]{"device-explorer", "daemon"});
+		DeviceExplorerCLI.main(new String[] { "device-explorer", "daemon" });
 
 		String output = testOut.toString(StandardCharsets.UTF_8);
 		String[] lines = output.split("\n");

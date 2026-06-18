@@ -1,8 +1,8 @@
-# JADX Device Explorer Roadmap
+# DexForge Device Explorer Roadmap
 
 ## Ringkasan
 
-JADX Device Explorer adalah fitur tambahan untuk `jadx-gui` yang memungkinkan pengguna mengambil APK langsung dari perangkat Android melalui ADB, termasuk `base.apk` dan semua split APK, lalu membukanya atau mendecompile otomatis dengan JADX.
+DexForge Device Explorer adalah fitur tambahan untuk `jadx-gui` yang memungkinkan pengguna mengambil APK langsung dari perangkat Android melalui ADB, termasuk `base.apk` dan semua split APK, lalu membukanya atau mendecompile otomatis dengan JADX.
 
 Target alur utama:
 
@@ -37,7 +37,7 @@ Fitur ini sebaiknya dimulai sebagai helper eksternal yang kecil dan stabil, lalu
 Nama utama yang disarankan:
 
 ```text
-JADX Device Explorer
+DexForge Device Explorer
 ```
 
 Alternatif:
@@ -45,7 +45,7 @@ Alternatif:
 ```text
 Device APK Explorer
 Open from Android Device
-JADX Pull & Rescue
+DexForge Pull & Rescue
 ```
 
 Untuk UI, entry point paling natural:

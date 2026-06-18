@@ -193,7 +193,8 @@ public class TabsController {
 		loadCodeWithUIAction(cls, () -> {
 			jadx.gui.ui.panel.ContentPanel contentPanel = getMainWindow().getTabbedPane().getSelectedContentPanel();
 			if (contentPanel instanceof jadx.gui.ui.codearea.AbstractCodeContentPanel) {
-				jadx.gui.ui.codearea.AbstractCodeArea codeArea = ((jadx.gui.ui.codearea.AbstractCodeContentPanel) contentPanel).getCodeArea();
+				jadx.gui.ui.codearea.AbstractCodeArea codeArea =
+						((jadx.gui.ui.codearea.AbstractCodeContentPanel) contentPanel).getCodeArea();
 				if (codeArea != null) {
 					try {
 						int lineIndex = lineNum - 1;

@@ -18,11 +18,11 @@ import jadx.core.utils.files.FileUtils;
 public class DesktopEntryUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DesktopEntryUtils.class);
 	private static final Map<Integer, String> SIZE_TO_LOGO_MAP = Map.of(
-			16, "jadx-logo-16px.png",
-			32, "jadx-logo-32px.png",
-			48, "jadx-logo-48px.png",
-			252, "jadx-logo.png",
-			256, "jadx-logo.png");
+			16, "dexforge-logo-16px.png",
+			32, "dexforge-logo-32px.png",
+			48, "dexforge-logo-48px.png",
+			252, "dexforge-logo.png",
+			256, "dexforge-logo.png");
 	private static final Path XDG_DESKTOP_MENU_COMMAND_PATH = findExecutablePath("xdg-desktop-menu");
 	private static final Path XDG_ICON_RESOURCE_COMMAND_PATH = findExecutablePath("xdg-icon-resource");
 
@@ -93,7 +93,7 @@ public class DesktopEntryUtils {
 			ProcessBuilder iconInstallCommand =
 					new ProcessBuilder(Objects.requireNonNull(XDG_ICON_RESOURCE_COMMAND_PATH).toString(), "install", "--novendor", "--size",
 							String.valueOf(size), iconPath.toString(),
-							"jadx");
+							"dexforge");
 			Process process = iconInstallCommand.start();
 			int statusCode = process.waitFor();
 			if (statusCode != 0) {

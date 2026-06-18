@@ -12,15 +12,15 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import jadx.api.ResourceFile;
-import jadx.gui.treemodel.JResource;
-import jadx.gui.ui.panel.ContentPanel;
-import jadx.gui.ui.tab.TabbedPane;
-
 import com.dexforge.layoutviewer.model.AndroidViewNode;
 import com.dexforge.layoutviewer.parser.LayoutXmlParser;
 import com.dexforge.layoutviewer.renderer.LayoutRenderer;
 import com.dexforge.layoutviewer.resolver.ResourceResolver;
+
+import jadx.api.ResourceFile;
+import jadx.gui.treemodel.JResource;
+import jadx.gui.ui.panel.ContentPanel;
+import jadx.gui.ui.tab.TabbedPane;
 
 public class LayoutViewerPanel extends ContentPanel {
 	private static final long serialVersionUID = 4128680888570956355L;

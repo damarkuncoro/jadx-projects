@@ -3,7 +3,6 @@ package jadx.gui.settings.data;
 import org.jetbrains.annotations.NotNull;
 
 import jadx.api.data.IJavaNodeRef;
-import jadx.api.data.impl.JadxNodeRef;
 
 public class Bookmark {
 	private int line;
@@ -56,10 +55,10 @@ public class Bookmark {
 
 	@Override
 	public String toString() {
-		return "Bookmark{" +
-				"line=" + line +
-				", description='" + description + '\'' +
-				", nodeRef=" + nodeRef +
-				'}';
+		return "Bookmark{"
+				+ "line=" + line
+				+ ", description='" + description + '\''
+				+ ", nodeRef=" + nodeRef
+				+ '}';
 	}
 }

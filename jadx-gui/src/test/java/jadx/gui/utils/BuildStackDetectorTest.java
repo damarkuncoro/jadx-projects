@@ -76,7 +76,8 @@ class BuildStackDetectorTest {
 		write(sourcesDir.resolve("org/koin/Core.java"), "package org.koin; public class Core {}");
 		write(sourcesDir.resolve("io/reactivex/Observable.java"), "package io.reactivex; public class Observable {}");
 		write(sourcesDir.resolve("com/bumptech/glide/Glide.java"), "package com.bumptech.glide; public class Glide {}");
-		write(sourcesDir.resolve("com/airbnb/lottie/LottieAnimationView.java"), "package com.airbnb.lottie; public class LottieAnimationView {}");
+		write(sourcesDir.resolve("com/airbnb/lottie/LottieAnimationView.java"),
+				"package com.airbnb.lottie; public class LottieAnimationView {}");
 
 		BuildStackInfo info = BuildStackDetector.analyzeExportedProject(outputDir.toFile());
 		Map<String, FrameworkDetection> frameworks = info.getFrameworks().stream()

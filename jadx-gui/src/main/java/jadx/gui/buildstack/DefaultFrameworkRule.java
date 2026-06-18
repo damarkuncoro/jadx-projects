@@ -13,7 +13,8 @@ public class DefaultFrameworkRule implements FrameworkRule {
 	private final Predicate<RuleContext> detectFunc;
 	private final Function<RuleContext, List<String>> evidenceFunc;
 
-	public DefaultFrameworkRule(String name, String confidence, Predicate<RuleContext> detectFunc, Function<RuleContext, List<String>> evidenceFunc) {
+	public DefaultFrameworkRule(String name, String confidence, Predicate<RuleContext> detectFunc,
+			Function<RuleContext, List<String>> evidenceFunc) {
 		this.name = name;
 		this.confidence = confidence;
 		this.detectFunc = detectFunc;

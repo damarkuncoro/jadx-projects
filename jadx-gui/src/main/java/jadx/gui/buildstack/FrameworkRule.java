@@ -7,7 +7,10 @@ import java.util.List;
  */
 public interface FrameworkRule {
 	String getName();
+
 	String getConfidence();
+
 	boolean detect(RuleContext ctx);
+
 	List<String> getEvidence(RuleContext ctx);
 }

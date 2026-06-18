@@ -8,7 +8,8 @@ import jadx.gui.device.adb.ADBDevice;
 import jadx.gui.device.adb.ADBDeviceInfo;
 
 public final class AdbDevicesParser {
-	private AdbDevicesParser() {}
+	private AdbDevicesParser() {
+	}
 
 	public static List<ADBDevice> parse(String output, String host, int port) {
 		if (output == null || output.trim().isEmpty()) {

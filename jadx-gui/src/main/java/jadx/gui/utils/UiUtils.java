@@ -294,10 +294,10 @@ public class UiUtils {
 
 	public static void setWindowIcons(Window window) {
 		List<Image> icons = new ArrayList<>();
-		icons.add(UiUtils.openImage("/logos/jadx-logo-16px.png"));
-		icons.add(UiUtils.openImage("/logos/jadx-logo-32px.png"));
-		icons.add(UiUtils.openImage("/logos/jadx-logo-48px.png"));
-		icons.add(UiUtils.openImage("/logos/jadx-logo.png"));
+		icons.add(UiUtils.openImage(DexForgeBrand.LOGO_16));
+		icons.add(UiUtils.openImage(DexForgeBrand.LOGO_32));
+		icons.add(UiUtils.openImage(DexForgeBrand.LOGO_48));
+		icons.add(UiUtils.openImage(DexForgeBrand.LOGO_256));
 		window.setIconImages(icons);
 	}
 

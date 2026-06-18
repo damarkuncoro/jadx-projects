@@ -6,7 +6,8 @@ import java.util.List;
 import jadx.gui.device.adb.AdbPackage;
 
 public final class PackageListParser {
-	private PackageListParser() {}
+	private PackageListParser() {
+	}
 
 	public static List<AdbPackage> parse(String output, String filterType) {
 		List<AdbPackage> packages = new ArrayList<>();

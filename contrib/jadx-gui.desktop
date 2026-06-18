@@ -1,10 +1,10 @@
 [Desktop Entry]
-Name=JADX GUI
-Comment=Dex to Java decompiler
-Icon=jadx
-Exec=jadx-gui %f
+Name=DexForge GUI
+Comment=DexForge Engine - Dex to Java decompiler, powered by JADX
+Icon=dexforge
+Exec=dexforge-gui %f
 Terminal=false
 Type=Application
 Categories=Development;Java;
-Keywords=Java;Decompiler;
+Keywords=Android;Java;Decompiler;Reverse Engineering;
 StartupWMClass=jadx-gui-JadxGUI

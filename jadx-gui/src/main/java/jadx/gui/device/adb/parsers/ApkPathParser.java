@@ -6,7 +6,8 @@ import java.util.List;
 import jadx.gui.device.adb.ApkPath;
 
 public final class ApkPathParser {
-	private ApkPathParser() {}
+	private ApkPathParser() {
+	}
 
 	public static List<ApkPath> parse(String output) {
 		List<ApkPath> paths = new ArrayList<>();

@@ -2,7 +2,7 @@
 
 ## Ringkasan
 
-Android XML Layout Viewer adalah fitur `jadx-gui` untuk membantu reverse engineer membaca resource UI Android hasil decompile APK tanpa membuka Android Studio.
+Android XML Layout Viewer adalah fitur `DexForge GUI` untuk membantu reverse engineer membaca resource UI Android hasil decompile APK tanpa membuka Android Studio.
 
 Target utamanya bukan meniru Android Studio 100%, tetapi menyediakan preview visual ringan yang:
 

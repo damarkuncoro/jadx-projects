@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 public final class AndroidPropsParser {
-	private AndroidPropsParser() {}
+	private AndroidPropsParser() {
+	}
 
 	public static List<String> parse(String output) {
 		if (output == null || output.trim().isEmpty()) {

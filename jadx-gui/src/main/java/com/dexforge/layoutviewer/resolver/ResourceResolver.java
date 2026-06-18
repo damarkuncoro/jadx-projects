@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jadx.api.ResourceFile;
-
 import com.dexforge.layoutviewer.model.AndroidResource;
 import com.dexforge.layoutviewer.model.AndroidViewNode;
 import com.dexforge.layoutviewer.model.RenderStyle;
+
+import jadx.api.ResourceFile;
 
 public class ResourceResolver {
 	private static final String STYLE_PREFIX = "@style/";

@@ -26,15 +26,15 @@ import jadx.core.dex.nodes.ProcessState;
 import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.Utils;
 import jadx.gui.JadxWrapper;
+import jadx.gui.buildstack.BuildStackDetector;
+import jadx.gui.buildstack.BuildStackInfo;
+import jadx.gui.buildstack.FrameworkDetection;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.treemodel.JNode;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.panel.ContentPanel;
 import jadx.gui.ui.panel.HtmlPanel;
 import jadx.gui.ui.tab.TabbedPane;
-import jadx.gui.buildstack.BuildStackDetector;
-import jadx.gui.buildstack.BuildStackInfo;
-import jadx.gui.buildstack.FrameworkDetection;
 import jadx.gui.utils.UiUtils;
 
 public class SummaryNode extends JNode {

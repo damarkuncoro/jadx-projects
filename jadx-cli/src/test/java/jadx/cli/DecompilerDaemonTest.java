@@ -57,7 +57,7 @@ class DecompilerDaemonTest {
 				+ "{\"id\": 2, \"method\": \"exit\"}\n";
 		setInput(input);
 
-		JadxCLI.execute(new String[]{"decompiler-daemon"});
+		JadxCLI.execute(new String[] { "decompiler-daemon" });
 
 		String output = testOut.toString(StandardCharsets.UTF_8);
 		java.util.List<String> lines = getJsonLines(output);
@@ -87,7 +87,7 @@ class DecompilerDaemonTest {
 				+ "{\"id\": 5, \"method\": \"exit\"}\n";
 		setInput(input);
 
-		JadxCLI.execute(new String[]{"decompiler-daemon"});
+		JadxCLI.execute(new String[] { "decompiler-daemon" });
 
 		String output = testOut.toString(StandardCharsets.UTF_8);
 		java.util.List<String> lines = getJsonLines(output);
@@ -120,7 +120,7 @@ class DecompilerDaemonTest {
 				+ "{\"id\": 6, \"method\": \"exit\"}\n";
 		setInput(decompileInput);
 
-		JadxCLI.execute(new String[]{"decompiler-daemon"});
+		JadxCLI.execute(new String[] { "decompiler-daemon" });
 
 		output = testOut.toString(StandardCharsets.UTF_8);
 		lines = getJsonLines(output);
@@ -138,7 +138,8 @@ class DecompilerDaemonTest {
 		// Verify get-definition response
 		JsonObject getDefResp = JsonParser.parseString(lines.get(2)).getAsJsonObject();
 		assertThat(getDefResp.get("id").getAsInt()).isEqualTo(5);
-		// It could be either success (finding a node at pos 1) or error (if pos 1 has no node), but must not crash
+		// It could be either success (finding a node at pos 1) or error (if pos 1 has no node), but must
+		// not crash
 		assertThat(getDefResp.has("status")).isTrue();
 	}
 
@@ -154,7 +155,7 @@ class DecompilerDaemonTest {
 				+ "{\"id\": 11, \"method\": \"decompile\", \"params\": {\"className\": \"defpackage.HelloWorld\"}}\n"
 				+ "{\"id\": 12, \"method\": \"exit\"}\n";
 		setInput(prepareInput);
-		JadxCLI.execute(new String[]{"lsp"});
+		JadxCLI.execute(new String[] { "lsp" });
 
 		java.util.List<String> prepLines = getJsonLines(testOut.toString(StandardCharsets.UTF_8));
 		JsonObject decompileResp = JsonParser.parseString(prepLines.get(1)).getAsJsonObject();
@@ -196,7 +197,7 @@ class DecompilerDaemonTest {
 				+ "{\"id\": 7, \"method\": \"exit\"}\n";
 		setInput(input);
 
-		JadxCLI.execute(new String[]{"lsp"});
+		JadxCLI.execute(new String[] { "lsp" });
 
 		String output = testOut.toString(StandardCharsets.UTF_8);
 		java.util.List<String> lines = getJsonLines(output);

@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -52,7 +51,7 @@ public class BookmarkManagerDialog extends JDialog {
 		getContentPane().add(panel, BorderLayout.CENTER);
 
 		// Table Model & JTable
-		tableModel = new DefaultTableModel(new Object[]{
+		tableModel = new DefaultTableModel(new Object[] {
 				NLS.str("bookmarks.column_class"),
 				NLS.str("bookmarks.column_line"),
 				NLS.str("bookmarks.column_desc")
@@ -136,7 +135,7 @@ public class BookmarkManagerDialog extends JDialog {
 		List<Bookmark> bookmarks = mainWindow.getProject().getBookmarks();
 		for (Bookmark bookmark : bookmarks) {
 			String className = bookmark.getNodeRef() != null ? bookmark.getNodeRef().getDeclaringClass() : "Unknown";
-			tableModel.addRow(new Object[]{
+			tableModel.addRow(new Object[] {
 					className,
 					bookmark.getLine(),
 					bookmark.getDescription()

@@ -15,7 +15,8 @@ import com.google.gson.GsonBuilder;
 public final class DeviceReportWriter {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-	private DeviceReportWriter() {}
+	private DeviceReportWriter() {
+	}
 
 	public static void writeJson(File file, Object value) throws IOException {
 		File parent = file.getParentFile();

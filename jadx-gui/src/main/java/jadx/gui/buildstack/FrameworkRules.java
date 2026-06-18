@@ -1,12 +1,12 @@
 package jadx.gui.buildstack;
 
-import jadx.gui.buildstack.rules.*;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import jadx.gui.buildstack.rules.*;
 
 /**
  * Kelas yang menyediakan semua aturan deteksi framework.
@@ -37,8 +37,7 @@ public class FrameworkRules {
 			"Glide",
 			"Lottie",
 			"WebView / Hybrid",
-			"R8 / ProGuard"
-	);
+			"R8 / ProGuard");
 
 	private static final List<FrameworkRule> RULES = new ArrayList<>();
 
@@ -75,7 +74,8 @@ public class FrameworkRules {
 	/**
 	 * Mendeteksi semua framework dan mengembalikan hasilnya dalam urutan yang ditentukan.
 	 */
-	public static List<FrameworkDetection> detectAll(Set<String> resourceNames, Set<String> classNames, Map<String, String> libraryVersions) {
+	public static List<FrameworkDetection> detectAll(Set<String> resourceNames, Set<String> classNames,
+			Map<String, String> libraryVersions) {
 		RuleContext ctx = new RuleContext(resourceNames, classNames, libraryVersions);
 		List<FrameworkDetection> frameworks = new ArrayList<>();
 		for (FrameworkRule rule : RULES) {
@@ -84,8 +84,7 @@ public class FrameworkRules {
 					rule.getName(),
 					detected ? "DETECTED" : "NOT_DETECTED",
 					detected ? rule.getConfidence() : "NONE",
-					detected ? rule.getEvidence(ctx) : List.of()
-			));
+					detected ? rule.getEvidence(ctx) : List.of()));
 		}
 		return frameworks.stream()
 				.sorted(Comparator.comparingInt(framework -> FRAMEWORK_ORDER.indexOf(framework.getName())))

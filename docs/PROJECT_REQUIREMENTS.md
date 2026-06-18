@@ -7,7 +7,7 @@ Dokumen ini merinci kebutuhan yang dibutuhkan untuk membangun dan menjalankan pr
 - Git
 - JDK 17 atau lebih baru
   - Proyek menggunakan Gradle wrapper, tetapi build dan runtime target disarankan memakai Java 17+.
-  - Minimum Java 11 diperlukan oleh konfigurasi Gradle, tetapi untuk menjalankan `jadx-gui` dan fitur terbaru sebaiknya gunakan Java 17 atau lebih baru.
+  - Minimum Java 11 diperlukan oleh konfigurasi Gradle, tetapi untuk menjalankan `DexForge GUI` dan fitur terbaru sebaiknya gunakan Java 17 atau lebih baru.
 - Memori yang cukup untuk kompilasi besar (disarankan 8GB+ tersedia)
 
 ## Toolchain dan dependensi
@@ -16,11 +16,11 @@ Dokumen ini merinci kebutuhan yang dibutuhkan untuk membangun dan menjalankan pr
 - Gradle wrapper akan mengunduh versi Gradle yang tepat secara otomatis
 - Tidak perlu menginstal Gradle secara global jika menggunakan wrapper
 
-## Kebutuhan tambahan untuk `jadx-gui`
+## Kebutuhan tambahan untuk `DexForge GUI`
 
 - JDK 17+ pada `JAVA_HOME`
 - `adb` / Android SDK Platform Tools hanya diperlukan untuk fitur Device Explorer
-  - Jika ingin menggunakan `jadx-gui` tanpa Device Explorer, `adb` bersifat opsional
+  - Jika ingin menggunakan `DexForge GUI` tanpa Device Explorer, `adb` bersifat opsional
   - Jika ingin menjalankan Device Explorer, siapkan:
     - `ANDROID_HOME` atau `ANDROID_SDK_ROOT` menunjuk ke SDK Android
     - `adb` di `PATH`, atau `platform-tools/adb` dapat ditemukan otomatis
@@ -81,7 +81,7 @@ Repositori menyediakan helper sederhana di `scripts/release.sh` untuk membuat Gi
 Opsional:
 
 ```bash
-./scripts/release.sh v1.0.0 --artifact build/jadx/jadx-v1.0.0.zip --notes-file release-notes.md
+./scripts/release.sh v1.0.0 --artifact build/jadx/dexforge-engine-v1.0.0.zip --notes-file release-notes.md
 ```
 
 ## GitHub Release Workflow

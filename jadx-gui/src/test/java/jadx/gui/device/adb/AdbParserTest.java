@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import jadx.gui.device.adb.parsers.AndroidPropsParser;
 import jadx.gui.device.adb.parsers.AdbDevicesParser;
 import jadx.gui.device.adb.parsers.AdbUserParser;
-import jadx.gui.device.adb.parsers.PackageListParser;
+import jadx.gui.device.adb.parsers.AndroidPropsParser;
 import jadx.gui.device.adb.parsers.ApkPathParser;
+import jadx.gui.device.adb.parsers.PackageListParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +16,8 @@ class AdbParserTest {
 
 	@Test
 	void testDeviceParsingDirect() {
-		String output = "1027525383003054       device usb:20-3.1 product:X6833B-GL model:Infinix_X6833B device:Infinix-X6833B transport_id:1\n";
+		String output =
+				"1027525383003054       device usb:20-3.1 product:X6833B-GL model:Infinix_X6833B device:Infinix-X6833B transport_id:1\n";
 		List<ADBDevice> devices = AdbDevicesParser.parse(output, "localhost", 5037);
 		assertThat(devices).hasSize(1);
 		ADBDeviceInfo info = devices.get(0).getDeviceInfo();

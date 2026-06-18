@@ -147,7 +147,7 @@ launch4j {
 	mainClassName.set(application.mainClass.get())
 	copyConfigurable.set(listOf<Any>())
 	dontWrapJar.set(true)
-	icon.set("$projectDir/src/main/resources/logos/jadx-logo.ico")
+	icon.set("$projectDir/src/main/resources/logos/dexforge-logo.ico")
 	outfile.set("dexforge-gui-$jadxVersion.exe")
 	version.set(jadxVersion)
 	copyright.set("Skylot and DexForge contributors")
@@ -190,7 +190,7 @@ runtime {
 		"jdk.accessibility",
 	)
 	jpackage {
-		imageOptions = listOf("--icon", "$projectDir/src/main/resources/logos/jadx-logo.ico")
+		imageOptions = listOf("--icon", "$projectDir/src/main/resources/logos/dexforge-logo.ico")
 		skipInstaller = true
 		targetPlatformName = "win"
 	}
@@ -261,4 +261,12 @@ val syncNLSLines by tasks.registering(JavaExec::class) {
 
 	classpath = sourceSets.main.get().runtimeClasspath
 	mainClass.set("jadx.gui.utils.tools.SyncNLSLines")
+}
+
+val generateLogos by tasks.registering(JavaExec::class) {
+	group = "jadx-dev"
+	description = "Utility task to generate png and ico assets from svg logo"
+
+	classpath = sourceSets.main.get().runtimeClasspath
+	mainClass.set("jadx.gui.utils.tools.GeneratePngLogos")
 }

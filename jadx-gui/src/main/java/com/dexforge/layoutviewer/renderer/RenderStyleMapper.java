@@ -36,9 +36,13 @@ public class RenderStyleMapper {
 		int vertical = dp(node.getAttribute("android:paddingVertical"), all);
 		return new Insets(
 				firstPositive(dp(node.getAttribute("android:paddingTop"), vertical), drawableTop),
-				firstPositive(dp(firstNonNull(node.getAttribute("android:paddingLeft"), node.getAttribute("android:paddingStart")), horizontal), drawableLeft),
+				firstPositive(
+						dp(firstNonNull(node.getAttribute("android:paddingLeft"), node.getAttribute("android:paddingStart")), horizontal),
+						drawableLeft),
 				firstPositive(dp(node.getAttribute("android:paddingBottom"), vertical), drawableBottom),
-				firstPositive(dp(firstNonNull(node.getAttribute("android:paddingRight"), node.getAttribute("android:paddingEnd")), horizontal), drawableRight));
+				firstPositive(
+						dp(firstNonNull(node.getAttribute("android:paddingRight"), node.getAttribute("android:paddingEnd")), horizontal),
+						drawableRight));
 	}
 
 	public Insets margin(AndroidViewNode node) {
@@ -47,9 +51,11 @@ public class RenderStyleMapper {
 		int vertical = dp(node.getAttribute("android:layout_marginVertical"), all);
 		return new Insets(
 				dp(node.getAttribute("android:layout_marginTop"), vertical),
-				dp(firstNonNull(node.getAttribute("android:layout_marginLeft"), node.getAttribute("android:layout_marginStart")), horizontal),
+				dp(firstNonNull(node.getAttribute("android:layout_marginLeft"), node.getAttribute("android:layout_marginStart")),
+						horizontal),
 				dp(node.getAttribute("android:layout_marginBottom"), vertical),
-				dp(firstNonNull(node.getAttribute("android:layout_marginRight"), node.getAttribute("android:layout_marginEnd")), horizontal));
+				dp(firstNonNull(node.getAttribute("android:layout_marginRight"), node.getAttribute("android:layout_marginEnd")),
+						horizontal));
 	}
 
 	public Border border(AndroidViewNode node) {

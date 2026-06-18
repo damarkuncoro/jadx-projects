@@ -76,7 +76,8 @@ public class AdDetector {
 			LOG.warn("No tracker/ad rules found. Using default fallback rules.");
 			list.add(new AdNetwork("Google AdMob", "Ads", Arrays.asList("com.google.ads", "com.google.android.gms.ads")));
 			list.add(new AdNetwork("Facebook Audience Network", "Ads", Arrays.asList("com.facebook.ads")));
-			list.add(new AdNetwork("Firebase Analytics", "Analytics", Arrays.asList("com.google.firebase.analytics", "com.google.android.gms.measurement")));
+			list.add(new AdNetwork("Firebase Analytics", "Analytics",
+					Arrays.asList("com.google.firebase.analytics", "com.google.android.gms.measurement")));
 		}
 		return list;
 	}
@@ -127,7 +128,13 @@ public class AdDetector {
 
 	private static class RulesContainer {
 		private List<AdNetwork> rules;
-		public List<AdNetwork> getRules() { return rules; }
-		public void setRules(List<AdNetwork> rules) { this.rules = rules; }
+
+		public List<AdNetwork> getRules() {
+			return rules;
+		}
+
+		public void setRules(List<AdNetwork> rules) {
+			this.rules = rules;
+		}
 	}
 }

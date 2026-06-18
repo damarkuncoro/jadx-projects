@@ -10,7 +10,8 @@ import jadx.gui.device.adb.AdbService.AdbUser;
 public final class AdbUserParser {
 	private static final Pattern USER_PATTERN = Pattern.compile("UserInfo\\{(\\d+):([^:]+):\\d+\\}");
 
-	private AdbUserParser() {}
+	private AdbUserParser() {
+	}
 
 	public static List<AdbUser> parse(String output) {
 		List<AdbUser> users = new ArrayList<>();

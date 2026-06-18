@@ -15,6 +15,8 @@ import javax.swing.JPopupMenu;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.jetbrains.annotations.Nullable;
 
+import com.dexforge.layoutviewer.ui.LayoutViewerPanel;
+
 import jadx.api.ICodeInfo;
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
@@ -43,8 +45,6 @@ import jadx.gui.utils.Icons;
 import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
 import jadx.gui.utils.res.ResTableHelper;
-
-import com.dexforge.layoutviewer.ui.LayoutViewerPanel;
 
 public class JResource extends JLoadableNode {
 	private static final long serialVersionUID = -201018424302612434L;

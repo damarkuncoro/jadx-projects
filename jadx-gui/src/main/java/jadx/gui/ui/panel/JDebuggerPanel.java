@@ -45,8 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.core.utils.StringUtils;
-import jadx.gui.device.debugger.DebugController;
 import jadx.gui.device.adb.ADBDevice;
+import jadx.gui.device.debugger.DebugController;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.codearea.SmaliArea;

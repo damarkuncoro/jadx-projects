@@ -15,13 +15,12 @@ import com.google.gson.JsonParser;
 import jadx.gui.device.api.AndroidPackage;
 import jadx.gui.device.api.ApkPath;
 import jadx.gui.device.api.DeviceExplorerException;
-import jadx.gui.device.reports.DeviceReportWriter;
-import jadx.gui.device.workspace.DexForgeWorkspaceLayout;
 import jadx.gui.device.cli.dto.ContractDto;
-import jadx.gui.device.cli.dto.DeviceDto;
 import jadx.gui.device.cli.dto.ErrorDto;
 import jadx.gui.device.cli.dto.PackageDto;
 import jadx.gui.device.cli.dto.PullResultDto;
+import jadx.gui.device.reports.DeviceReportWriter;
+import jadx.gui.device.workspace.DexForgeWorkspaceLayout;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
