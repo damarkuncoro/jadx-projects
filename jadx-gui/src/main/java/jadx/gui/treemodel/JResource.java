@@ -44,6 +44,8 @@ import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
 import jadx.gui.utils.res.ResTableHelper;
 
+import com.dexforge.layoutviewer.ui.LayoutViewerPanel;
+
 public class JResource extends JLoadableNode {
 	private static final long serialVersionUID = -201018424302612434L;
 
@@ -235,6 +237,9 @@ public class JResource extends JLoadableNode {
 		if (isDexMagic()) {
 			return new CodeContentPanel(tabbedPane, this);
 		}
+		if (isAndroidLayoutViewerResource()) {
+			return new LayoutViewerPanel(tabbedPane, this);
+		}
 		if (isBinaryXmlMagic()) {
 			return new CodeContentPanel(tabbedPane, this);
 		}
@@ -407,6 +412,22 @@ public class JResource extends JLoadableNode {
 		}
 		String ext = name.substring(dot + 1);
 		return EXTENSION_TO_FILE_SYNTAX.get(ext);
+	}
+
+	private boolean isAndroidLayoutViewerResource() {
+		if (resFile == null || type != JResType.FILE) {
+			return false;
+		}
+		String name = resFile.getDeobfName().replace('\\', '/');
+		if (!name.endsWith(".xml") || !name.startsWith("res/")) {
+			return false;
+		}
+		return name.startsWith("res/layout/")
+				|| name.startsWith("res/layout-")
+				|| name.startsWith("res/navigation/")
+				|| name.startsWith("res/menu/")
+				|| name.startsWith("res/drawable/")
+				|| name.startsWith("res/drawable-");
 	}
 
 	@Override

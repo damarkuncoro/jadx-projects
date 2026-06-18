@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import jadx.gui.utils.BuildStackDetector.BuildStackInfo;
-import jadx.gui.utils.BuildStackDetector.FrameworkDetection;
+import jadx.gui.buildstack.BuildStackDetector;
+import jadx.gui.buildstack.BuildStackInfo;
+import jadx.gui.buildstack.FrameworkDetection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

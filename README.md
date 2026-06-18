@@ -1,136 +1,176 @@
-<img src="https://raw.githubusercontent.com/skylot/jadx/master/jadx-gui/src/main/resources/logos/jadx-logo.png" width="64" align="left" />
+# DexForge Engine
 
-> **Note:** this repository is the DexForge Engine, based on the upstream `skylot/jadx` project and maintained by `damarkuncoro`.
-> This fork includes custom build and release tooling, and is intended for local development and binary-only release packaging.
->
-> To run the GUI from source, use `./gradlew :jadx-gui:run`.
-> To create a GitHub release asset, use `./gradlew dist` and `./scripts/release.sh <tag>`.
+<img src="jadx-gui/src/main/resources/logos/dexforge-logo.svg" width="96" align="right" alt="DexForge logo" />
 
-## DexForge Engine
+**DexForge Engine** is an Android reverse engineering workbench powered by the upstream [`skylot/jadx`](https://github.com/skylot/jadx) decompiler.
+
+DexForge keeps JADX compatibility where it matters, then adds a modern workflow layer for APK analysis, device extraction, Frida scripting, binary/resource inspection, IDE automation, and Android layout preview.
 
 ![GitHub release](https://img.shields.io/github/v/release/damarkuncoro/jadx-projects?label=release&logo=github)
 ![GitHub downloads](https://img.shields.io/github/downloads/damarkuncoro/jadx-projects/total)
 ![GitHub contributors](https://img.shields.io/github/contributors/damarkuncoro/jadx-projects)
-![Java 11+](https://img.shields.io/badge/Java-11%2B-blue)
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+![Java 11+](https://img.shields.io/badge/runtime-Java%2011%2B-blue)
+![Build JDK 17+](https://img.shields.io/badge/build-JDK%2017%2B-orange)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-**DexForge Engine** - Dex to Java decompiler, powered by JADX
+## Why DexForge
 
-Command line and GUI tools for producing Java source code from Android Dex and Apk files
+DexForge is designed for practical Android reverse engineering:
+
+- decompile APK, DEX, AAB, AAR, JAR, ZIP, class, smali, XAPK, APKM, and APKS inputs
+- inspect Java output, smali, resources, manifests, native libraries, and binary XML
+- pull base and split APKs directly from a connected Android device
+- generate Frida hooks from GUI context
+- preview Android XML layouts without opening Android Studio
+- expose automation-friendly CLI and JSON/LSP workflows for IDE integrations
+
+> [!IMPORTANT]
+> DexForge is a fork and extension layer built on JADX. The `dexforge` and `dexforge-gui` commands are the preferred DexForge entry points; `jadx` and `jadx-gui` remain available as compatibility aliases.
 
 > [!WARNING]
-> Please note that DexForge/JADX may not decompile 100% of code in all cases, so errors can occur.
-> For troubleshooting, upstream `skylot/jadx` wiki resources often contain useful guidance.
+> Decompilation is best-effort. DexForge/JADX may produce incomplete or incorrect code for heavily obfuscated, optimized, or malformed inputs. Always validate important findings against bytecode, resources, and runtime behavior.
 
-**Main features:**
-- decompile Dalvik bytecode to Java code from APK, dex, aar, aab and zip files
-- decode `AndroidManifest.xml` and other resources from `resources.arsc`
-- deobfuscator included
-- **DexForge Device Explorer**: pull APKs (including split APK packages) directly from Android devices via ADB, with automatic workspace creation, decompile runners, and security analysis assistant scanning
-- **ELF Header Parser & Hex Viewer**: view ELF file headers (Class, OS/ABI, Machine, Entry point, etc.) and raw hexadecimal contents of native libraries (`.so` files)
-- **Automatic Binary XML Decoder**: signature-based detection and decoding of binary Android XML files (layout/drawable) even without standard extensions
-- **Frida Integration**: generate and run Frida scripts directly from DexForge GUI, with predefined snippets for common tasks like SSL pinning bypass, root detection bypass, etc.
+## Feature Highlights
 
-**DexForge GUI features:**
-- view decompiled code with highlighted syntax
-- jump to declaration
-- find usage
-- full text search
-- smali debugger, check the upstream wiki for setup and usage
-- DexForge Device Explorer UI under menu `File` -> `Open from Android Device...` to visually browse packages, select split APK configuration, pull, and decompile
-- Frida integration: right-click a method in the decompiled code to generate a Frida hook script, or open the Frida panel via the menu to use predefined snippets
+### DexForge GUI
 
-DexForge GUI key bindings currently follow jadx-gui defaults and can be found in the upstream wiki.
+- syntax-highlighted decompiled Java and resource viewing
+- declaration navigation, usage lookup, and full-text search
+- smali debugger support inherited from JADX
+- native library inspection with ELF header parsing and hex viewing
+- automatic binary Android XML detection and decoding
+- Android XML Layout Viewer with preview, tree, resolved attributes, resources, and XML source tabs
+- Frida panel and method-context hook generation
+- Device Explorer under `File -> Open from Android Device...`
 
-See these features in action in the upstream jadx documentation.
+### DexForge Device Explorer
 
-<img src="https://user-images.githubusercontent.com/118523/142730720-839f017e-38db-423e-b53f-39f5f0a0316f.png" width="700"/>
+- detect connected Android devices through ADB
+- list packages by Android user/profile
+- resolve `base.apk` and split APK paths
+- pull APK sets into a structured workspace
+- open or decompile pulled packages
+- emit machine-readable JSON for IDE integrations
 
-### Download
-- release
-  from [GitHub release](https://github.com/damarkuncoro/jadx-projects/releases/latest)
-- built artifact available from `./gradlew dist` as `build/dexforge-engine-dev.zip`
+### DexForge Layout Viewer
 
-After unpacking the zip file, run from `bin`:
-- `dexforge` - DexForge command line alias
-- `dexforge-gui` - DexForge GUI alias
-- `jadx` - command line version
-- `jadx-gui` - compatibility GUI version
+- opens Android layout/resource XML inside DexForge GUI
+- resolves common `@string`, `@color`, `@dimen`, `@style`, `@drawable`, and `@mipmap` references
+- supports basic visual previews for common Android views
+- shows raw and resolved attributes side by side
+- syncs preview clicks with the layout tree and inspector
 
-On Windows, run the corresponding `.bat` files.
-**Note:** ensure you have Java 11 or later installed.
+### Frida Integration
 
-### Install
-- Arch Linux / AUR / macOS / Flathub instructions below refer to the upstream `skylot/jadx` distribution and may not reflect this fork.
-- For this fork, preferred method is to build from source and use the generated binary release asset.
+- generate Frida hook scripts from selected methods
+- edit and run scripts from the GUI panel
+- use predefined snippets for common Android runtime analysis workflows
 
-- Arch Linux
-  [![Arch Linux package](https://img.shields.io/archlinux/v/extra/any/jadx)](https://archlinux.org/packages/extra/any/jadx/)
-  [![AUR Version](https://img.shields.io/aur/version/jadx-git)](https://aur.archlinux.org/packages/jadx-git)
-  ```bash
-  sudo pacman -S jadx
-  ```
-- macOS
-  [![homebrew version](https://img.shields.io/homebrew/v/jadx)](https://formulae.brew.sh/formula/jadx)
-  ```bash
-  brew install jadx
-  ```
-- Flathub
-  [![Flathub Version](https://img.shields.io/flathub/v/com.github.skylot.jadx)](https://flathub.org/apps/com.github.skylot.jadx)
-  ```bash
-  flatpak install flathub com.github.skylot.jadx
-  ```
+### Automation and IDE Readiness
 
-### Use jadx as a library
-You can use jadx in your java projects, check details on [wiki page](https://github.com/skylot/jadx/wiki/Use-jadx-as-a-library)
+- `device-explorer` CLI command with optional JSON output
+- `lsp` / `decompiler-daemon` JSON-RPC mode for editor integrations
+- repository split plan for VS Code, IntelliJ, and public docs
 
-### Build from source
-JDK 17 or higher must be installed:
+## Download
+
+Download packaged releases from:
+
+[GitHub Releases](https://github.com/damarkuncoro/jadx-projects/releases/latest)
+
+Build artifacts produced by this repository use DexForge names:
+
+```text
+build/dexforge-engine-<version>.zip
+build/dexforge-gui-<version>-win.zip
+build/dexforge-gui-<version>-with-jre-win.zip
 ```
+
+After unpacking the engine zip, run from `bin`:
+
+| Command | Purpose |
+| --- | --- |
+| `dexforge` | primary DexForge CLI |
+| `dexforge-gui` | primary DexForge desktop GUI |
+| `jadx` | compatibility CLI alias |
+| `jadx-gui` | compatibility GUI alias |
+
+On Windows, use the corresponding `.bat` files.
+
+Runtime requirement:
+
+```text
+Java 11 or later
+```
+
+## Build From Source
+
+Build requirement:
+
+```text
+JDK 17 or later
+```
+
+Build the distribution:
+
+```bash
 git clone https://github.com/damarkuncoro/jadx-projects.git
 cd jadx-projects
 ./gradlew dist
 ```
 
-(on Windows, use `gradlew.bat` instead of `./gradlew`)
+Run the GUI during development:
 
-If you only need to run the GUI during development:
 ```bash
 ./gradlew :jadx-gui:run
 ```
 
-### Project requirements
-For the local fork, see [`docs/PROJECT_REQUIREMENTS.md`](docs/PROJECT_REQUIREMENTS.md) for environment setup, build prerequisites, and runtime dependencies.
+On Windows, use `gradlew.bat` instead of `./gradlew`.
 
-For the DexForge Engine / IDE repository split, see [`docs/DEXFORGE_REPOSITORIES.md`](docs/DEXFORGE_REPOSITORIES.md).
+## Release Helper
 
-Scripts for running DexForge and jadx compatibility aliases will be placed in `build/jadx/bin`
-and also packed to `build/dexforge-engine-<version>.zip`
+This repository includes a helper for publishing generated release assets.
 
-### Binary release helper
-This repository includes a helper script to create GitHub Releases from the generated distribution asset.
-
-Build the distribution first:
+Build first:
 
 ```bash
 ./gradlew dist
 ```
 
-Then create a release (example):
+Create a release:
 
 ```bash
 ./scripts/release.sh v1.5.6
 ```
 
-The helper will use `build/dexforge-engine-dev.zip` by default when it exists.
-
-To attach custom release notes:
+Attach explicit release notes:
 
 ```bash
 ./scripts/release.sh v1.5.6 --artifact build/dexforge-engine-dev.zip --notes-file release-notes.md
 ```
 
-Latest release notes are stored in `release-notes.md`.
+Latest release notes are stored in [`release-notes.md`](release-notes.md).
+
+## Documentation
+
+- [Project requirements](docs/PROJECT_REQUIREMENTS.md)
+- [DexForge repository split](docs/DEXFORGE_REPOSITORIES.md)
+- [DexForge rebranding roadmap](docs/DEXFORGE_REBRANDING_ROADMAP.md)
+- [Android XML Layout Viewer roadmap](docs/ANDROID_XML_LAYOUT_VIEWER_ROADMAP.md)
+- [Device Explorer roadmap](docs/DEVICE_EXPLORER_ROADMAP.md)
+
+## Upstream Compatibility
+
+DexForge intentionally preserves JADX compatibility:
+
+- internal Gradle modules such as `jadx-core`, `jadx-cli`, and `jadx-gui` remain unchanged
+- Java packages under `jadx.*` remain available for upstream compatibility
+- `jadx` and `jadx-gui` commands are still shipped as aliases
+- upstream JADX docs and troubleshooting remain useful for core decompiler behavior
+
+For library usage of upstream JADX APIs, see the upstream guide:
+
+[Use jadx as a library](https://github.com/skylot/jadx/wiki/Use-jadx-as-a-library)
 
 ### Usage
 ```
