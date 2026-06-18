@@ -1,0 +1,50 @@
+{
+  "name": "dexforge-vscode",
+  "displayName": "DexForge",
+  "description": "Android Reverse Engineering Workbench powered by DexForge Engine",
+  "version": "0.1.0",
+  "publisher": "damarkuncoro",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:java",
+    "onLanguage:smali",
+    "onCommand:dexforge.startDaemon",
+    "onCommand:dexforge.deviceExplorer"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dexforge.startDaemon",
+        "title": "DexForge: Start Decompiler Daemon"
+      },
+      {
+        "command": "dexforge.deviceExplorer",
+        "title": "DexForge: Open Device Explorer"
+      }
+    ],
+    "configuration": {
+      "title": "DexForge Configuration",
+      "properties": {
+        "dexforge.path": {
+          "type": "string",
+          "default": "dexforge",
+          "description": "Path to the dexforge CLI binary."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "postinstall": "npm install vscode-languageclient vscode-languageserver-types"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^8.1.0",
+    "vscode-languageserver-types": "^3.17.3"
+  }
+}
