@@ -23,7 +23,7 @@ COPY jadx-plugins/ jadx-plugins/
 RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
 
 # Stage 2: Runtime
-FROM eclipse-temurin:25-jre-slim
+FROM eclipse-temurin:21-jre-slim
 
 LABEL maintainer="DexForge <https://github.com/damarkuncoro/jadx-projects>"
 LABEL description="DexForge CLI - Android reverse engineering workbench powered by JADX"
