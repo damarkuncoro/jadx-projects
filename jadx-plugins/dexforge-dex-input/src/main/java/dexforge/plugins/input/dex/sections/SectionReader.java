@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -9,19 +9,19 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICallSite;
-import jadx.api.plugins.input.data.IFieldRef;
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.MethodHandleType;
-import jadx.api.plugins.input.data.impl.CallSite;
-import jadx.api.plugins.input.data.impl.FieldRefHandle;
-import jadx.api.plugins.input.data.impl.MethodRefHandle;
-import jadx.plugins.input.dex.DexReader;
-import jadx.plugins.input.dex.sections.annotations.EncodedValueParser;
-import jadx.plugins.input.dex.utils.Leb128;
-import jadx.plugins.input.dex.utils.MUtf8;
+import dexforge.api.plugins.input.data.ICallSite;
+import dexforge.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.MethodHandleType;
+import dexforge.api.plugins.input.data.impl.CallSite;
+import dexforge.api.plugins.input.data.impl.FieldRefHandle;
+import dexforge.api.plugins.input.data.impl.MethodRefHandle;
+import dexforge.plugins.input.dex.DexReader;
+import dexforge.plugins.input.dex.sections.annotations.EncodedValueParser;
+import dexforge.plugins.input.dex.utils.Leb128;
+import dexforge.plugins.input.dex.utils.MUtf8;
 
-import static jadx.plugins.input.dex.sections.DexConsts.NO_INDEX;
+import static dexforge.plugins.input.dex.sections.DexConsts.NO_INDEX;
 
 public class SectionReader {
 	private final ByteBuffer buf;

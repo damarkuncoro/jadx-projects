@@ -1,4 +1,4 @@
-package jadx.api.plugins.pass;
+package dexforge.api.plugins.pass;
 
 import java.util.List;
 

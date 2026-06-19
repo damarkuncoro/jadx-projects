@@ -1,4 +1,4 @@
-package jadx.plugins.input.javaconvert;
+package dexforge.plugins.input.javaconvert;
 
 import java.io.Closeable;
 import java.io.File;

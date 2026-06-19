@@ -2,9 +2,9 @@ package jadx.gui.events.types;
 
 import java.util.function.Consumer;
 
-import jadx.api.plugins.events.IJadxEvent;
-import jadx.api.plugins.events.IJadxEvents;
-import jadx.api.plugins.events.JadxEventType;
+import dexforge.api.plugins.events.IJadxEvent;
+import dexforge.api.plugins.events.IJadxEvents;
+import dexforge.api.plugins.events.JadxEventType;
 import jadx.core.plugins.events.JadxEventsImpl;
 
 /**

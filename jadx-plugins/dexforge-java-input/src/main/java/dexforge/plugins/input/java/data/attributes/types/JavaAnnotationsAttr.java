@@ -1,24 +1,24 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.annotations.JadxAnnotation;
-import jadx.api.plugins.input.data.attributes.types.AnnotationsAttr;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.JavaClassData;
-import jadx.plugins.input.java.data.attributes.EncodedValueReader;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
-import jadx.plugins.input.java.data.attributes.JavaAttrStorage;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.annotations.JadxAnnotation;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.JavaClassData;
+import dexforge.plugins.input.java.data.attributes.EncodedValueReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.JavaAttrStorage;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
 
 public class JavaAnnotationsAttr implements IJavaAttribute {
 	private final List<IAnnotation> list;

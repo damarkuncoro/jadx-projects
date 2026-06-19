@@ -1,6 +1,6 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
-import jadx.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.DexException;
 
 public class DexHeader {
 	private final String version;

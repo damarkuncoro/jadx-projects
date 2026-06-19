@@ -1,4 +1,4 @@
-package jadx.plugins.mappings;
+package dexforge.plugins.mappings;
 
 import java.util.List;
 

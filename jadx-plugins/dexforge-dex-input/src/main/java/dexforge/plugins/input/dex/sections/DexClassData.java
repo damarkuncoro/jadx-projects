@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,16 +10,16 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.input.data.IClassData;
-import jadx.api.plugins.input.data.IFieldData;
-import jadx.api.plugins.input.data.IMethodData;
-import jadx.api.plugins.input.data.ISeqConsumer;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.input.data.attributes.types.SourceFileAttr;
-import jadx.plugins.input.dex.sections.annotations.AnnotationsParser;
-import jadx.plugins.input.dex.utils.SmaliUtils;
+import dexforge.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.input.data.IFieldData;
+import dexforge.api.plugins.input.data.IMethodData;
+import dexforge.api.plugins.input.data.ISeqConsumer;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.types.SourceFileAttr;
+import dexforge.plugins.input.dex.sections.annotations.AnnotationsParser;
+import dexforge.plugins.input.dex.utils.SmaliUtils;
 
 public class DexClassData implements IClassData {
 	private static final Logger LOG = LoggerFactory.getLogger(DexClassData.class);

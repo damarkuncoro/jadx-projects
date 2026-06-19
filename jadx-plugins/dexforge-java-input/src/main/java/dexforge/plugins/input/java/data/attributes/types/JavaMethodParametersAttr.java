@@ -1,12 +1,12 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.api.plugins.input.data.attributes.types.MethodParametersAttr;
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.api.plugins.input.data.attributes.types.MethodParametersAttr;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
 
 public class JavaMethodParametersAttr extends MethodParametersAttr implements IJavaAttribute {
 	public JavaMethodParametersAttr(List<Info> list) {

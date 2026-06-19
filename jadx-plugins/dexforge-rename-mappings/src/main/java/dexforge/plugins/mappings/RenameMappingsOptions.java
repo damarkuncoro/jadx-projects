@@ -1,4 +1,4 @@
-package jadx.plugins.mappings;
+package dexforge.plugins.mappings;
 
 import java.util.Locale;
 
@@ -6,11 +6,11 @@ import org.jetbrains.annotations.Nullable;
 
 import net.fabricmc.mappingio.format.MappingFormat;
 
-import jadx.api.plugins.options.OptionFlag;
-import jadx.api.plugins.options.impl.BasePluginOptionsBuilder;
+import dexforge.api.plugins.options.OptionFlag;
+import dexforge.api.plugins.options.impl.BasePluginOptionsBuilder;
 import jadx.core.utils.ListUtils;
 
-import static jadx.plugins.mappings.RenameMappingsPlugin.PLUGIN_ID;
+import static dexforge.plugins.mappings.RenameMappingsPlugin.PLUGIN_ID;
 
 public class RenameMappingsOptions extends BasePluginOptionsBuilder {
 

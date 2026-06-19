@@ -1,9 +1,9 @@
-package jadx.api.plugins.input.data;
+package dexforge.api.plugins.input.data;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.insns.custom.ICustomPayload;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.insns.custom.ICustomPayload;
 
 public interface ICallSite extends ICustomPayload {
 

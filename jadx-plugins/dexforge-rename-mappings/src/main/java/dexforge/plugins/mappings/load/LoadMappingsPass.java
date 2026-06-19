@@ -1,4 +1,4 @@
-package jadx.plugins.mappings.load;
+package dexforge.plugins.mappings.load;
 
 import java.nio.file.Path;
 import java.util.Collections;
@@ -11,13 +11,13 @@ import net.fabricmc.mappingio.tree.MemoryMappingTree;
 import net.fabricmc.mappingio.tree.VisitableMappingTree;
 
 import jadx.api.JadxArgs;
-import jadx.api.plugins.pass.JadxPassInfo;
-import jadx.api.plugins.pass.impl.SimpleJadxPassInfo;
-import jadx.api.plugins.pass.types.JadxPreparePass;
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-import jadx.plugins.mappings.RenameMappingsData;
-import jadx.plugins.mappings.RenameMappingsOptions;
+import dexforge.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.RenameMappingsOptions;
 
 public class LoadMappingsPass implements JadxPreparePass {
 

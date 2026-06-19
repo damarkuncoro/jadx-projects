@@ -3,8 +3,8 @@ package jadx.api.impl.passes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.pass.JadxPass;
-import jadx.api.plugins.pass.types.JadxDecompilePass;
+import dexforge.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.types.JadxDecompilePass;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;

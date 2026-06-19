@@ -1,15 +1,15 @@
-package jadx.api.plugins.input.data.attributes;
+package dexforge.api.plugins.input.data.attributes;
 
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.attributes.types.AnnotationDefaultAttr;
-import jadx.api.plugins.input.data.attributes.types.AnnotationDefaultClassAttr;
-import jadx.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
-import jadx.api.plugins.input.data.attributes.types.AnnotationsAttr;
-import jadx.api.plugins.input.data.attributes.types.ExceptionsAttr;
-import jadx.api.plugins.input.data.attributes.types.InnerClassesAttr;
-import jadx.api.plugins.input.data.attributes.types.MethodParametersAttr;
-import jadx.api.plugins.input.data.attributes.types.SignatureAttr;
-import jadx.api.plugins.input.data.attributes.types.SourceFileAttr;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationDefaultAttr;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationDefaultClassAttr;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
+import dexforge.api.plugins.input.data.attributes.types.ExceptionsAttr;
+import dexforge.api.plugins.input.data.attributes.types.InnerClassesAttr;
+import dexforge.api.plugins.input.data.attributes.types.MethodParametersAttr;
+import dexforge.api.plugins.input.data.attributes.types.SignatureAttr;
+import dexforge.api.plugins.input.data.attributes.types.SourceFileAttr;
 
 public final class JadxAttrType<T extends IJadxAttribute> implements IJadxAttrType<T> {
 

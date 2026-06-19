@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.instructions.mods.ConstructorInsn;
 import jadx.core.dex.nodes.ClassNode;

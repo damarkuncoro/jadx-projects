@@ -1,6 +1,6 @@
-package jadx.plugins.input.smali;
+package dexforge.plugins.input.smali;
 
-import jadx.api.plugins.options.impl.BasePluginOptionsBuilder;
+import dexforge.api.plugins.options.impl.BasePluginOptionsBuilder;
 
 public class SmaliInputOptions extends BasePluginOptionsBuilder {
 

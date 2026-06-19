@@ -8,8 +8,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.instructions.ConstClassNode;

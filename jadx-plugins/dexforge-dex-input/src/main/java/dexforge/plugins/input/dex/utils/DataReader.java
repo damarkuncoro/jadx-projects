@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.utils;
+package dexforge.plugins.input.dex.utils;
 
 public class DataReader {
 

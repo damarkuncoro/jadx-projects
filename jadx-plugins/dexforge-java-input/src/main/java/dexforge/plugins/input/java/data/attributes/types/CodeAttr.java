@@ -1,7 +1,7 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
 
 public class CodeAttr implements IJavaAttribute {
 	private final int offset;

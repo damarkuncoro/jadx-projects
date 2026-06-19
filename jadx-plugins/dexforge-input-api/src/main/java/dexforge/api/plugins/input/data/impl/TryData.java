@@ -1,9 +1,9 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
-import jadx.api.plugins.input.data.ICatch;
-import jadx.api.plugins.input.data.ITry;
+import dexforge.api.plugins.input.data.ICatch;
+import dexforge.api.plugins.input.data.ITry;
 
-import static jadx.api.plugins.input.data.impl.InputUtils.formatOffset;
+import static dexforge.api.plugins.input.data.impl.InputUtils.formatOffset;
 
 public class TryData implements ITry {
 

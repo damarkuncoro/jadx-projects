@@ -1,4 +1,4 @@
-package jadx.api.plugins.options.impl;
+package dexforge.api.plugins.options.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.options.JadxPluginOptions;
-import jadx.api.plugins.options.OptionDescription;
-import jadx.api.plugins.options.OptionFlag;
-import jadx.api.plugins.options.OptionType;
+import dexforge.api.plugins.options.JadxPluginOptions;
+import dexforge.api.plugins.options.OptionDescription;
+import dexforge.api.plugins.options.OptionFlag;
+import dexforge.api.plugins.options.OptionType;
 
 /**
  * Base class for {@link JadxPluginOptions} implementation

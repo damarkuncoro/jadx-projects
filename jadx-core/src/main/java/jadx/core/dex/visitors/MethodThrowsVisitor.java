@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.types.ExceptionsAttr;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.ExceptionsAttr;
 import jadx.core.Consts;
 import jadx.core.clsp.ClspClass;
 import jadx.core.clsp.ClspMethod;

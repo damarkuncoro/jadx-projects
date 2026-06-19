@@ -1,12 +1,12 @@
-package jadx.api.plugins.input.data.attributes.types;
+package dexforge.api.plugins.input.data.attributes.types;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.AccessFlagsScope;
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.PinnedAttribute;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlagsScope;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
 
 public class MethodParametersAttr extends PinnedAttribute {
 

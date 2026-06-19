@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import jadx.api.plugins.pass.JadxPass;
-import jadx.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.JadxPassInfo;
 import jadx.core.dex.visitors.IDexTreeVisitor;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 

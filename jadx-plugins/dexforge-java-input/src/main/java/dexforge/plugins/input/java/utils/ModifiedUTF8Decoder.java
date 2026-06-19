@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.utils;
+package dexforge.plugins.input.java.utils;
 
 import java.nio.charset.StandardCharsets;
 

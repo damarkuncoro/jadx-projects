@@ -1,6 +1,6 @@
-package jadx.plugins.kotlin.metadata.tests
+package dexforge.plugins.kotlin.metadata.tests
 
-import jadx.plugins.kotlin.smap.KotlinSmapOptions.Companion.CLASS_ALIAS_SOURCE_DBG_OPT
+import dexforge.plugins.kotlin.smap.KotlinSmapOptions.Companion.CLASS_ALIAS_SOURCE_DBG_OPT
 import jadx.tests.api.SmaliTest
 import jadx.tests.api.utils.assertj.JadxAssertions.assertThat
 import jadx.tests.api.utils.assertj.JadxCodeAssertions

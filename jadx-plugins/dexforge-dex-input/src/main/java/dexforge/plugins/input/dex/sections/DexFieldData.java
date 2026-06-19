@@ -1,16 +1,16 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.IFieldData;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.dex.sections.annotations.AnnotationsParser;
+import dexforge.api.plugins.input.data.IFieldData;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.dex.sections.annotations.AnnotationsParser;
 
 public class DexFieldData implements IFieldData {
 	@Nullable

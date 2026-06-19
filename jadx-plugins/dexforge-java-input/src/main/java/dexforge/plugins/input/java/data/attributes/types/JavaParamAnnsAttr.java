@@ -1,17 +1,17 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
-import jadx.plugins.input.java.data.attributes.JavaAttrStorage;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.JavaAttrStorage;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
 
 public class JavaParamAnnsAttr implements IJavaAttribute {
 	private final List<List<IAnnotation>> list;

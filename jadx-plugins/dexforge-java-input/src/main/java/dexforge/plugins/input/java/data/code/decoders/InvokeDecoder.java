@@ -1,12 +1,12 @@
-package jadx.plugins.input.java.data.code.decoders;
+package dexforge.plugins.input.java.data.code.decoders;
 
-import jadx.api.plugins.input.data.ICallSite;
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.input.insns.Opcode;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.code.CodeDecodeState;
-import jadx.plugins.input.java.data.code.JavaInsnData;
+import dexforge.api.plugins.input.data.ICallSite;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.insns.Opcode;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.code.CodeDecodeState;
+import dexforge.plugins.input.java.data.code.JavaInsnData;
 
 public class InvokeDecoder implements IJavaInsnDecoder {
 	private final int payloadSize;

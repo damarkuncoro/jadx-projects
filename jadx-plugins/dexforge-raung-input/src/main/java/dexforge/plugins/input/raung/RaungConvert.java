@@ -1,4 +1,4 @@
-package jadx.plugins.input.raung;
+package dexforge.plugins.input.raung;
 
 import java.io.Closeable;
 import java.nio.file.FileSystems;

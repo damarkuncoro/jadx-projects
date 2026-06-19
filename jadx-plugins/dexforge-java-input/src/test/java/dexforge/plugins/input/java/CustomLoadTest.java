@@ -1,4 +1,4 @@
-package jadx.plugins.input.java;
+package dexforge.plugins.input.java;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
-import jadx.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.ICodeLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

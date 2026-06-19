@@ -10,12 +10,12 @@ import java.util.stream.Stream;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.IFieldRef;
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.types.AnnotationsAttr;
+import dexforge.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.AttrNode;

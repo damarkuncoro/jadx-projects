@@ -1,9 +1,9 @@
-package jadx.api.plugins.input;
+package dexforge.api.plugins.input;
 
 import java.io.Closeable;
 import java.util.function.Consumer;
 
-import jadx.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.input.data.IClassData;
 
 public interface ICodeLoader extends Closeable {
 

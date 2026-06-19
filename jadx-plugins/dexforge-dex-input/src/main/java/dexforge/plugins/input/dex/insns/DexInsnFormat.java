@@ -1,9 +1,9 @@
-package jadx.plugins.input.dex.insns;
+package dexforge.plugins.input.dex.insns;
 
-import jadx.api.plugins.input.insns.custom.impl.SwitchPayload;
-import jadx.plugins.input.dex.DexException;
-import jadx.plugins.input.dex.insns.payloads.DexArrayPayload;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.api.plugins.input.insns.custom.impl.SwitchPayload;
+import dexforge.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.insns.payloads.DexArrayPayload;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public abstract class DexInsnFormat {
 	public static final DexInsnFormat FORMAT_10X = new DexInsnFormat(1, 0) {

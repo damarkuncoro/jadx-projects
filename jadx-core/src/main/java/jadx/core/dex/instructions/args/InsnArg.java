@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.insns.InsnData;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.instructions.InsnType;
 import jadx.core.dex.nodes.InsnNode;

@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,19 +9,19 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICatch;
-import jadx.api.plugins.input.data.ICodeReader;
-import jadx.api.plugins.input.data.IDebugInfo;
-import jadx.api.plugins.input.data.ITry;
-import jadx.api.plugins.input.data.impl.CatchData;
-import jadx.api.plugins.input.data.impl.TryData;
-import jadx.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.data.ICatch;
+import dexforge.api.plugins.input.data.ICodeReader;
+import dexforge.api.plugins.input.data.IDebugInfo;
+import dexforge.api.plugins.input.data.ITry;
+import dexforge.api.plugins.input.data.impl.CatchData;
+import dexforge.api.plugins.input.data.impl.TryData;
+import dexforge.api.plugins.input.insns.InsnData;
 import jadx.core.utils.exceptions.InvalidDataException;
-import jadx.plugins.input.dex.DexException;
-import jadx.plugins.input.dex.insns.DexInsnData;
-import jadx.plugins.input.dex.insns.DexInsnFormat;
-import jadx.plugins.input.dex.insns.DexInsnInfo;
-import jadx.plugins.input.dex.sections.debuginfo.DebugInfoParser;
+import dexforge.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.insns.DexInsnData;
+import dexforge.plugins.input.dex.insns.DexInsnFormat;
+import dexforge.plugins.input.dex.insns.DexInsnInfo;
+import dexforge.plugins.input.dex.sections.debuginfo.DebugInfoParser;
 
 public class DexCodeReader implements ICodeReader {
 

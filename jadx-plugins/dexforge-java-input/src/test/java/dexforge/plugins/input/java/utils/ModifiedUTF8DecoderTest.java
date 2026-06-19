@@ -1,8 +1,8 @@
-package jadx.plugins.input.java.utils;
+package dexforge.plugins.input.java.utils;
 
 import org.junit.jupiter.api.Test;
 
-import static jadx.plugins.input.java.utils.ModifiedUTF8Decoder.decodeString;
+import static dexforge.plugins.input.java.utils.ModifiedUTF8Decoder.decodeString;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /*

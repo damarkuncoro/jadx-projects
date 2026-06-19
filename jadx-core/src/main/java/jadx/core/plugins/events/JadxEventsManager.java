@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-import jadx.api.plugins.events.IJadxEvent;
-import jadx.api.plugins.events.JadxEventType;
+import dexforge.api.plugins.events.IJadxEvent;
+import dexforge.api.plugins.events.JadxEventType;
 
 /**
  * Handle events sending and receiving

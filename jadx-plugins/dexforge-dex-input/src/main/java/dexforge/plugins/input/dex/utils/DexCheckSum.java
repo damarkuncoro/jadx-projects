@@ -1,8 +1,8 @@
-package jadx.plugins.input.dex.utils;
+package dexforge.plugins.input.dex.utils;
 
 import java.util.zip.Adler32;
 
-import jadx.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.DexException;
 
 public class DexCheckSum {
 

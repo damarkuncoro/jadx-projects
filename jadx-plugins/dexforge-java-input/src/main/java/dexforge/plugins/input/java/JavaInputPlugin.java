@@ -1,4 +1,4 @@
-package jadx.plugins.input.java;
+package dexforge.plugins.input.java;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -9,12 +9,12 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.data.impl.EmptyCodeLoader;
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.impl.EmptyCodeLoader;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public class JavaInputPlugin implements JadxPlugin {
 

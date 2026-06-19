@@ -1,6 +1,6 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
-import jadx.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IFieldRef;
 
 public class JadxFieldRef implements IFieldRef {
 	private String parentClassType;

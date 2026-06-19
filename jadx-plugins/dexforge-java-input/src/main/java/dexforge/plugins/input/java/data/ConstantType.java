@@ -1,8 +1,8 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
 import java.util.stream.Stream;
 
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public enum ConstantType {
 	UTF8(1, -1),

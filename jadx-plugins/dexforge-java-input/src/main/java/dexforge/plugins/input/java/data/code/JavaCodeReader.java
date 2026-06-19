@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,26 +12,26 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICodeReader;
-import jadx.api.plugins.input.data.IDebugInfo;
-import jadx.api.plugins.input.data.ILocalVar;
-import jadx.api.plugins.input.data.ITry;
-import jadx.api.plugins.input.data.impl.CatchData;
-import jadx.api.plugins.input.data.impl.DebugInfo;
-import jadx.api.plugins.input.insns.InsnData;
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.JavaClassData;
-import jadx.plugins.input.java.data.attributes.JavaAttrStorage;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
-import jadx.plugins.input.java.data.attributes.debuginfo.JavaLocalVar;
-import jadx.plugins.input.java.data.attributes.debuginfo.LineNumberTableAttr;
-import jadx.plugins.input.java.data.attributes.debuginfo.LocalVarTypesAttr;
-import jadx.plugins.input.java.data.attributes.debuginfo.LocalVarsAttr;
-import jadx.plugins.input.java.data.attributes.types.StackMapTableAttr;
-import jadx.plugins.input.java.data.code.trycatch.JavaSingleCatch;
-import jadx.plugins.input.java.data.code.trycatch.JavaTryData;
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.api.plugins.input.data.ICodeReader;
+import dexforge.api.plugins.input.data.IDebugInfo;
+import dexforge.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.ITry;
+import dexforge.api.plugins.input.data.impl.CatchData;
+import dexforge.api.plugins.input.data.impl.DebugInfo;
+import dexforge.api.plugins.input.insns.InsnData;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.JavaClassData;
+import dexforge.plugins.input.java.data.attributes.JavaAttrStorage;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.plugins.input.java.data.attributes.debuginfo.JavaLocalVar;
+import dexforge.plugins.input.java.data.attributes.debuginfo.LineNumberTableAttr;
+import dexforge.plugins.input.java.data.attributes.debuginfo.LocalVarTypesAttr;
+import dexforge.plugins.input.java.data.attributes.debuginfo.LocalVarsAttr;
+import dexforge.plugins.input.java.data.attributes.types.StackMapTableAttr;
+import dexforge.plugins.input.java.data.code.trycatch.JavaSingleCatch;
+import dexforge.plugins.input.java.data.code.trycatch.JavaTryData;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public class JavaCodeReader implements ICodeReader {
 

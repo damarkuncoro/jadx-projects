@@ -1,19 +1,19 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.insns.InsnIndexType;
-import jadx.api.plugins.input.insns.Opcode;
-import jadx.plugins.input.java.data.attributes.stack.StackValueType;
-import jadx.plugins.input.java.data.code.decoders.IJavaInsnDecoder;
-import jadx.plugins.input.java.data.code.decoders.InvokeDecoder;
-import jadx.plugins.input.java.data.code.decoders.LoadConstDecoder;
-import jadx.plugins.input.java.data.code.decoders.LookupSwitchDecoder;
-import jadx.plugins.input.java.data.code.decoders.TableSwitchDecoder;
-import jadx.plugins.input.java.data.code.decoders.WideDecoder;
+import dexforge.api.plugins.input.insns.InsnIndexType;
+import dexforge.api.plugins.input.insns.Opcode;
+import dexforge.plugins.input.java.data.attributes.stack.StackValueType;
+import dexforge.plugins.input.java.data.code.decoders.IJavaInsnDecoder;
+import dexforge.plugins.input.java.data.code.decoders.InvokeDecoder;
+import dexforge.plugins.input.java.data.code.decoders.LoadConstDecoder;
+import dexforge.plugins.input.java.data.code.decoders.LookupSwitchDecoder;
+import dexforge.plugins.input.java.data.code.decoders.TableSwitchDecoder;
+import dexforge.plugins.input.java.data.code.decoders.WideDecoder;
 
-import static jadx.plugins.input.java.data.attributes.stack.StackValueType.NARROW;
-import static jadx.plugins.input.java.data.attributes.stack.StackValueType.WIDE;
+import static dexforge.plugins.input.java.data.attributes.stack.StackValueType.NARROW;
+import static dexforge.plugins.input.java.data.attributes.stack.StackValueType.WIDE;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class JavaInsnsRegister {

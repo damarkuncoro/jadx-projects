@@ -1,9 +1,9 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.utils.Utils;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.utils.Utils;
 
 public class JavaMethodProto implements IMethodProto {
 

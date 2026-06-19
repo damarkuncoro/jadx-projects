@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.attributes.stack;
+package dexforge.plugins.input.java.data.attributes.stack;
 
 public enum StackValueType {
 	NARROW, // int, float, etc

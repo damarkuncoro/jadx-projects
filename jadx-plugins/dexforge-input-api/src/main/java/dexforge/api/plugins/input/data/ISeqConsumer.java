@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data;
+package dexforge.api.plugins.input.data;
 
 import java.util.function.Consumer;
 

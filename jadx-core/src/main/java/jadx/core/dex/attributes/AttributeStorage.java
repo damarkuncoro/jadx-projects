@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.types.AnnotationsAttr;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
 import jadx.core.utils.ListUtils;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.JadxRuntimeException;

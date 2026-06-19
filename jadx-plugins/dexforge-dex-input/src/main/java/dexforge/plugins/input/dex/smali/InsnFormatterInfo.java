@@ -1,11 +1,11 @@
-package jadx.plugins.input.dex.smali;
+package dexforge.plugins.input.dex.smali;
 
 import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.IMethodData;
-import jadx.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.data.IMethodData;
+import dexforge.api.plugins.input.insns.InsnData;
 
 public class InsnFormatterInfo {
 	private final SmaliCodeWriter codeWriter;

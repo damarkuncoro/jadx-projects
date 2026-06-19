@@ -1,4 +1,4 @@
-package jadx.plugins.input.smali;
+package dexforge.plugins.input.smali;
 
 import java.io.File;
 import java.io.FileInputStream;

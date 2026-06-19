@@ -1,17 +1,17 @@
-package jadx.plugins.mappings;
+package dexforge.plugins.mappings;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import jadx.api.JadxArgs;
 import jadx.api.args.UserRenamesMappingsMode;
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
 import jadx.core.utils.files.FileUtils;
-import jadx.plugins.mappings.load.ApplyMappingsPass;
-import jadx.plugins.mappings.load.CodeMappingsPass;
-import jadx.plugins.mappings.load.LoadMappingsPass;
+import dexforge.plugins.mappings.load.ApplyMappingsPass;
+import dexforge.plugins.mappings.load.CodeMappingsPass;
+import dexforge.plugins.mappings.load.LoadMappingsPass;
 
 public class RenameMappingsPlugin implements JadxPlugin {
 	public static final String PLUGIN_ID = "rename-mappings";

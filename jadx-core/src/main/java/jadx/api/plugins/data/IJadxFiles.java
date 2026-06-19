@@ -1,4 +1,4 @@
-package jadx.api.plugins.data;
+package dexforge.api.plugins.data;
 
 import java.nio.file.Path;
 

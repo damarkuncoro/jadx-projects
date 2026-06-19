@@ -1,4 +1,4 @@
-package jadx.api.plugins.options;
+package dexforge.api.plugins.options;
 
 public enum OptionFlag {
 	/**

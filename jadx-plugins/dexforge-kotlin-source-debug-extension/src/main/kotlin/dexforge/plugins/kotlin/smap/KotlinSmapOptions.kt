@@ -1,7 +1,7 @@
-package jadx.plugins.kotlin.smap
+package dexforge.plugins.kotlin.smap
 
-import jadx.api.plugins.options.impl.BasePluginOptionsBuilder
-import jadx.plugins.kotlin.smap.KotlinSmapPlugin.Companion.PLUGIN_ID
+import dexforge.api.plugins.options.impl.BasePluginOptionsBuilder
+import dexforge.plugins.kotlin.smap.KotlinSmapPlugin.Companion.PLUGIN_ID
 
 class KotlinSmapOptions : BasePluginOptionsBuilder() {
 	var isClassAliasSourceDbg: Boolean = true

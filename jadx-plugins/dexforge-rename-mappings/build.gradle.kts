@@ -10,6 +10,6 @@ dependencies {
 		exclude("net.fabricmc:tiny-remapper")
 	}
 
-	testRuntimeOnly(project(":jadx-plugins:jadx-dex-input"))
-	testRuntimeOnly(project(":jadx-plugins:jadx-smali-input"))
+	testRuntimeOnly(project(":jadx-plugins:dexforge-dex-input"))
+	testRuntimeOnly(project(":jadx-plugins:dexforge-smali-input"))
 }

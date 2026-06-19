@@ -3,7 +3,7 @@ package jadx.tests.functional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.AttributeStorage;
 

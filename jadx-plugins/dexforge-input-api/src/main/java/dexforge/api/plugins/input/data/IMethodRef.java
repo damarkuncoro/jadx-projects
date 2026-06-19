@@ -1,6 +1,6 @@
-package jadx.api.plugins.input.data;
+package dexforge.api.plugins.input.data;
 
-import jadx.api.plugins.input.insns.custom.ICustomPayload;
+import dexforge.api.plugins.input.insns.custom.ICustomPayload;
 
 public interface IMethodRef extends IMethodProto, ICustomPayload {
 

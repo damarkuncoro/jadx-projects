@@ -1,13 +1,13 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package jadx.plugins.kotlin.smap.utils
+package dexforge.plugins.kotlin.smap.utils
 
-import jadx.api.plugins.input.data.annotations.EncodedType
-import jadx.api.plugins.input.data.annotations.EncodedValue
-import jadx.api.plugins.input.data.annotations.IAnnotation
+import dexforge.api.plugins.input.data.annotations.EncodedType
+import dexforge.api.plugins.input.data.annotations.EncodedValue
+import dexforge.api.plugins.input.data.annotations.IAnnotation
 import jadx.core.dex.nodes.ClassNode
-import jadx.plugins.kotlin.smap.model.Constants
-import jadx.plugins.kotlin.smap.model.SMAP
+import dexforge.plugins.kotlin.smap.model.Constants
+import dexforge.plugins.kotlin.smap.model.SMAP
 
 fun ClassNode.getSourceDebugExtension(): SMAP? {
 	val annotation: IAnnotation? = getAnnotation(Constants.KOTLIN_SOURCE_DEBUG_EXTENSION)

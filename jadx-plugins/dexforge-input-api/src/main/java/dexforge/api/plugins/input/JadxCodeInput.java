@@ -1,4 +1,4 @@
-package jadx.api.plugins.input;
+package dexforge.api.plugins.input;
 
 import java.nio.file.Path;
 import java.util.List;

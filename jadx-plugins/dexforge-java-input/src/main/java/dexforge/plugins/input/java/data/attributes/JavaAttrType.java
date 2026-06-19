@@ -1,28 +1,28 @@
-package jadx.plugins.input.java.data.attributes;
+package dexforge.plugins.input.java.data.attributes;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.plugins.input.java.data.attributes.debuginfo.LineNumberTableAttr;
-import jadx.plugins.input.java.data.attributes.debuginfo.LocalVarTypesAttr;
-import jadx.plugins.input.java.data.attributes.debuginfo.LocalVarsAttr;
-import jadx.plugins.input.java.data.attributes.stack.StackMapTableReader;
-import jadx.plugins.input.java.data.attributes.types.CodeAttr;
-import jadx.plugins.input.java.data.attributes.types.ConstValueAttr;
-import jadx.plugins.input.java.data.attributes.types.IgnoredAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaAnnotationDefaultAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaBootstrapMethodsAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaExceptionsAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaInnerClsAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaMethodParametersAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaParamAnnsAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaSignatureAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaSourceFileAttr;
-import jadx.plugins.input.java.data.attributes.types.StackMapTableAttr;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.plugins.input.java.data.attributes.debuginfo.LineNumberTableAttr;
+import dexforge.plugins.input.java.data.attributes.debuginfo.LocalVarTypesAttr;
+import dexforge.plugins.input.java.data.attributes.debuginfo.LocalVarsAttr;
+import dexforge.plugins.input.java.data.attributes.stack.StackMapTableReader;
+import dexforge.plugins.input.java.data.attributes.types.CodeAttr;
+import dexforge.plugins.input.java.data.attributes.types.ConstValueAttr;
+import dexforge.plugins.input.java.data.attributes.types.IgnoredAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaAnnotationDefaultAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaBootstrapMethodsAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaExceptionsAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaInnerClsAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaMethodParametersAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaParamAnnsAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaSignatureAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaSourceFileAttr;
+import dexforge.plugins.input.java.data.attributes.types.StackMapTableAttr;
 
 public final class JavaAttrType<T extends IJavaAttribute> {
 

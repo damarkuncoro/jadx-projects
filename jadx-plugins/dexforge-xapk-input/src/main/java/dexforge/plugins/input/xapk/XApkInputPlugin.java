@@ -1,9 +1,9 @@
-package jadx.plugins.input.xapk;
+package dexforge.plugins.input.xapk;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
-import jadx.api.plugins.JadxPluginInfoBuilder;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.JadxPluginInfoBuilder;
 
 public class XApkInputPlugin implements JadxPlugin {
 
@@ -20,9 +20,10 @@ public class XApkInputPlugin implements JadxPlugin {
 	@Override
 	public void init(JadxPluginContext context) {
 		loader = new XApkLoader(context);
-		XApkCustomInput customInput = new XApkCustomInput(context, loader);
-		context.addCodeInput(customInput);
-		context.getDecompiler().addCustomResourcesLoader(customInput);
+		XApkCustomCodeInput codeInput = new XApkCustomCodeInput(context, loader);
+		XApkCustomResourcesLoader resourcesLoader = new XApkCustomResourcesLoader(context, loader);
+		context.addCodeInput(codeInput);
+		context.getDecompiler().addCustomResourcesLoader(resourcesLoader);
 	}
 
 	@Override

@@ -1,1 +1,1 @@
-jadx.plugins.input.smali.SmaliInputPlugin
+dexforge.plugins.input.smali.SmaliInputPlugin

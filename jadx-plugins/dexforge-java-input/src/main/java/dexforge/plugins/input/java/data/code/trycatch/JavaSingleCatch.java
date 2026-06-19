@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.code.trycatch;
+package dexforge.plugins.input.java.data.code.trycatch;
 
 import org.jetbrains.annotations.Nullable;
 

@@ -1,12 +1,12 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.attributes.types.AnnotationDefaultAttr;
-import jadx.plugins.input.java.data.attributes.EncodedValueReader;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
-import jadx.plugins.input.java.data.attributes.JavaAttrStorage;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationDefaultAttr;
+import dexforge.plugins.input.java.data.attributes.EncodedValueReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.JavaAttrStorage;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
 
 public class JavaAnnotationDefaultAttr extends AnnotationDefaultAttr implements IJavaAttribute {
 

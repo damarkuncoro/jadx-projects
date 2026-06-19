@@ -3,8 +3,8 @@ package jadx.core.dex.attributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import jadx.core.utils.Utils;
 
 public class AttrList<T> implements IJadxAttribute {

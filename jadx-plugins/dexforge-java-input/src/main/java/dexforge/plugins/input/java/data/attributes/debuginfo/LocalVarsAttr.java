@@ -1,11 +1,11 @@
-package jadx.plugins.input.java.data.attributes.debuginfo;
+package dexforge.plugins.input.java.data.attributes.debuginfo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
 
 public class LocalVarsAttr implements IJavaAttribute {
 	private final List<JavaLocalVar> vars;

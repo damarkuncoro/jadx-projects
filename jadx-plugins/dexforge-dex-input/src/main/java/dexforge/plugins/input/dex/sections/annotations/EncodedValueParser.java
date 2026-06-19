@@ -1,12 +1,12 @@
-package jadx.plugins.input.dex.sections.annotations;
+package dexforge.plugins.input.dex.sections.annotations;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.api.plugins.input.data.annotations.EncodedType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.plugins.input.dex.DexException;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public class EncodedValueParser {
 

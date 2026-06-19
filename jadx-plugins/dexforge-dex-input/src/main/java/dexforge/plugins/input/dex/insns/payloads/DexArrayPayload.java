@@ -1,6 +1,6 @@
-package jadx.plugins.input.dex.insns.payloads;
+package dexforge.plugins.input.dex.insns.payloads;
 
-import jadx.api.plugins.input.insns.custom.IArrayPayload;
+import dexforge.api.plugins.input.insns.custom.IArrayPayload;
 
 public class DexArrayPayload implements IArrayPayload {
 

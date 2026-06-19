@@ -1,8 +1,8 @@
-package jadx.plugins.input.javaconvert;
+package dexforge.plugins.input.javaconvert;
 
-import jadx.api.plugins.options.impl.BasePluginOptionsBuilder;
+import dexforge.api.plugins.options.impl.BasePluginOptionsBuilder;
 
-import static jadx.plugins.input.javaconvert.JavaConvertPlugin.PLUGIN_ID;
+import static dexforge.plugins.input.javaconvert.JavaConvertPlugin.PLUGIN_ID;
 
 public class JavaConvertOptions extends BasePluginOptionsBuilder {
 

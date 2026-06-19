@@ -1,4 +1,4 @@
-package jadx.plugins.kotlin.metadata.model
+package dexforge.plugins.kotlin.metadata.model
 
 import jadx.core.dex.instructions.args.RegisterArg
 import jadx.core.dex.nodes.ClassNode

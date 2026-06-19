@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.attributes;
+package dexforge.plugins.input.java.data.attributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.JavaClassData;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.JavaClassData;
 
 public class AttributesReader {
 	private static final Logger LOG = LoggerFactory.getLogger(AttributesReader.class);

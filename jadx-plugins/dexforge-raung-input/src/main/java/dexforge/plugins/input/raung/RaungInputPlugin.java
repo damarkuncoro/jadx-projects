@@ -1,10 +1,10 @@
-package jadx.plugins.input.raung;
+package dexforge.plugins.input.raung;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
-import jadx.api.plugins.data.JadxPluginRuntimeData;
-import jadx.api.plugins.input.data.impl.EmptyCodeLoader;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.data.JadxPluginRuntimeData;
+import dexforge.api.plugins.input.data.impl.EmptyCodeLoader;
 
 public class RaungInputPlugin implements JadxPlugin {
 

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package jadx.plugins.kotlin.smap.utils
+package dexforge.plugins.kotlin.smap.utils
 
-import jadx.plugins.kotlin.smap.model.FileMapping
-import jadx.plugins.kotlin.smap.model.KOTLIN_DEBUG_STRATA_NAME
-import jadx.plugins.kotlin.smap.model.KOTLIN_STRATA_NAME
-import jadx.plugins.kotlin.smap.model.SMAP
+import dexforge.plugins.kotlin.smap.model.FileMapping
+import dexforge.plugins.kotlin.smap.model.KOTLIN_DEBUG_STRATA_NAME
+import dexforge.plugins.kotlin.smap.model.KOTLIN_STRATA_NAME
+import dexforge.plugins.kotlin.smap.model.SMAP
 
 object SMAPParser {
 	fun parseOrNull(mappingInfo: String): SMAP? = if (mappingInfo.isNotEmpty()) {

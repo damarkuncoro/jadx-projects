@@ -1,10 +1,10 @@
-package jadx.plugins.input.java.utils;
+package dexforge.plugins.input.java.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import jadx.plugins.input.java.data.JavaMethodProto;
+import dexforge.plugins.input.java.data.JavaMethodProto;
 
 public class DescriptorParser {
 

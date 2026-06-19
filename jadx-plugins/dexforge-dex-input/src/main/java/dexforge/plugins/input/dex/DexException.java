@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex;
+package dexforge.plugins.input.dex;
 
 public class DexException extends RuntimeException {
 	private static final long serialVersionUID = -5575702801815409269L;

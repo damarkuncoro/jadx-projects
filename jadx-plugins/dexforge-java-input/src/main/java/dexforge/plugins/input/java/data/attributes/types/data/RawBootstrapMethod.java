@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.attributes.types.data;
+package dexforge.plugins.input.java.data.attributes.types.data;
 
 public class RawBootstrapMethod {
 	private final int methodHandleIdx;

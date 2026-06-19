@@ -3,9 +3,9 @@ package jadx.core.dex.attributes;
 import java.util.Collections;
 import java.util.List;
 
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 
 public final class EmptyAttrStorage extends AttributeStorage {
 

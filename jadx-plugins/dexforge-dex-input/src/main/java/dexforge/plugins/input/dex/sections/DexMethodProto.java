@@ -1,9 +1,9 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.utils.Utils;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.utils.Utils;
 
 public class DexMethodProto implements IMethodProto {
 	private final List<String> argTypes;

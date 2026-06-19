@@ -1,10 +1,10 @@
-package jadx.plugins.input.smali;
+package dexforge.plugins.input.smali;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
-import jadx.api.plugins.input.data.impl.EmptyCodeLoader;
-import jadx.plugins.input.dex.DexInputPlugin;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.input.data.impl.EmptyCodeLoader;
+import dexforge.plugins.input.dex.DexInputPlugin;
 
 public class SmaliInputPlugin implements JadxPlugin {
 	public static final String PLUGIN_ID = "smali-input";

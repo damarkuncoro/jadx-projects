@@ -1,10 +1,10 @@
-package jadx.plugins.input.java.data.code.decoders;
+package dexforge.plugins.input.java.data.code.decoders;
 
-import jadx.api.plugins.input.insns.Opcode;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.code.CodeDecodeState;
-import jadx.plugins.input.java.data.code.JavaInsnData;
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.api.plugins.input.insns.Opcode;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.code.CodeDecodeState;
+import dexforge.plugins.input.java.data.code.JavaInsnData;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public class WideDecoder implements IJavaInsnDecoder {
 	private static final int IINC = 0x84;

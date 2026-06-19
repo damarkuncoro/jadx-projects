@@ -1,4 +1,4 @@
-package jadx.plugins.input.smali;
+package dexforge.plugins.input.smali;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import com.android.tools.smali.smali.SmaliOptions;
 
-import jadx.plugins.input.dex.utils.IDexData;
-import jadx.plugins.input.dex.utils.SimpleDexData;
+import dexforge.plugins.input.dex.utils.IDexData;
+import dexforge.plugins.input.dex.utils.SimpleDexData;
 
 public class SmaliConvert {
 	private static final Logger LOG = LoggerFactory.getLogger(SmaliConvert.class);

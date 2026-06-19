@@ -2,7 +2,7 @@ package jadx.core.dex.info;
 
 import java.util.Objects;
 
-import jadx.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IFieldRef;
 import jadx.core.codegen.TypeGen;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.nodes.IFieldInfoRef;

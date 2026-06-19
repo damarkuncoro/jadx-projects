@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.insns.custom;
+package dexforge.api.plugins.input.insns.custom;
 
 public interface ISwitchPayload extends ICustomPayload {
 	int getSize();

@@ -1,19 +1,19 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICallSite;
-import jadx.api.plugins.input.data.IFieldRef;
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.input.insns.InsnData;
-import jadx.api.plugins.input.insns.InsnIndexType;
-import jadx.api.plugins.input.insns.Opcode;
-import jadx.api.plugins.input.insns.custom.ICustomPayload;
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.code.decoders.IJavaInsnDecoder;
+import dexforge.api.plugins.input.data.ICallSite;
+import dexforge.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.insns.InsnIndexType;
+import dexforge.api.plugins.input.insns.Opcode;
+import dexforge.api.plugins.input.insns.custom.ICustomPayload;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.code.decoders.IJavaInsnDecoder;
 
 public class JavaInsnData implements InsnData {
 

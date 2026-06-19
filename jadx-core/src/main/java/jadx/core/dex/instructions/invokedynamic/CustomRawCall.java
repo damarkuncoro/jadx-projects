@@ -3,10 +3,10 @@ package jadx.core.dex.instructions.invokedynamic;
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.insns.InsnData;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.instructions.ConstStringNode;

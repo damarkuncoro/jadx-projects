@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data.attributes;
+package dexforge.api.plugins.input.data.attributes;
 
 /**
  * Marker interface for attribute type.

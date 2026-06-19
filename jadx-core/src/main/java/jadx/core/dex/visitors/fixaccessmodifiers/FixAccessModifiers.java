@@ -3,7 +3,7 @@ package jadx.core.dex.visitors.fixaccessmodifiers;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jadx.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlags;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.MethodInlineAttr;

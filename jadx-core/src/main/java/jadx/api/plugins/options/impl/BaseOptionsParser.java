@@ -1,10 +1,10 @@
-package jadx.api.plugins.options.impl;
+package dexforge.api.plugins.options.impl;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 
-import jadx.api.plugins.options.JadxPluginOptions;
+import dexforge.api.plugins.options.JadxPluginOptions;
 
 /**
  * Prefer {@link BasePluginOptionsBuilder} as a better way to init and parse options

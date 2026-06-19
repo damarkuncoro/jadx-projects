@@ -1,4 +1,4 @@
-package jadx.plugins.kotlin.metadata.model
+package dexforge.plugins.kotlin.metadata.model
 
 object KotlinMetadataConsts {
 	const val KOTLIN_METADATA_ANNOTATION = "Lkotlin/Metadata;"

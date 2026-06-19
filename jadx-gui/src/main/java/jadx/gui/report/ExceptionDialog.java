@@ -30,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JadxDecompiler;
-import jadx.cli.config.JadxConfigAdapter;
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.cli.config.DexforgeConfigAdapter;
+import dexforge.commons.app.DexforgeSystemInfo;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.settings.JadxSettingsData;
@@ -59,11 +59,11 @@ public class ExceptionDialog extends JDialog {
 
 		Map<String, String> details = new LinkedHashMap<>();
 		details.put("Jadx version", JadxDecompiler.getVersion());
-		details.put("Java version", JadxSystemInfo.JAVA_VER);
+		details.put("Java version", DexforgeSystemInfo.JAVA_VER);
 		details.put("Java VM", String.format("%s %s",
 				System.getProperty("java.vm.vendor", "?"), System.getProperty("java.vm.name", "?")));
 		details.put("Platform", String.format("%s (%s %s)",
-				JadxSystemInfo.OS_NAME, JadxSystemInfo.OS_VERSION, JadxSystemInfo.OS_ARCH));
+				DexforgeSystemInfo.OS_NAME, DexforgeSystemInfo.OS_VERSION, DexforgeSystemInfo.OS_ARCH));
 		Runtime runtime = Runtime.getRuntime();
 		details.put("Max heap size", String.format("%d MB", runtime.maxMemory() / (1024 * 1024)));
 
@@ -176,7 +176,7 @@ public class ExceptionDialog extends JDialog {
 	}
 
 	public static void main(String[] args) {
-		JadxConfigAdapter<JadxSettingsData> configAdapter = JadxSettings.buildConfigAdapter();
+		DexforgeConfigAdapter<JadxSettingsData> configAdapter = JadxSettings.buildConfigAdapter();
 		configAdapter.useConfigRef("");
 		JadxSettingsData settingsData = configAdapter.load();
 		if (settingsData != null) {

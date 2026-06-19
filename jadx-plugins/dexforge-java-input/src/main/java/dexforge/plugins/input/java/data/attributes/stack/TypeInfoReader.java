@@ -1,6 +1,6 @@
-package jadx.plugins.input.java.data.attributes.stack;
+package dexforge.plugins.input.java.data.attributes.stack;
 
-import jadx.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.DataReader;
 
 public class TypeInfoReader {
 	private static final int ITEM_TOP = 0;

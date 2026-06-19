@@ -1,12 +1,12 @@
-package jadx.plugins.input.dex.smali;
+package dexforge.plugins.input.dex.smali;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-import jadx.api.plugins.input.insns.InsnData;
-import jadx.plugins.input.dex.insns.DexOpcodes;
+import dexforge.api.plugins.input.insns.InsnData;
+import dexforge.plugins.input.dex.insns.DexOpcodes;
 
 public class SmaliInsnFormat {
 

@@ -1,4 +1,4 @@
-package jadx.plugins.input.java;
+package dexforge.plugins.input.java;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -17,12 +17,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.core.plugins.files.TempFilesGetter;
 import jadx.core.utils.files.FileUtils;
-import jadx.zip.IZipEntry;
-import jadx.zip.ZipContent;
-import jadx.zip.ZipReader;
+import dexforge.zip.IZipEntry;
+import dexforge.zip.ZipContent;
+import dexforge.zip.ZipReader;
 
 public class JavaInputLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(JavaInputLoader.class);

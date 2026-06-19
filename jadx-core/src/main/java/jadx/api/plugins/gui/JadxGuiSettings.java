@@ -1,8 +1,8 @@
-package jadx.api.plugins.gui;
+package dexforge.api.plugins.gui;
 
 import java.util.List;
 
-import jadx.api.plugins.options.OptionDescription;
+import dexforge.api.plugins.options.OptionDescription;
 
 public interface JadxGuiSettings {
 

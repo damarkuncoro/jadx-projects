@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 public class DexConsts {
 

@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex;
+package dexforge.plugins.input.dex;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,15 +18,15 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.core.utils.files.FileUtils;
-import jadx.plugins.input.dex.sections.DexConsts;
-import jadx.plugins.input.dex.sections.DexHeaderV41;
-import jadx.plugins.input.dex.utils.DataReader;
-import jadx.plugins.input.dex.utils.DexCheckSum;
-import jadx.zip.IZipEntry;
-import jadx.zip.ZipContent;
-import jadx.zip.ZipReader;
+import dexforge.plugins.input.dex.sections.DexConsts;
+import dexforge.plugins.input.dex.sections.DexHeaderV41;
+import dexforge.plugins.input.dex.utils.DataReader;
+import dexforge.plugins.input.dex.utils.DexCheckSum;
+import dexforge.zip.IZipEntry;
+import dexforge.zip.ZipContent;
+import dexforge.zip.ZipReader;
 
 public class DexFileLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(DexFileLoader.class);

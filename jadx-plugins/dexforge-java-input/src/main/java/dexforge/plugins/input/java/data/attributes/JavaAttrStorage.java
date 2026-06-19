@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.attributes;
+package dexforge.plugins.input.java.data.attributes;
 
 import org.jetbrains.annotations.Nullable;
 

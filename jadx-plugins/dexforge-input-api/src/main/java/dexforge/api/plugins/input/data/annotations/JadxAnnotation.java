@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data.annotations;
+package dexforge.api.plugins.input.data.annotations;
 
 import java.util.Map;
 

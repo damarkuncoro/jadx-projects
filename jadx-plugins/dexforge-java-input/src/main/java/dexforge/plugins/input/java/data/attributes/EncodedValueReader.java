@@ -1,17 +1,17 @@
-package jadx.plugins.input.java.data.attributes;
+package dexforge.plugins.input.java.data.attributes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.api.plugins.input.data.annotations.EncodedType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.impl.JadxFieldRef;
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.JavaClassData;
-import jadx.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.impl.JadxFieldRef;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.JavaClassData;
+import dexforge.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public class EncodedValueReader {
 

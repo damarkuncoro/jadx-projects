@@ -1,12 +1,12 @@
-package jadx.plugins.input.dex.insns;
+package dexforge.plugins.input.dex.insns;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.insns.InsnIndexType;
-import jadx.api.plugins.input.insns.Opcode;
+import dexforge.api.plugins.input.insns.InsnIndexType;
+import dexforge.api.plugins.input.insns.Opcode;
 
 public class DexInsnInfo {
 

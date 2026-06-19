@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,17 +6,17 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICodeReader;
-import jadx.api.plugins.input.data.IMethodData;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.java.data.attributes.JavaAttrStorage;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
-import jadx.plugins.input.java.data.attributes.types.CodeAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaAnnotationDefaultAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
-import jadx.plugins.input.java.data.attributes.types.JavaParamAnnsAttr;
-import jadx.plugins.input.java.data.code.JavaCodeReader;
+import dexforge.api.plugins.input.data.ICodeReader;
+import dexforge.api.plugins.input.data.IMethodData;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.java.data.attributes.JavaAttrStorage;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.plugins.input.java.data.attributes.types.CodeAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaAnnotationDefaultAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
+import dexforge.plugins.input.java.data.attributes.types.JavaParamAnnsAttr;
+import dexforge.plugins.input.java.data.code.JavaCodeReader;
 
 public class JavaMethodData implements IMethodData {
 

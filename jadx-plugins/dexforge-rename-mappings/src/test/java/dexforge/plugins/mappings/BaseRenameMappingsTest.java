@@ -1,4 +1,4 @@
-package jadx.plugins.mappings;
+package dexforge.plugins.mappings;
 
 import java.io.File;
 import java.net.URL;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import jadx.api.JadxArgs;
 import jadx.api.JavaClass;
-import jadx.api.plugins.loader.JadxBasePluginLoader;
+import dexforge.api.plugins.loader.JadxBasePluginLoader;
 import jadx.core.plugins.files.SingleDirFilesGetter;
 
 import static org.assertj.core.api.Assertions.assertThat;

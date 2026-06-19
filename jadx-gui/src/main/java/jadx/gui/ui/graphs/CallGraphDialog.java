@@ -25,7 +25,7 @@ import javax.swing.UIManager;
 
 import jadx.api.JavaMethod;
 import jadx.api.JavaNode;
-import jadx.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.utils.DotGraphUtils;
 import jadx.gui.treemodel.JMethod;
 import jadx.gui.ui.MainWindow;

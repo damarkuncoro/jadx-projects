@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.insns;
+package dexforge.api.plugins.input.insns;
 
 public enum InsnIndexType {
 	NONE,

@@ -1,9 +1,9 @@
-package jadx.plugins.kotlin.smap
+package dexforge.plugins.kotlin.smap
 
-import jadx.api.plugins.JadxPlugin
-import jadx.api.plugins.JadxPluginContext
-import jadx.api.plugins.JadxPluginInfo
-import jadx.plugins.kotlin.smap.pass.KotlinSourceDebugExtensionPass
+import dexforge.api.plugins.JadxPlugin
+import dexforge.api.plugins.JadxPluginContext
+import dexforge.api.plugins.JadxPluginInfo
+import dexforge.plugins.kotlin.smap.pass.KotlinSourceDebugExtensionPass
 
 class KotlinSmapPlugin : JadxPlugin {
 

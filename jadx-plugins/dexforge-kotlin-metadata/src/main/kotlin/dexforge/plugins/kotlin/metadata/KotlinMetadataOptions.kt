@@ -1,7 +1,7 @@
-package jadx.plugins.kotlin.metadata
+package dexforge.plugins.kotlin.metadata
 
-import jadx.api.plugins.options.impl.BasePluginOptionsBuilder
-import jadx.plugins.kotlin.metadata.KotlinMetadataPlugin.Companion.PLUGIN_ID
+import dexforge.api.plugins.options.impl.BasePluginOptionsBuilder
+import dexforge.plugins.kotlin.metadata.KotlinMetadataPlugin.Companion.PLUGIN_ID
 
 class KotlinMetadataOptions : BasePluginOptionsBuilder() {
 	var isClassAlias: Boolean = true

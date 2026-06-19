@@ -1,4 +1,4 @@
-package jadx.plugins.input.xapk.data;
+package dexforge.plugins.input.xapk.data;
 
 public class SplitApk {
 	private String file;

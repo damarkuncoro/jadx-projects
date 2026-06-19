@@ -1,11 +1,11 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
-import jadx.plugins.input.java.data.attributes.types.data.RawBootstrapMethod;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.types.data.RawBootstrapMethod;
 
 public class JavaBootstrapMethodsAttr implements IJavaAttribute {
 

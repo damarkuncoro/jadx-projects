@@ -1,4 +1,4 @@
-package jadx.plugins.kotlin.metadata.utils
+package dexforge.plugins.kotlin.metadata.utils
 
 import kotlin.metadata.KmFunction
 import kotlin.metadata.KmProperty

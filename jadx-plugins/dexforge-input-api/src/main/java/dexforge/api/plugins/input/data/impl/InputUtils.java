@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
 public class InputUtils {
 	public static String formatOffset(int offset) {

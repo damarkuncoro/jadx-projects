@@ -1,8 +1,8 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.plugins.input.java.JavaClassReader;
-import jadx.plugins.input.java.utils.DescriptorParser;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.plugins.input.java.JavaClassReader;
+import dexforge.plugins.input.java.utils.DescriptorParser;
 
 public class JavaMethodRef extends JavaMethodProto implements IMethodRef {
 

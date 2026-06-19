@@ -1,11 +1,11 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import jadx.api.plugins.input.data.ISeqConsumer;
+import dexforge.api.plugins.input.data.ISeqConsumer;
 
 public class ListConsumer<T, R> implements ISeqConsumer<T> {
 	private final Function<T, R> convert;

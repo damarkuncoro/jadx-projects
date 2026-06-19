@@ -1,7 +1,7 @@
-package jadx.plugins.input.dex.utils;
+package dexforge.plugins.input.dex.utils;
 
-import jadx.plugins.input.dex.DexException;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public final class Leb128 {
 

@@ -713,11 +713,11 @@ public class JResource extends JLoadableNode {
 		}
 		try (JadxDecompiler decompiler = new JadxDecompiler(jadxArgs)) {
 			try {
-				Class<?> pluginClass = Class.forName("jadx.plugins.input.dex.DexInputPlugin");
+				Class<?> pluginClass = Class.forName("dexforge.plugins.input.dex.DexInputPlugin");
 				Object pluginInstance = pluginClass.getConstructor().newInstance();
 				java.lang.reflect.Method loadDexMethod = pluginClass.getMethod("loadDex", byte[].class, String.class);
-				jadx.api.plugins.input.ICodeLoader codeLoader =
-						(jadx.api.plugins.input.ICodeLoader) loadDexMethod.invoke(pluginInstance, dexBuf, name);
+				dexforge.api.plugins.input.ICodeLoader codeLoader =
+						(dexforge.api.plugins.input.ICodeLoader) loadDexMethod.invoke(pluginInstance, dexBuf, name);
 				decompiler.addCustomCodeLoader(codeLoader);
 			} catch (Exception e) {
 				return "Failed to load DEX input plugin: " + Utils.getStackTrace(e);

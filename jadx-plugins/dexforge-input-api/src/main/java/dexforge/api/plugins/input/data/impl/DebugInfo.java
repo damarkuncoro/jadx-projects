@@ -1,10 +1,10 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
 import java.util.List;
 import java.util.Map;
 
-import jadx.api.plugins.input.data.IDebugInfo;
-import jadx.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.IDebugInfo;
+import dexforge.api.plugins.input.data.ILocalVar;
 
 public class DebugInfo implements IDebugInfo {
 

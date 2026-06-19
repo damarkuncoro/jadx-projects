@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.ISettingsGroup;
 
 public class SettingsGroupPluginWrap implements ISettingsGroup {
 	private static final Logger LOG = LoggerFactory.getLogger(SettingsGroupPluginWrap.class);

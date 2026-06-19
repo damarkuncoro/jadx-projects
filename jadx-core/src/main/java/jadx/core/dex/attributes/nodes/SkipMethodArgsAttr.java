@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.attributes.PinnedAttribute;
+import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.instructions.args.RegisterArg;

@@ -3,9 +3,9 @@ package jadx.core.dex.attributes;
 import java.util.List;
 
 import jadx.api.CommentsLevel;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import jadx.core.Consts;
 import jadx.core.dex.attributes.nodes.JadxCommentsAttr;
 import jadx.core.utils.Utils;

@@ -5,8 +5,8 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.codegen.TypeGen;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.nodes.RootNode;

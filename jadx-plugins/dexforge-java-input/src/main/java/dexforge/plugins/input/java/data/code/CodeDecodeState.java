@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,13 +6,13 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.insns.Opcode;
+import dexforge.api.plugins.input.insns.Opcode;
 import jadx.core.utils.Utils;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.JavaClassData;
-import jadx.plugins.input.java.data.attributes.stack.StackFrame;
-import jadx.plugins.input.java.data.attributes.stack.StackValueType;
-import jadx.plugins.input.java.data.attributes.types.StackMapTableAttr;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.JavaClassData;
+import dexforge.plugins.input.java.data.attributes.stack.StackFrame;
+import dexforge.plugins.input.java.data.attributes.stack.StackValueType;
+import dexforge.plugins.input.java.data.attributes.types.StackMapTableAttr;
 
 @SuppressWarnings("UnusedReturnValue")
 public class CodeDecodeState {

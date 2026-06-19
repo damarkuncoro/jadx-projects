@@ -5,9 +5,9 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.events.IJadxEvent;
-import jadx.api.plugins.events.IJadxEvents;
-import jadx.api.plugins.events.JadxEventType;
+import dexforge.api.plugins.events.IJadxEvent;
+import dexforge.api.plugins.events.IJadxEvents;
+import dexforge.api.plugins.events.JadxEventType;
 import jadx.core.Consts;
 
 public class JadxEventsImpl implements IJadxEvents {

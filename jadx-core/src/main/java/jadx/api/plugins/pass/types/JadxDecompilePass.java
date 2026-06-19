@@ -1,6 +1,6 @@
-package jadx.api.plugins.pass.types;
+package dexforge.api.plugins.pass.types;
 
-import jadx.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.JadxPass;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;

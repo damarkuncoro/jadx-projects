@@ -1,10 +1,10 @@
-package jadx.api.plugins.input.data.attributes.types;
+package dexforge.api.plugins.input.data.attributes.types;
 
 import java.util.Map;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.PinnedAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
 
 public class InnerClassesAttr extends PinnedAttribute {
 

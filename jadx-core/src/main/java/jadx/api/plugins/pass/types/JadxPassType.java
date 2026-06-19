@@ -1,4 +1,4 @@
-package jadx.api.plugins.pass.types;
+package dexforge.api.plugins.pass.types;
 
 public class JadxPassType {
 	private final String cls;

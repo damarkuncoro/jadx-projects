@@ -1,11 +1,11 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import static jadx.plugins.input.dex.utils.DataReader.readU4;
+import static dexforge.plugins.input.dex.utils.DataReader.readU4;
 
 public class DexHeaderV41 {
 

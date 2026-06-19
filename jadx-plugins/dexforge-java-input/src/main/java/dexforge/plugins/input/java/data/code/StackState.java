@@ -1,9 +1,9 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
 import java.util.Arrays;
 
-import jadx.plugins.input.java.data.attributes.stack.StackFrame;
-import jadx.plugins.input.java.data.attributes.stack.StackValueType;
+import dexforge.plugins.input.java.data.attributes.stack.StackFrame;
+import dexforge.plugins.input.java.data.attributes.stack.StackValueType;
 
 public class StackState {
 	private int pos = -1;

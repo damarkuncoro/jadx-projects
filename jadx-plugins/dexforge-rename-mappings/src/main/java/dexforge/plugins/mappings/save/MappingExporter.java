@@ -1,4 +1,4 @@
-package jadx.plugins.mappings.save;
+package dexforge.plugins.mappings.save;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,9 +39,9 @@ import jadx.core.dex.nodes.FieldNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.files.FileUtils;
-import jadx.plugins.mappings.RenameMappingsData;
-import jadx.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
-import jadx.plugins.mappings.utils.VariablesUtils;
+import dexforge.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
+import dexforge.plugins.mappings.utils.VariablesUtils;
 
 public class MappingExporter {
 	private static final Logger LOG = LoggerFactory.getLogger(MappingExporter.class);

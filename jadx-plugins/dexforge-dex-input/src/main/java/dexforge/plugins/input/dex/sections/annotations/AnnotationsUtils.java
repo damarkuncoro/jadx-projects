@@ -1,13 +1,13 @@
-package jadx.plugins.input.dex.sections.annotations;
+package dexforge.plugins.input.dex.sections.annotations;
 
 import java.util.Collections;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.annotations.EncodedType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
 
 public class AnnotationsUtils {
 

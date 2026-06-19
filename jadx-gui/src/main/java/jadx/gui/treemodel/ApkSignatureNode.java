@@ -30,7 +30,7 @@ import jadx.gui.ui.tab.TabbedPane;
 import jadx.gui.utils.CertificateManager;
 import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
-import jadx.zip.IZipEntry;
+import dexforge.zip.IZipEntry;
 
 public class ApkSignatureNode extends JNode {
 	private static final long serialVersionUID = -9121321926113143407L;

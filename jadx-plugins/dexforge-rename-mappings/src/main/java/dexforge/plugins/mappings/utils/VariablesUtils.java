@@ -1,4 +1,4 @@
-package jadx.plugins.mappings.utils;
+package dexforge.plugins.mappings.utils;
 
 import java.util.ArrayList;
 import java.util.List;

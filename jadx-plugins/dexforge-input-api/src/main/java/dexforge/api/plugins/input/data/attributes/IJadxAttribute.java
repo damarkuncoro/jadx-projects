@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data.attributes;
+package dexforge.api.plugins.input.data.attributes;
 
 /**
  * Jadx attribute: custom data container, can be added to most jadx nodes.

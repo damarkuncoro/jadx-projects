@@ -7,11 +7,11 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.commons.app.DexforgeSystemInfo;
 
 public class JadxEventQueue extends EventQueue {
 
-	private static final boolean IS_X_TOOLKIT = JadxSystemInfo.IS_LINUX
+	private static final boolean IS_X_TOOLKIT = DexforgeSystemInfo.IS_LINUX
 			&& "sun.awt.X11.XToolkit".equals(Toolkit.getDefaultToolkit().getClass().getName());
 
 	public static void register() {

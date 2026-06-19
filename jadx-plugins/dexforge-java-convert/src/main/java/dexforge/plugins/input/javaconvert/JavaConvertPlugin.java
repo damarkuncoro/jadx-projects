@@ -1,19 +1,13 @@
-package jadx.plugins.input.javaconvert;
+package dexforge.plugins.input.javaconvert;
 
-import java.nio.file.Path;
-import java.util.List;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.JadxPluginInfoBuilder;
+import dexforge.api.plugins.data.JadxPluginRuntimeData;
+import dexforge.plugins.input.dex.DexInputPlugin;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
-import jadx.api.plugins.JadxPluginInfoBuilder;
-import jadx.api.plugins.data.JadxPluginRuntimeData;
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.JadxCodeInput;
-import jadx.api.plugins.input.data.impl.EmptyCodeLoader;
-import jadx.plugins.input.dex.DexInputPlugin;
-
-public class JavaConvertPlugin implements JadxPlugin, JadxCodeInput {
+public class JavaConvertPlugin implements JadxPlugin {
 	public static final String PLUGIN_ID = "java-convert";
 
 	private final JavaConvertOptions options = new JavaConvertOptions();
@@ -35,16 +29,7 @@ public class JavaConvertPlugin implements JadxPlugin, JadxCodeInput {
 		context.registerOptions(options);
 		dexInput = context.plugins().getById(DexInputPlugin.PLUGIN_ID);
 		loader = new JavaConvertLoader(options, context);
-		context.addCodeInput(this);
-	}
-
-	@Override
-	public ICodeLoader loadFiles(List<Path> input) {
-		ConvertResult result = loader.process(input);
-		if (result.isEmpty()) {
-			result.close();
-			return EmptyCodeLoader.INSTANCE;
-		}
-		return dexInput.loadCodeFiles(result.getConverted(), result);
+		context.addCodeInput(new JavaConvertCodeInput(loader, dexInput));
 	}
 }
+

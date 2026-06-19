@@ -1,11 +1,11 @@
-package jadx.plugins.input.dex.smali;
+package dexforge.plugins.input.dex.smali;
 
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.ICodeReader;
-import jadx.plugins.input.dex.sections.DexMethodData;
-import jadx.plugins.input.dex.sections.DexMethodRef;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.ICodeReader;
+import dexforge.plugins.input.dex.sections.DexMethodData;
+import dexforge.plugins.input.dex.sections.DexMethodRef;
 
-import static jadx.api.plugins.input.data.AccessFlagsScope.METHOD;
+import static dexforge.api.plugins.input.data.AccessFlagsScope.METHOD;
 
 // TODO: not finished
 public class SmaliPrinter {

@@ -1,8 +1,8 @@
-package jadx.plugins.input.java.data.attributes.debuginfo;
+package dexforge.plugins.input.java.data.attributes.debuginfo;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.ILocalVar;
 
 public class JavaLocalVar implements ILocalVar {
 	private int regNum;

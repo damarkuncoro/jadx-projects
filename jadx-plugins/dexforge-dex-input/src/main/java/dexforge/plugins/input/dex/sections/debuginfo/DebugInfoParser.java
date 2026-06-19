@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections.debuginfo;
+package dexforge.plugins.input.dex.sections.debuginfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ILocalVar;
-import jadx.api.plugins.input.data.impl.DebugInfo;
-import jadx.plugins.input.dex.sections.DexConsts;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.impl.DebugInfo;
+import dexforge.plugins.input.dex.sections.DexConsts;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public class DebugInfoParser {
 	private static final int DBG_END_SEQUENCE = 0x00;

@@ -1,10 +1,10 @@
-package jadx.plugins.input.dex.sections.debuginfo;
+package dexforge.plugins.input.dex.sections.debuginfo;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ILocalVar;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public class DexLocalVar implements ILocalVar {
 	private static final int PARAM_START_OFFSET = -1;

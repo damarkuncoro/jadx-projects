@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,20 +9,20 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.api.plugins.input.data.annotations.EncodedType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.input.data.attributes.types.AnnotationDefaultClassAttr;
-import jadx.api.plugins.input.data.attributes.types.AnnotationsAttr;
-import jadx.api.plugins.input.data.attributes.types.ExceptionsAttr;
-import jadx.api.plugins.input.data.attributes.types.InnerClassesAttr;
-import jadx.api.plugins.input.data.attributes.types.InnerClsInfo;
-import jadx.api.plugins.input.data.attributes.types.MethodParametersAttr;
-import jadx.api.plugins.input.data.attributes.types.SignatureAttr;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.dex.sections.annotations.AnnotationsUtils;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationDefaultClassAttr;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
+import dexforge.api.plugins.input.data.attributes.types.ExceptionsAttr;
+import dexforge.api.plugins.input.data.attributes.types.InnerClassesAttr;
+import dexforge.api.plugins.input.data.attributes.types.InnerClsInfo;
+import dexforge.api.plugins.input.data.attributes.types.MethodParametersAttr;
+import dexforge.api.plugins.input.data.attributes.types.SignatureAttr;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.dex.sections.annotations.AnnotationsUtils;
 
 public class DexAnnotationsConvert {
 	private static final Logger LOG = LoggerFactory.getLogger(DexAnnotationsConvert.class);

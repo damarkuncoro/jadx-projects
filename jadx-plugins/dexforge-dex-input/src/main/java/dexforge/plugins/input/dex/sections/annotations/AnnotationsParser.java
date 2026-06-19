@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.sections.annotations;
+package dexforge.plugins.input.dex.sections.annotations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,12 +7,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import jadx.api.plugins.input.data.annotations.AnnotationVisibility;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.annotations.JadxAnnotation;
-import jadx.plugins.input.dex.DexException;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.api.plugins.input.data.annotations.AnnotationVisibility;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.annotations.JadxAnnotation;
+import dexforge.plugins.input.dex.DexException;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public class AnnotationsParser {
 	private final SectionReader in;

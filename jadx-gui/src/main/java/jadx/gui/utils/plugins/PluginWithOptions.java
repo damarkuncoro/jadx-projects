@@ -2,8 +2,8 @@ package jadx.gui.utils.plugins;
 
 import org.jetbrains.annotations.NotNull;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.options.JadxPluginOptions;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.options.JadxPluginOptions;
 
 public class PluginWithOptions implements Comparable<PluginWithOptions> {
 	public static final PluginWithOptions NULL = new PluginWithOptions(null, null);

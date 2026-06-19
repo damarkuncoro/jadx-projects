@@ -1,7 +1,7 @@
-package jadx.plugins.input.java;
+package dexforge.plugins.input.java;
 
-import jadx.api.plugins.input.data.IClassData;
-import jadx.plugins.input.java.data.JavaClassData;
+import dexforge.api.plugins.input.data.IClassData;
+import dexforge.plugins.input.java.data.JavaClassData;
 
 public class JavaClassReader {
 	private final int id;

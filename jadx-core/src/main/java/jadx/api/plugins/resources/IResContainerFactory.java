@@ -1,4 +1,4 @@
-package jadx.api.plugins.resources;
+package dexforge.api.plugins.resources;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex;
+package dexforge.plugins.input.dex;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.IClassData;
 
 public class DexLoadResult implements ICodeLoader {
 	private final List<DexReader> dexReaders;

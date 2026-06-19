@@ -5,7 +5,7 @@ plugins {
 dependencies {
 	api(project(":jadx-core"))
 
-	implementation(project(":jadx-plugins:jadx-dex-input"))
+	implementation(project(":jadx-plugins:dexforge-dex-input"))
 	implementation("com.jakewharton.android.repackaged:dalvik-dx:16.0.1")
 	implementation("com.android.tools:r8:9.1.31")
 

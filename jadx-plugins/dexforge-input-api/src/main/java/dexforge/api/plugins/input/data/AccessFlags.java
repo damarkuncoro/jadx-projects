@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data;
+package dexforge.api.plugins.input.data;
 
 public class AccessFlags {
 	public static final int PUBLIC = 0x1;

@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.smali;
+package dexforge.plugins.input.dex.smali;
 
 import java.util.List;
 

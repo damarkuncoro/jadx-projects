@@ -1,6 +1,6 @@
-package jadx.api.plugins.input.insns.custom.impl;
+package dexforge.api.plugins.input.insns.custom.impl;
 
-import jadx.api.plugins.input.insns.custom.ISwitchPayload;
+import dexforge.api.plugins.input.insns.custom.ISwitchPayload;
 
 public class SwitchPayload implements ISwitchPayload {
 

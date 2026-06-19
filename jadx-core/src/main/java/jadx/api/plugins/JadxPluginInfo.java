@@ -1,4 +1,4 @@
-package jadx.api.plugins;
+package dexforge.api.plugins;
 
 import org.jetbrains.annotations.Nullable;
 

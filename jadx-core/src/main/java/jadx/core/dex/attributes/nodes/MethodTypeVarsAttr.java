@@ -3,7 +3,7 @@ package jadx.core.dex.attributes.nodes;
 import java.util.Collections;
 import java.util.Set;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.instructions.args.ArgType;
 

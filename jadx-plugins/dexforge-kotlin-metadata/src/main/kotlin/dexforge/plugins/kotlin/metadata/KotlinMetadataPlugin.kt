@@ -1,10 +1,10 @@
-package jadx.plugins.kotlin.metadata
+package dexforge.plugins.kotlin.metadata
 
-import jadx.api.plugins.JadxPlugin
-import jadx.api.plugins.JadxPluginContext
-import jadx.api.plugins.JadxPluginInfo
-import jadx.plugins.kotlin.metadata.pass.KotlinMetadataDecompilePass
-import jadx.plugins.kotlin.metadata.pass.KotlinMetadataPreparePass
+import dexforge.api.plugins.JadxPlugin
+import dexforge.api.plugins.JadxPluginContext
+import dexforge.api.plugins.JadxPluginInfo
+import dexforge.plugins.kotlin.metadata.pass.KotlinMetadataDecompilePass
+import dexforge.plugins.kotlin.metadata.pass.KotlinMetadataPreparePass
 
 class KotlinMetadataPlugin : JadxPlugin {
 

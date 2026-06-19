@@ -1,4 +1,4 @@
-package jadx.api.plugins.gui;
+package dexforge.api.plugins.gui;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

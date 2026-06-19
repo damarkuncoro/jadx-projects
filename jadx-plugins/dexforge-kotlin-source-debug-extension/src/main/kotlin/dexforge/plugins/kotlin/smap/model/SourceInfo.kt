@@ -1,4 +1,4 @@
-package jadx.plugins.kotlin.smap.model
+package dexforge.plugins.kotlin.smap.model
 
 data class SourceInfo(
 	val sourceFileName: String?,

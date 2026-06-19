@@ -1,4 +1,4 @@
-package jadx.api.plugins.gui;
+package dexforge.api.plugins.gui;
 
 import java.util.Collections;
 import java.util.List;

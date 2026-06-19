@@ -1,4 +1,4 @@
-package jadx.plugins.input.javaconvert;
+package dexforge.plugins.input.javaconvert;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -17,10 +17,10 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.api.security.IJadxSecurity;
-import jadx.zip.ZipReader;
+import dexforge.zip.ZipReader;
 
 public class JavaConvertLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(JavaConvertLoader.class);

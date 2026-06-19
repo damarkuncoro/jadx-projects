@@ -1,9 +1,9 @@
-package jadx.plugins.input.java.data.code.decoders;
+package dexforge.plugins.input.java.data.code.decoders;
 
-import jadx.api.plugins.input.insns.custom.impl.SwitchPayload;
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.code.CodeDecodeState;
-import jadx.plugins.input.java.data.code.JavaInsnData;
+import dexforge.api.plugins.input.insns.custom.impl.SwitchPayload;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.code.CodeDecodeState;
+import dexforge.plugins.input.java.data.code.JavaInsnData;
 
 public class TableSwitchDecoder implements IJavaInsnDecoder {
 

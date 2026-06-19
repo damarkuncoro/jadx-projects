@@ -1,9 +1,9 @@
-package jadx.api.plugins.input.data.attributes.types;
+package dexforge.api.plugins.input.data.attributes.types;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.AccessFlagsScope;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlagsScope;
 
 public class InnerClsInfo {
 	private final String innerCls;

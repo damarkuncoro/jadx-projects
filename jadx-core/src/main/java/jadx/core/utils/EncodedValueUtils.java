@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.input.data.MethodHandleType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.MethodHandleType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.info.MethodInfo;
@@ -32,7 +32,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 public class EncodedValueUtils {
 
 	/**
-	 * Return constant literal from {@code jadx.api.plugins.input.data.annotations.EncodedValue}
+	 * Return constant literal from {@code dexforge.api.plugins.input.data.annotations.EncodedValue}
 	 *
 	 * @return LiteralArg, String, ArgType or null
 	 */

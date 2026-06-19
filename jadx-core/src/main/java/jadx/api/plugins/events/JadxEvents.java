@@ -1,12 +1,12 @@
-package jadx.api.plugins.events;
+package dexforge.api.plugins.events;
 
-import jadx.api.plugins.events.types.NodeRenamedByUser;
-import jadx.api.plugins.events.types.ReloadProject;
-import jadx.api.plugins.events.types.ReloadSettingsWindow;
-import jadx.api.plugins.gui.ISettingsGroup;
-import jadx.api.plugins.gui.JadxGuiSettings;
+import dexforge.api.plugins.events.types.NodeRenamedByUser;
+import dexforge.api.plugins.events.types.ReloadProject;
+import dexforge.api.plugins.events.types.ReloadSettingsWindow;
+import dexforge.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.JadxGuiSettings;
 
-import static jadx.api.plugins.events.JadxEventType.create;
+import static dexforge.api.plugins.events.JadxEventType.create;
 
 /**
  * Typed and extendable enumeration of event types

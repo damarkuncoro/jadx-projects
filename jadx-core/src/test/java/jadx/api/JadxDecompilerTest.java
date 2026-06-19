@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import jadx.core.xmlgen.ResContainer;
-import jadx.plugins.input.dex.DexInputPlugin;
+import dexforge.plugins.input.dex.DexInputPlugin;
 
 import static jadx.tests.api.utils.assertj.JadxAssertions.assertThat;
 

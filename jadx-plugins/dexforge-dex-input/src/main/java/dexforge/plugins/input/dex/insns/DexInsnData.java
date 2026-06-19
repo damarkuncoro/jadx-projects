@@ -1,18 +1,18 @@
-package jadx.plugins.input.dex.insns;
+package dexforge.plugins.input.dex.insns;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICallSite;
-import jadx.api.plugins.input.data.IFieldRef;
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.IMethodProto;
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.input.insns.InsnData;
-import jadx.api.plugins.input.insns.InsnIndexType;
-import jadx.api.plugins.input.insns.Opcode;
-import jadx.api.plugins.input.insns.custom.ICustomPayload;
-import jadx.plugins.input.dex.sections.DexCodeReader;
-import jadx.plugins.input.dex.sections.SectionReader;
+import dexforge.api.plugins.input.data.ICallSite;
+import dexforge.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.IMethodProto;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.insns.InsnIndexType;
+import dexforge.api.plugins.input.insns.Opcode;
+import dexforge.api.plugins.input.insns.custom.ICustomPayload;
+import dexforge.plugins.input.dex.sections.DexCodeReader;
+import dexforge.plugins.input.dex.sections.SectionReader;
 
 public class DexInsnData implements InsnData {
 	private final DexCodeReader codeData;

@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;

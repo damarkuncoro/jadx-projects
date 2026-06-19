@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex;
+package dexforge.plugins.input.dex;
 
 import java.io.Closeable;
 import java.io.InputStream;
@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.JadxPluginContext;
-import jadx.api.plugins.JadxPluginInfo;
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.data.impl.EmptyCodeLoader;
-import jadx.api.plugins.utils.CommonFileUtils;
-import jadx.plugins.input.dex.utils.IDexData;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginInfo;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.impl.EmptyCodeLoader;
+import dexforge.api.plugins.utils.CommonFileUtils;
+import dexforge.plugins.input.dex.utils.IDexData;
 
 public class DexInputPlugin implements JadxPlugin {
 	public static final String PLUGIN_ID = "dex-input";

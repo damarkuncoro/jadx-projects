@@ -1,13 +1,13 @@
-package jadx.plugins.input.dex;
+package dexforge.plugins.input.dex;
 
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-import jadx.api.plugins.input.data.IClassData;
-import jadx.plugins.input.dex.sections.DexClassData;
-import jadx.plugins.input.dex.sections.DexHeader;
-import jadx.plugins.input.dex.sections.SectionReader;
-import jadx.plugins.input.dex.sections.annotations.AnnotationsParser;
+import dexforge.api.plugins.input.data.IClassData;
+import dexforge.plugins.input.dex.sections.DexClassData;
+import dexforge.plugins.input.dex.sections.DexHeader;
+import dexforge.plugins.input.dex.sections.SectionReader;
+import dexforge.plugins.input.dex.sections.annotations.AnnotationsParser;
 
 public class DexReader {
 	private final int uniqId;

@@ -1,11 +1,11 @@
-package jadx.api.plugins.loader;
+package dexforge.api.plugins.loader;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
-import jadx.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPlugin;
 
 /**
  * Loading plugins from current classpath

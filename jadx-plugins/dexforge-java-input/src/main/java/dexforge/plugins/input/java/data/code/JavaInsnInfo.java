@@ -1,8 +1,8 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
-import jadx.api.plugins.input.insns.InsnIndexType;
-import jadx.api.plugins.input.insns.Opcode;
-import jadx.plugins.input.java.data.code.decoders.IJavaInsnDecoder;
+import dexforge.api.plugins.input.insns.InsnIndexType;
+import dexforge.api.plugins.input.insns.Opcode;
+import dexforge.plugins.input.java.data.code.decoders.IJavaInsnDecoder;
 
 public class JavaInsnInfo {
 	private final int opcode;

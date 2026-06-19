@@ -14,10 +14,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 public class GeneratePngLogos {
 	private static final Logger LOG = LoggerFactory.getLogger(GeneratePngLogos.class);

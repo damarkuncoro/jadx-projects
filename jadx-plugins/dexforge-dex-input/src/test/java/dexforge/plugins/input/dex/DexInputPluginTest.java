@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex;
+package dexforge.plugins.input.dex;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,11 +13,11 @@ import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.AccessFlagsScope;
-import jadx.api.plugins.input.data.ICodeReader;
-import jadx.plugins.input.dex.utils.SmaliTestUtils;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlagsScope;
+import dexforge.api.plugins.input.data.ICodeReader;
+import dexforge.plugins.input.dex.utils.SmaliTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

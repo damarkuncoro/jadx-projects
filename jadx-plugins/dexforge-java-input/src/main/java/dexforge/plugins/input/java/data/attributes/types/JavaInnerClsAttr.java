@@ -1,13 +1,13 @@
-package jadx.plugins.input.java.data.attributes.types;
+package dexforge.plugins.input.java.data.attributes.types;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import jadx.api.plugins.input.data.attributes.types.InnerClassesAttr;
-import jadx.api.plugins.input.data.attributes.types.InnerClsInfo;
-import jadx.plugins.input.java.data.ConstPoolReader;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.api.plugins.input.data.attributes.types.InnerClassesAttr;
+import dexforge.api.plugins.input.data.attributes.types.InnerClsInfo;
+import dexforge.plugins.input.java.data.ConstPoolReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
 
 public class JavaInnerClsAttr extends InnerClassesAttr implements IJavaAttribute {
 

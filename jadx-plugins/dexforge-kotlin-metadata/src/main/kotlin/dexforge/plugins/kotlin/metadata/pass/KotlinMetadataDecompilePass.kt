@@ -1,18 +1,18 @@
-package jadx.plugins.kotlin.metadata.pass
+package dexforge.plugins.kotlin.metadata.pass
 
-import jadx.api.plugins.input.data.AccessFlags
-import jadx.api.plugins.pass.JadxPassInfo
-import jadx.api.plugins.pass.impl.OrderedJadxPassInfo
-import jadx.api.plugins.pass.types.JadxDecompilePass
+import dexforge.api.plugins.input.data.AccessFlags
+import dexforge.api.plugins.pass.JadxPassInfo
+import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo
+import dexforge.api.plugins.pass.types.JadxDecompilePass
 import jadx.core.deobf.NameMapper
 import jadx.core.dex.attributes.AFlag
 import jadx.core.dex.attributes.nodes.RenameReasonAttr
 import jadx.core.dex.nodes.ClassNode
 import jadx.core.dex.nodes.MethodNode
 import jadx.core.dex.nodes.RootNode
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions
-import jadx.plugins.kotlin.metadata.utils.KmClassWrapper
-import jadx.plugins.kotlin.metadata.utils.KmClassWrapper.Companion.getWrapper
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions
+import dexforge.plugins.kotlin.metadata.utils.KmClassWrapper
+import dexforge.plugins.kotlin.metadata.utils.KmClassWrapper.Companion.getWrapper
 
 class KotlinMetadataDecompilePass(
 	private val options: KotlinMetadataOptions,

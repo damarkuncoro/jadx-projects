@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.gui.JadxGuiContext;
+import dexforge.api.plugins.gui.JadxGuiContext;
 import jadx.core.plugins.files.IJadxFilesGetter;
 
 public class AppContext {

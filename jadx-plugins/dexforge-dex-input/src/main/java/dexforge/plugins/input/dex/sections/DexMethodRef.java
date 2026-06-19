@@ -1,10 +1,10 @@
-package jadx.plugins.input.dex.sections;
+package dexforge.plugins.input.dex.sections;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.dex.DexReader;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.dex.DexReader;
 
 public class DexMethodRef implements IMethodRef {
 

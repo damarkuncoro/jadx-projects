@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import jadx.api.JavaField;
-import jadx.api.plugins.input.data.IFieldData;
+import dexforge.api.plugins.input.data.IFieldData;
 import jadx.core.dex.attributes.nodes.NotificationAttrNode;
 import jadx.core.dex.info.AccessInfo;
 import jadx.core.dex.info.AccessInfo.AFType;

@@ -2,12 +2,12 @@ package jadx.gui.settings;
 
 import com.beust.jcommander.Parameter;
 
-import jadx.cli.JadxCLIArgs;
-import jadx.cli.config.JadxConfigExclude;
+import dexforge.cli.DexforgeCLIArgs;
+import dexforge.cli.config.DexforgeConfigExclude;
 
-public class JadxGUIArgs extends JadxCLIArgs {
+public class JadxGUIArgs extends DexforgeCLIArgs {
 
-	@JadxConfigExclude
+	@DexforgeConfigExclude
 	@Parameter(
 			names = { "-sc", "--select-class" },
 			description = "GUI: Open the selected class and show the decompiled code"

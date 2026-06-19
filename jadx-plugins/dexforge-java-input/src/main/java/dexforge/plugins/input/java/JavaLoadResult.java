@@ -1,4 +1,4 @@
-package jadx.plugins.input.java;
+package dexforge.plugins.input.java;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -9,8 +9,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.IClassData;
 
 public class JavaLoadResult implements ICodeLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(JavaLoadResult.class);

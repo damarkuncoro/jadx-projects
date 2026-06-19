@@ -1,4 +1,4 @@
-package jadx.plugins.input.dex.insns;
+package dexforge.plugins.input.dex.insns;
 
 public class DexOpcodes {
 	public static final int NOP = 0x00;

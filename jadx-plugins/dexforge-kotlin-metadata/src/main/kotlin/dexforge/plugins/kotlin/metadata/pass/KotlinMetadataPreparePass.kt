@@ -1,12 +1,12 @@
-package jadx.plugins.kotlin.metadata.pass
+package dexforge.plugins.kotlin.metadata.pass
 
-import jadx.api.plugins.pass.JadxPassInfo
-import jadx.api.plugins.pass.impl.OrderedJadxPassInfo
-import jadx.api.plugins.pass.types.JadxPreparePass
+import dexforge.api.plugins.pass.JadxPassInfo
+import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo
+import dexforge.api.plugins.pass.types.JadxPreparePass
 import jadx.core.dex.attributes.AFlag
 import jadx.core.dex.nodes.RootNode
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions
-import jadx.plugins.kotlin.metadata.utils.KotlinMetadataUtils
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions
+import dexforge.plugins.kotlin.metadata.utils.KotlinMetadataUtils
 
 class KotlinMetadataPreparePass(
 	private val options: KotlinMetadataOptions,

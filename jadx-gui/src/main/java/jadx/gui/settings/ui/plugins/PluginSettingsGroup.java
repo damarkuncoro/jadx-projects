@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.ISettingsGroup;
 import jadx.core.plugins.PluginContext;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.Utils;

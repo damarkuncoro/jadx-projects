@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data.attributes;
+package dexforge.api.plugins.input.data.attributes;
 
 public abstract class PinnedAttribute implements IJadxAttribute {
 

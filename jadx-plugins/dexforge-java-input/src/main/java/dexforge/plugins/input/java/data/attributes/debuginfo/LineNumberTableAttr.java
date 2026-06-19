@@ -1,10 +1,10 @@
-package jadx.plugins.input.java.data.attributes.debuginfo;
+package dexforge.plugins.input.java.data.attributes.debuginfo;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
 
 public class LineNumberTableAttr implements IJavaAttribute {
 	private final Map<Integer, Integer> lineMap;

@@ -1,8 +1,8 @@
-package jadx.plugins.input.java.data.code.trycatch;
+package dexforge.plugins.input.java.data.code.trycatch;
 
-import jadx.api.plugins.input.data.ICatch;
-import jadx.api.plugins.input.data.ITry;
-import jadx.api.plugins.utils.Utils;
+import dexforge.api.plugins.input.data.ICatch;
+import dexforge.api.plugins.input.data.ITry;
+import dexforge.api.plugins.utils.Utils;
 
 public class JavaTryData implements ITry {
 

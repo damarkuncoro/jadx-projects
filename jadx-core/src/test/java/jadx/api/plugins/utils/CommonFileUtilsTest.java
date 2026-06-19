@@ -1,4 +1,4 @@
-package jadx.api.plugins.utils;
+package dexforge.api.plugins.utils;
 
 import org.junit.jupiter.api.Test;
 

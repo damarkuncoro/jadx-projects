@@ -6,12 +6,12 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import jadx.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;
 import jadx.tests.api.IntegrationTest;
 
-import static jadx.api.plugins.input.data.attributes.JadxAttrType.CONSTANT_VALUE;
+import static dexforge.api.plugins.input.data.attributes.JadxAttrType.CONSTANT_VALUE;
 import static jadx.tests.api.utils.assertj.JadxAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 

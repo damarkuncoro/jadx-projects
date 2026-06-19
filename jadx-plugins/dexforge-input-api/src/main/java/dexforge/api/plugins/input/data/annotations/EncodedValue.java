@@ -1,11 +1,11 @@
-package jadx.api.plugins.input.data.annotations;
+package dexforge.api.plugins.input.data.annotations;
 
 import java.util.Objects;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttrType;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.PinnedAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
 
 public class EncodedValue extends PinnedAttribute {
 	public static final EncodedValue NULL = new EncodedValue(EncodedType.ENCODED_NULL, "null");

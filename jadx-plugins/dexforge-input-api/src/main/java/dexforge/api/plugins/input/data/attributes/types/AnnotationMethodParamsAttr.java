@@ -1,13 +1,13 @@
-package jadx.api.plugins.input.data.attributes.types;
+package dexforge.api.plugins.input.data.attributes.types;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.annotations.IAnnotation;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.PinnedAttribute;
+import dexforge.api.plugins.input.data.annotations.IAnnotation;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
 
 public class AnnotationMethodParamsAttr extends PinnedAttribute {
 

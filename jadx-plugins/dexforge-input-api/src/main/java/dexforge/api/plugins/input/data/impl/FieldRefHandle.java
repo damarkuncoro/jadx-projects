@@ -1,11 +1,11 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.IFieldRef;
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.input.data.MethodHandleType;
+import dexforge.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.MethodHandleType;
 
 public class FieldRefHandle implements IMethodHandle {
 

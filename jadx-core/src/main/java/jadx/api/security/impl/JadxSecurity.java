@@ -13,10 +13,10 @@ import org.w3c.dom.Document;
 import jadx.api.security.IJadxSecurity;
 import jadx.api.security.JadxSecurityFlag;
 import jadx.core.deobf.NameMapper;
-import jadx.zip.IZipEntry;
-import jadx.zip.security.DisabledZipSecurity;
-import jadx.zip.security.IJadxZipSecurity;
-import jadx.zip.security.JadxZipSecurity;
+import dexforge.zip.IZipEntry;
+import dexforge.zip.security.DisabledZipSecurity;
+import dexforge.zip.security.IDexforgeZipSecurity;
+import dexforge.zip.security.DexforgeZipSecurity;
 
 import static jadx.api.security.JadxSecurityFlag.SECURE_ZIP_READER;
 
@@ -24,14 +24,14 @@ public class JadxSecurity implements IJadxSecurity {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxSecurity.class);
 
 	private final Set<JadxSecurityFlag> flags;
-	private final IJadxZipSecurity zipSecurity;
+	private final IDexforgeZipSecurity zipSecurity;
 
 	public JadxSecurity(Set<JadxSecurityFlag> flags) {
 		this.flags = flags;
-		this.zipSecurity = flags.contains(SECURE_ZIP_READER) ? new JadxZipSecurity() : DisabledZipSecurity.INSTANCE;
+		this.zipSecurity = flags.contains(SECURE_ZIP_READER) ? new DexforgeZipSecurity() : DisabledZipSecurity.INSTANCE;
 	}
 
-	public JadxSecurity(Set<JadxSecurityFlag> flags, IJadxZipSecurity zipSecurity) {
+	public JadxSecurity(Set<JadxSecurityFlag> flags, IDexforgeZipSecurity zipSecurity) {
 		this.flags = flags;
 		this.zipSecurity = zipSecurity;
 	}

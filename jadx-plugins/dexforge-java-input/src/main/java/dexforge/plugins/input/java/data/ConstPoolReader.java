@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,23 +6,23 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.ICallSite;
-import jadx.api.plugins.input.data.IFieldRef;
-import jadx.api.plugins.input.data.IMethodHandle;
-import jadx.api.plugins.input.data.IMethodRef;
-import jadx.api.plugins.input.data.MethodHandleType;
-import jadx.api.plugins.input.data.annotations.EncodedType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
-import jadx.api.plugins.input.data.impl.CallSite;
-import jadx.api.plugins.input.data.impl.FieldRefHandle;
-import jadx.api.plugins.input.data.impl.MethodRefHandle;
-import jadx.plugins.input.java.JavaClassReader;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
-import jadx.plugins.input.java.data.attributes.types.JavaBootstrapMethodsAttr;
-import jadx.plugins.input.java.data.attributes.types.data.RawBootstrapMethod;
-import jadx.plugins.input.java.utils.DescriptorParser;
-import jadx.plugins.input.java.utils.JavaClassParseException;
-import jadx.plugins.input.java.utils.ModifiedUTF8Decoder;
+import dexforge.api.plugins.input.data.ICallSite;
+import dexforge.api.plugins.input.data.IFieldRef;
+import dexforge.api.plugins.input.data.IMethodHandle;
+import dexforge.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.MethodHandleType;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.impl.CallSite;
+import dexforge.api.plugins.input.data.impl.FieldRefHandle;
+import dexforge.api.plugins.input.data.impl.MethodRefHandle;
+import dexforge.plugins.input.java.JavaClassReader;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.plugins.input.java.data.attributes.types.JavaBootstrapMethodsAttr;
+import dexforge.plugins.input.java.data.attributes.types.data.RawBootstrapMethod;
+import dexforge.plugins.input.java.utils.DescriptorParser;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
+import dexforge.plugins.input.java.utils.ModifiedUTF8Decoder;
 
 public class ConstPoolReader {
 	private final JavaClassReader clsReader;

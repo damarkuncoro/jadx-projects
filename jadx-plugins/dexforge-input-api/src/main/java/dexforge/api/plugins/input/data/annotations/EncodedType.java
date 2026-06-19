@@ -1,4 +1,4 @@
-package jadx.api.plugins.input.data.annotations;
+package dexforge.api.plugins.input.data.annotations;
 
 public enum EncodedType {
 	ENCODED_NULL,

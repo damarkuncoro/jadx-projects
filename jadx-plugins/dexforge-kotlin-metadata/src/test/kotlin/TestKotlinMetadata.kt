@@ -1,12 +1,12 @@
-package jadx.plugins.kotlin.metadata.tests
+package dexforge.plugins.kotlin.metadata.tests
 
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.CLASS_ALIAS_OPT
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.COMPANION_OPT
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.DATA_CLASS_OPT
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.FIELDS_OPT
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.GETTERS_OPT
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.METHOD_ARGS_OPT
-import jadx.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.TO_STRING_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.CLASS_ALIAS_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.COMPANION_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.DATA_CLASS_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.FIELDS_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.GETTERS_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.METHOD_ARGS_OPT
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions.Companion.TO_STRING_OPT
 import jadx.tests.api.SmaliTest
 import jadx.tests.api.utils.assertj.JadxAssertions.assertThat
 import jadx.tests.api.utils.assertj.JadxCodeAssertions

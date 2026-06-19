@@ -1,6 +1,6 @@
-package jadx.api.plugins.pass;
+package dexforge.api.plugins.pass;
 
-import jadx.api.plugins.pass.types.JadxPassType;
+import dexforge.api.plugins.pass.types.JadxPassType;
 
 public interface JadxPass {
 	JadxPassInfo getInfo();

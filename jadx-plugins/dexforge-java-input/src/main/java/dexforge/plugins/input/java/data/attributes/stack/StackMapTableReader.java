@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data.attributes.stack;
+package dexforge.plugins.input.java.data.attributes.stack;
 
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -6,12 +6,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import jadx.plugins.input.java.data.DataReader;
-import jadx.plugins.input.java.data.JavaClassData;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.IJavaAttributeReader;
-import jadx.plugins.input.java.data.attributes.types.StackMapTableAttr;
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.plugins.input.java.data.DataReader;
+import dexforge.plugins.input.java.data.JavaClassData;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.IJavaAttributeReader;
+import dexforge.plugins.input.java.data.attributes.types.StackMapTableAttr;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public class StackMapTableReader implements IJavaAttributeReader {
 

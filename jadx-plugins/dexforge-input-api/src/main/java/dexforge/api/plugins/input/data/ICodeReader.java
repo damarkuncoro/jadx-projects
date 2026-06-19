@@ -1,11 +1,11 @@
-package jadx.api.plugins.input.data;
+package dexforge.api.plugins.input.data;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.insns.InsnData;
 
 public interface ICodeReader {
 	ICodeReader copy();

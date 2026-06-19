@@ -1,6 +1,6 @@
-package jadx.plugins.input.java.data.code;
+package dexforge.plugins.input.java.data.code;
 
-import jadx.plugins.input.java.utils.JavaClassParseException;
+import dexforge.plugins.input.java.utils.JavaClassParseException;
 
 public class ArrayType {
 

@@ -1,13 +1,13 @@
-package jadx.plugins.mappings.load;
+package dexforge.plugins.mappings.load;
 
 import net.fabricmc.mappingio.tree.MappingTreeView;
 import net.fabricmc.mappingio.tree.MappingTreeView.ClassMappingView;
 import net.fabricmc.mappingio.tree.MappingTreeView.FieldMappingView;
 import net.fabricmc.mappingio.tree.MappingTreeView.MethodMappingView;
 
-import jadx.api.plugins.pass.JadxPassInfo;
-import jadx.api.plugins.pass.impl.OrderedJadxPassInfo;
-import jadx.api.plugins.pass.types.JadxPreparePass;
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
 import jadx.core.codegen.TypeGen;
 import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.info.MethodInfo;
@@ -15,7 +15,7 @@ import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;
-import jadx.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.RenameMappingsData;
 
 public class ApplyMappingsPass implements JadxPreparePass {
 

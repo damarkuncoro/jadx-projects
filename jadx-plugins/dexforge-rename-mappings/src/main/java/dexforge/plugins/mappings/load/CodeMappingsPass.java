@@ -1,4 +1,4 @@
-package jadx.plugins.mappings.load;
+package dexforge.plugins.mappings.load;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,18 +9,18 @@ import net.fabricmc.mappingio.tree.MappingTreeView.ClassMappingView;
 import net.fabricmc.mappingio.tree.MappingTreeView.MethodArgMappingView;
 import net.fabricmc.mappingio.tree.MappingTreeView.MethodMappingView;
 
-import jadx.api.plugins.pass.JadxPassInfo;
-import jadx.api.plugins.pass.impl.OrderedJadxPassInfo;
-import jadx.api.plugins.pass.types.JadxDecompilePass;
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxDecompilePass;
 import jadx.core.dex.instructions.args.SSAVar;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;
-import jadx.plugins.mappings.RenameMappingsData;
-import jadx.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
+import dexforge.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
 
 public class CodeMappingsPass implements JadxDecompilePass {
-	private Map<String, ClassMappingView> clsRenamesMap;
+	private volatile Map<String, ClassMappingView> clsRenamesMap;
 
 	@Override
 	public JadxPassInfo getInfo() {
@@ -91,14 +91,15 @@ public class CodeMappingsPass implements JadxDecompilePass {
 	}
 
 	private void updateMappingsMap(MappingTreeView mappings) {
-		clsRenamesMap = new HashMap<>();
+		Map<String, ClassMappingView> newMap = new HashMap<>();
 		for (ClassMappingView cls : mappings.getClasses()) {
 			for (MethodMappingView mth : cls.getMethods()) {
 				if (!mth.getArgs().isEmpty() || !mth.getVars().isEmpty()) {
-					clsRenamesMap.put(cls.getSrcName(), cls);
+					newMap.put(cls.getSrcName(), cls);
 					break;
 				}
 			}
 		}
+		this.clsRenamesMap = newMap;
 	}
 }

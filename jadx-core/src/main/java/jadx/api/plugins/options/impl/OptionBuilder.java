@@ -1,11 +1,11 @@
-package jadx.api.plugins.options.impl;
+package dexforge.api.plugins.options.impl;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import jadx.api.plugins.options.OptionFlag;
-import jadx.api.plugins.options.OptionType;
+import dexforge.api.plugins.options.OptionFlag;
+import dexforge.api.plugins.options.OptionType;
 
 public interface OptionBuilder<T> {
 

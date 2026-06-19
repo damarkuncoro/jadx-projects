@@ -3,7 +3,7 @@ package jadx.core.dex.attributes.nodes;
 import java.util.List;
 import java.util.Objects;
 
-import jadx.api.plugins.input.data.attributes.PinnedAttribute;
+import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.instructions.args.RegisterArg;
 import jadx.core.dex.nodes.InsnNode;

@@ -1,4 +1,4 @@
-package jadx.plugins.input.java.data;
+package dexforge.plugins.input.java.data;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,20 +6,20 @@ import java.util.List;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.IClassData;
-import jadx.api.plugins.input.data.IFieldData;
-import jadx.api.plugins.input.data.IMethodData;
-import jadx.api.plugins.input.data.ISeqConsumer;
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
-import jadx.api.plugins.utils.Utils;
-import jadx.plugins.input.java.JavaClassReader;
-import jadx.plugins.input.java.data.attributes.AttributesReader;
-import jadx.plugins.input.java.data.attributes.IJavaAttribute;
-import jadx.plugins.input.java.data.attributes.JavaAttrStorage;
-import jadx.plugins.input.java.data.attributes.JavaAttrType;
-import jadx.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
-import jadx.plugins.input.java.utils.DisasmUtils;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.input.data.IFieldData;
+import dexforge.api.plugins.input.data.IMethodData;
+import dexforge.api.plugins.input.data.ISeqConsumer;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.utils.Utils;
+import dexforge.plugins.input.java.JavaClassReader;
+import dexforge.plugins.input.java.data.attributes.AttributesReader;
+import dexforge.plugins.input.java.data.attributes.IJavaAttribute;
+import dexforge.plugins.input.java.data.attributes.JavaAttrStorage;
+import dexforge.plugins.input.java.data.attributes.JavaAttrType;
+import dexforge.plugins.input.java.data.attributes.types.JavaAnnotationsAttr;
+import dexforge.plugins.input.java.utils.DisasmUtils;
 
 public class JavaClassData implements IClassData {
 	private final JavaClassReader clsReader;

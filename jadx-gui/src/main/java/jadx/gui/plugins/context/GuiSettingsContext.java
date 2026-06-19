@@ -2,9 +2,9 @@ package jadx.gui.plugins.context;
 
 import java.util.List;
 
-import jadx.api.plugins.gui.ISettingsGroup;
-import jadx.api.plugins.gui.JadxGuiSettings;
-import jadx.api.plugins.options.OptionDescription;
+import dexforge.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.JadxGuiSettings;
+import dexforge.api.plugins.options.OptionDescription;
 import jadx.gui.settings.ui.SubSettingsGroup;
 import jadx.gui.settings.ui.plugins.PluginSettings;
 import jadx.gui.ui.MainWindow;

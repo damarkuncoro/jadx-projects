@@ -1,4 +1,4 @@
-package jadx.api.plugins;
+package dexforge.api.plugins;
 
 import java.util.function.Supplier;
 
@@ -6,15 +6,15 @@ import org.jetbrains.annotations.Nullable;
 
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
-import jadx.api.plugins.data.IJadxFiles;
-import jadx.api.plugins.data.IJadxPlugins;
-import jadx.api.plugins.events.IJadxEvents;
-import jadx.api.plugins.gui.JadxGuiContext;
-import jadx.api.plugins.input.JadxCodeInput;
-import jadx.api.plugins.options.JadxPluginOptions;
-import jadx.api.plugins.pass.JadxPass;
-import jadx.api.plugins.resources.IResourcesLoader;
-import jadx.zip.ZipReader;
+import dexforge.api.plugins.data.IJadxFiles;
+import dexforge.api.plugins.data.IJadxPlugins;
+import dexforge.api.plugins.events.IJadxEvents;
+import dexforge.api.plugins.gui.JadxGuiContext;
+import dexforge.api.plugins.input.JadxCodeInput;
+import dexforge.api.plugins.options.JadxPluginOptions;
+import dexforge.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.resources.IResourcesLoader;
+import dexforge.zip.ZipReader;
 
 public interface JadxPluginContext {
 

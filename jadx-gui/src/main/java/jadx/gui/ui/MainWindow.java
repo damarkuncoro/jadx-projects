@@ -85,11 +85,11 @@ import jadx.api.JavaMethod;
 import jadx.api.JavaNode;
 import jadx.api.ResourceFile;
 import jadx.api.data.impl.JadxNodeRef;
-import jadx.api.plugins.events.JadxEvents;
-import jadx.api.plugins.events.types.ReloadProject;
-import jadx.api.plugins.events.types.ReloadSettingsWindow;
-import jadx.api.plugins.utils.CommonFileUtils;
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.api.plugins.events.JadxEvents;
+import dexforge.api.plugins.events.types.ReloadProject;
+import dexforge.api.plugins.events.types.ReloadSettingsWindow;
+import dexforge.api.plugins.utils.CommonFileUtils;
+import dexforge.commons.app.DexforgeSystemInfo;
 import jadx.core.Jadx;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;
@@ -102,9 +102,9 @@ import jadx.core.utils.android.ApplicationParams;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.gui.JadxWrapper;
-import jadx.gui.ads.AdDetector;
+import dexforge.plugins.detector.ad.AdDetector;
+import dexforge.plugins.detector.ad.AdFinding;
 import jadx.gui.ads.AdDetectorDialog;
-import jadx.gui.ads.AdFinding;
 import jadx.gui.cache.manager.CacheManager;
 import jadx.gui.device.debugger.BreakpointManager;
 import jadx.gui.device.ui.DeviceExplorerDialog;
@@ -1497,7 +1497,7 @@ public class MainWindow extends JFrame {
 		JMenu help = new JadxMenu(NLS.str("menu.help"), shortcutsController);
 		help.setMnemonic(KeyEvent.VK_H);
 		help.add(showLogAction);
-		if (JadxSystemInfo.IS_LINUX) {
+		if (DexforgeSystemInfo.IS_LINUX) {
 			help.add(new JadxGuiAction(ActionModel.CREATE_DESKTOP_ENTRY, this::createDesktopEntry));
 		}
 		if (Jadx.isDevVersion()) {
@@ -1514,7 +1514,7 @@ public class MainWindow extends JFrame {
 			help.add(uiWatchDog);
 		}
 
-		if (JadxSystemInfo.IS_MAC) {
+		if (DexforgeSystemInfo.IS_MAC) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
 			Desktop.getDesktop().setAboutHandler(e -> aboutAction.actionPerformed(null));
 		} else {

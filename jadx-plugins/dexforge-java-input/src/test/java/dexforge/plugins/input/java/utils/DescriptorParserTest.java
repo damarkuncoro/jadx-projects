@@ -1,10 +1,10 @@
-package jadx.plugins.input.java.utils;
+package dexforge.plugins.input.java.utils;
 
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import jadx.plugins.input.java.data.JavaMethodRef;
+import dexforge.plugins.input.java.data.JavaMethodRef;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

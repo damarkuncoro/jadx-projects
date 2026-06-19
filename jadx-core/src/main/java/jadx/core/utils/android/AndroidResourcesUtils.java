@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.ICodeWriter;
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.annotations.EncodedType;
-import jadx.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import jadx.core.codegen.ClassGen;
 import jadx.core.deobf.NameMapper;
 import jadx.core.dex.attributes.AFlag;

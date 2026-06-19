@@ -1,4 +1,4 @@
-package jadx.plugins.kotlin.metadata.tests
+package dexforge.plugins.kotlin.metadata.tests
 
 import jadx.tests.api.IntegrationTest
 import jadx.tests.api.utils.assertj.JadxAssertions.assertThat

@@ -128,7 +128,11 @@ public class TestI18n {
 			"popup.add_scripts",
 			"script.log",
 			"script.format",
-			"script.check");
+			"script.check",
+			// bookmarks keys
+			"menu.bookmarks_desc",
+			"popup.toggle_bookmark_desc",
+			"bookmarks.no_bookmarks");
 
 	@Test
 	public void keyIsUsed() throws IOException {

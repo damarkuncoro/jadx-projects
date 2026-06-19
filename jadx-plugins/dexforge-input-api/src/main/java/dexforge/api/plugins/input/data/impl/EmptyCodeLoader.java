@@ -1,10 +1,10 @@
-package jadx.api.plugins.input.data.impl;
+package dexforge.api.plugins.input.data.impl;
 
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.IClassData;
 
 public class EmptyCodeLoader implements ICodeLoader {
 
