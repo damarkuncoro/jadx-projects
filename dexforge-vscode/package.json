@@ -15,7 +15,9 @@
     "onLanguage:java",
     "onLanguage:smali",
     "onCommand:dexforge.startDaemon",
-    "onCommand:dexforge.deviceExplorer"
+    "onCommand:dexforge.deviceExplorer",
+    "onCommand:dexforge.loadApk",
+    "onCommand:dexforge.decompileClass"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -23,6 +25,14 @@
       {
         "command": "dexforge.startDaemon",
         "title": "DexForge: Start Decompiler Daemon"
+      },
+      {
+        "command": "dexforge.loadApk",
+        "title": "DexForge: Load APK / JAR File"
+      },
+      {
+        "command": "dexforge.decompileClass",
+        "title": "DexForge: Decompile Class"
       },
       {
         "command": "dexforge.deviceExplorer",
