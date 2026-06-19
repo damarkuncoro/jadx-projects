@@ -20,7 +20,7 @@ COPY jadx-plugins/ jadx-plugins/
 RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
 
 # Stage 2: Runtime with Android SDK
-FROM eclipse-temurin:21-jre-slim
+FROM eclipse-temurin:21-jre
 
 LABEL maintainer="DexForge <https://github.com/damarkuncoro/jadx-projects>"
 LABEL description="DexForge CLI with Android SDK - for ADB and device operations"
