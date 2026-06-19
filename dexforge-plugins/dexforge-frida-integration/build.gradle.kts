@@ -4,6 +4,6 @@ plugins {
 
 dependencies {
 	api(project(":jadx-core"))
-	api(project(":jadx-plugins:dexforge-input-api"))
+	api(project(":dexforge-plugins:dexforge-input-api"))
 	implementation("org.apache.commons:commons-text:1.15.0")
 }

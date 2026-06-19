@@ -107,7 +107,7 @@ public class JadxPluginsList {
 
 	private Release fetchLatestRelease() {
 		LOG.debug("Fetching latest plugins-list release info");
-		LocationInfo pluginsList = new LocationInfo("jadx-decompiler", "jadx-plugins-list", "list");
+		LocationInfo pluginsList = new LocationInfo("jadx-decompiler", "dexforge-plugins-list", "list");
 		Release release = GithubTools.fetchRelease(pluginsList);
 		List<Asset> assets = release.getAssets();
 		if (assets.isEmpty()) {

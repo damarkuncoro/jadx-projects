@@ -40,7 +40,7 @@ DexForge menyediakan integrasi penuh dengan [Frida](https://frida.re/) untuk dyn
 
 Menghasilkan script Frida dari dekompilasi kode Java.
 
-**Location:** `jadx-plugins/dexforge-frida-integration/src/main/java/dexforge/frida/FridaScriptGenerator.java`
+**Location:** `dexforge-plugins/dexforge-frida-integration/src/main/java/dexforge/frida/FridaScriptGenerator.java`
 
 **Methods:**
 - `generateMethodHook(JavaMethod)` - Generate hook untuk method tertentu
@@ -52,7 +52,7 @@ Menghasilkan script Frida dari dekompilasi kode Java.
 
 Kumpulan script Frida pre-built untuk keperluan umum.
 
-**Location:** `jadx-plugins/dexforge-frida-integration/src/main/java/dexforge/frida/FridaSnippets.java`
+**Location:** `dexforge-plugins/dexforge-frida-integration/src/main/java/dexforge/frida/FridaSnippets.java`
 
 **Built-in Snippets:**
 | Snippet | Deskripsi |

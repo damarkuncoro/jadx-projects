@@ -189,7 +189,7 @@ jadx-projects/
 ├── dexforge-vscode/        # VS Code extension
 ├── dexforge-plugins-tools/ # Plugin management system
 ├── dexforge-commons/       # Shared utilities
-├── jadx-plugins/           # Input/output plugins
+├── dexforge-plugins/           # Input/output plugins
 │   ├── dexforge-frida-integration/
 │   ├── dexforge-ad-detector/
 │   └── ...

@@ -3,20 +3,20 @@ plugins {
 }
 
 dependencies {
-	api(project(":jadx-plugins:dexforge-input-api"))
+	api(project(":dexforge-plugins:dexforge-input-api"))
 	api(project(":dexforge-commons:dexforge-zip"))
 
 	implementation("com.google.code.gson:gson:2.13.2")
 
 	testImplementation("org.apache.commons:commons-lang3:3.20.0")
 
-	testImplementation(project(":jadx-plugins:dexforge-dex-input"))
+	testImplementation(project(":dexforge-plugins:dexforge-dex-input"))
 	// 'ClassNotFound' error is raised if set as 'testRuntime'
 	// for the plugins below when running the tests from vscode.
-	testImplementation(project(":jadx-plugins:dexforge-smali-input"))
-	testImplementation(project(":jadx-plugins:dexforge-java-convert"))
-	testImplementation(project(":jadx-plugins:dexforge-java-input"))
-	testImplementation(project(":jadx-plugins:dexforge-raung-input"))
+	testImplementation(project(":dexforge-plugins:dexforge-smali-input"))
+	testImplementation(project(":dexforge-plugins:dexforge-java-convert"))
+	testImplementation(project(":dexforge-plugins:dexforge-java-input"))
+	testImplementation(project(":dexforge-plugins:dexforge-raung-input"))
 
 	testImplementation("org.eclipse.jdt:ecj") {
 		version {

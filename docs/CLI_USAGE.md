@@ -166,7 +166,7 @@ options:
   -i, --install <locationId>      - install plugin with locationId
   -j, --install-jar <path-to.jar> - install plugin from jar file
   -l, --list                      - list installed plugins
-  -a, --available                 - list available plugins from jadx-plugins-list (aka marketplace)
+  -a, --available                 - list available plugins from dexforge-plugins-list (aka marketplace)
   -u, --update                    - update installed plugins
   --uninstall <pluginId>          - uninstall plugin with pluginId
   --disable <pluginId>            - disable plugin with pluginId
