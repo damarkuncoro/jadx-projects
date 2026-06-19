@@ -15,7 +15,7 @@ import jadx.api.ICodeWriter;
 import jadx.api.JadxArgs;
 import jadx.api.JavaMethod;
 import jadx.api.impl.SimpleCodeWriter;
-import jadx.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.codegen.MethodGen;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

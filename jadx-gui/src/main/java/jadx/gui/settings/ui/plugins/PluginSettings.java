@@ -19,13 +19,13 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 
-import jadx.api.plugins.events.types.ReloadProject;
-import jadx.api.plugins.gui.ISettingsGroup;
-import jadx.api.plugins.gui.JadxGuiContext;
-import jadx.api.plugins.options.JadxPluginOptions;
-import jadx.api.plugins.options.OptionDescription;
-import jadx.api.plugins.options.OptionFlag;
-import jadx.api.plugins.options.OptionType;
+import dexforge.api.plugins.events.types.ReloadProject;
+import dexforge.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.JadxGuiContext;
+import dexforge.api.plugins.options.JadxPluginOptions;
+import dexforge.api.plugins.options.OptionDescription;
+import dexforge.api.plugins.options.OptionFlag;
+import dexforge.api.plugins.options.OptionType;
 import jadx.core.plugins.PluginContext;
 import jadx.core.utils.Utils;
 import jadx.gui.logs.LogOptions;

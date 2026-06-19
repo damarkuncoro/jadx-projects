@@ -1,0 +1,44 @@
+# DexForge CODEOWNERS
+# This file defines the code owners for the repository.
+# Used for automatic review assignment and branch protection.
+
+# Core maintainers - review all changes
+* @damarkuncoro
+
+# Core decompiler engine
+/jadx-core/ @damarkuncoro
+/jadx-commons/ @damarkuncoro
+
+# GUI application
+/jadx-gui/ @damarkuncoro
+
+# CLI application
+/dexforge-cli/ @damarkuncoro
+
+# VS Code extension
+/dexforge-vscode/ @damarkuncoro
+
+# Plugin system
+/dexforge-plugins-tools/ @damarkuncoro
+/jadx-plugins/ @damarkuncoro
+
+# Frida integration
+/jadx-plugins/dexforge-frida-integration/ @damarkuncoro
+
+# Documentation
+/docs/ @damarkuncoro
+/*.md @damarkuncoro
+
+# CI/CD and DevOps
+/.github/ @damarkuncoro
+/docker/ @damarkuncoro
+
+# Build configuration
+/build.gradle.kts @damarkuncoro
+/settings.gradle.kts @damarkuncoro
+/gradle.properties @damarkuncoro
+/buildSrc/ @damarkuncoro
+
+# Security sensitive files
+/SECURITY.md @damarkuncoro
+/.pre-commit-config.yaml @damarkuncoro

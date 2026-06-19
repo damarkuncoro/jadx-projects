@@ -6,7 +6,7 @@ import java.util.SortedSet;
 
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
-import jadx.cli.plugins.JadxFilesGetter;
+import dexforge.cli.plugins.DexforgeFilesGetter;
 import jadx.core.plugins.AppContext;
 import jadx.core.plugins.JadxPluginManager;
 import jadx.core.plugins.PluginContext;
@@ -35,7 +35,7 @@ public class CollectPlugins {
 		}
 		// collect and init plugins in new temp context
 		JadxArgs jadxArgs = mainWindow.getSettings().toJadxArgs();
-		jadxArgs.setFilesGetter(JadxFilesGetter.INSTANCE);
+		jadxArgs.setFilesGetter(DexforgeFilesGetter.INSTANCE);
 		try (JadxDecompiler decompiler = new JadxDecompiler(jadxArgs)) {
 			JadxPluginManager pluginManager = decompiler.getPluginManager();
 			pluginManager.registerAddPluginListener(pluginContext -> {

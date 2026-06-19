@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import org.intellij.lang.annotations.MagicConstant;
 
-import jadx.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlags;
 import jadx.core.dex.instructions.args.ArgType;
 
 /**

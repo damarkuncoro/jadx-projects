@@ -1,9 +1,9 @@
-package jadx.api.plugins.loader;
+package dexforge.api.plugins.loader;
 
 import java.io.Closeable;
 import java.util.List;
 
-import jadx.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPlugin;
 
 public interface JadxPluginLoader extends Closeable {
 

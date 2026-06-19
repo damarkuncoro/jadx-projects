@@ -41,5 +41,11 @@ quark.json
 
 .env
 
+# Jekyll / GitHub Pages
+docs/_site/
+docs/.sass-cache/
+docs/.jekyll-cache/
+docs/Gemfile.lock
+
 cliff.toml
 jadx-gui/src/main/resources/logback.xml

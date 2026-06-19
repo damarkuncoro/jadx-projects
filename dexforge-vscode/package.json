@@ -15,7 +15,11 @@
     "onLanguage:java",
     "onLanguage:smali",
     "onCommand:dexforge.startDaemon",
-    "onCommand:dexforge.deviceExplorer"
+    "onCommand:dexforge.deviceExplorer",
+    "onCommand:dexforge.loadApk",
+    "onCommand:dexforge.decompileClass",
+    "onCommand:dexforge.binaryDiff",
+    "onCommand:dexforge.yaraScan"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -25,8 +29,24 @@
         "title": "DexForge: Start Decompiler Daemon"
       },
       {
+        "command": "dexforge.loadApk",
+        "title": "DexForge: Load APK / JAR File"
+      },
+      {
+        "command": "dexforge.decompileClass",
+        "title": "DexForge: Decompile Class"
+      },
+      {
         "command": "dexforge.deviceExplorer",
         "title": "DexForge: Open Device Explorer"
+      },
+      {
+        "command": "dexforge.binaryDiff",
+        "title": "DexForge: Compare APK/JAR Files"
+      },
+      {
+        "command": "dexforge.yaraScan",
+        "title": "DexForge: Scan with YARA Rules"
       }
     ],
     "configuration": {
@@ -36,15 +56,44 @@
           "type": "string",
           "default": "dexforge",
           "description": "Path to the dexforge CLI binary."
+        },
+        "dexforge.lspPort": {
+          "type": "number",
+          "default": 8080,
+          "description": "Port for the DexForge LSP daemon."
+        },
+        "dexforge.autoStartDaemon": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically start the LSP daemon when the extension activates."
+        },
+        "dexforge.decompileOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically decompile when opening an APK file."
+        },
+        "dexforge.showDeviceExplorer": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the device explorer in the sidebar."
         }
       }
     }
   },
   "scripts": {
-    "postinstall": "npm install vscode-languageclient vscode-languageserver-types"
+    "postinstall": "npm install vscode-languageclient vscode-languageserver-types",
+    "compile": "echo 'No compilation needed for plain JS'",
+    "watch": "echo 'No watch mode for plain JS'",
+    "lint": "echo 'Add ESLint configuration for linting'",
+    "test": "echo 'Add test framework for testing'",
+    "package": "npx vsce package"
   },
   "dependencies": {
     "vscode-languageclient": "^8.1.0",
     "vscode-languageserver-types": "^3.18.0"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^2.24.0",
+    "eslint": "^8.57.0"
   }
 }

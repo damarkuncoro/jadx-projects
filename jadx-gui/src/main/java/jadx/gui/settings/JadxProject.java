@@ -32,7 +32,7 @@ import jadx.api.data.impl.JadxCodeData;
 import jadx.api.data.impl.JadxCodeRef;
 import jadx.api.data.impl.JadxCodeRename;
 import jadx.api.data.impl.JadxNodeRef;
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.gui.cache.manager.CacheManager;

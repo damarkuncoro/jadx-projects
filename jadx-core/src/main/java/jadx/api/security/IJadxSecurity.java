@@ -4,9 +4,9 @@ import java.io.InputStream;
 
 import org.w3c.dom.Document;
 
-import jadx.zip.security.IJadxZipSecurity;
+import dexforge.zip.security.IDexforgeZipSecurity;
 
-public interface IJadxSecurity extends IJadxZipSecurity {
+public interface IJadxSecurity extends IDexforgeZipSecurity {
 
 	/**
 	 * Check if application package is safe

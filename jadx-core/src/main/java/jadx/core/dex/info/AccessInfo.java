@@ -2,7 +2,7 @@ package jadx.core.dex.info;
 
 import org.intellij.lang.annotations.MagicConstant;
 
-import jadx.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlags;
 import jadx.core.Consts;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 

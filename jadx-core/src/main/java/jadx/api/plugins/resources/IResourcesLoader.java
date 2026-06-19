@@ -1,4 +1,4 @@
-package jadx.api.plugins.resources;
+package dexforge.api.plugins.resources;
 
 public interface IResourcesLoader {
 

@@ -45,8 +45,8 @@ import org.slf4j.LoggerFactory;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
-import jadx.commons.app.JadxCommonEnv;
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.commons.app.DexforgeCommonEnv;
+import dexforge.commons.app.DexforgeSystemInfo;
 import jadx.core.dex.info.AccessInfo;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.utils.StringUtils;
@@ -58,7 +58,7 @@ import jadx.gui.ui.codearea.AbstractCodeArea;
 public class UiUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(UiUtils.class);
 
-	public static final boolean JADX_GUI_DEBUG = JadxCommonEnv.getBool("JADX_GUI_DEBUG", false);
+	public static final boolean JADX_GUI_DEBUG = DexforgeCommonEnv.getBool("JADX_GUI_DEBUG", false);
 
 	/**
 	 * The minimum about of memory in bytes we are trying to keep free, otherwise the application may
@@ -306,7 +306,7 @@ public class UiUtils {
 	@SuppressWarnings("deprecation")
 	@MagicConstant(flagsFromClass = InputEvent.class)
 	private static int getCtrlButton() {
-		if (JadxSystemInfo.IS_MAC) {
+		if (DexforgeSystemInfo.IS_MAC) {
 			return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 		} else {
 			return InputEvent.CTRL_DOWN_MASK;

@@ -16,11 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JadxDecompiler;
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.input.JadxCodeInput;
-import jadx.api.plugins.loader.JadxPluginLoader;
-import jadx.api.plugins.options.JadxPluginOptions;
-import jadx.api.plugins.options.OptionDescription;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.input.JadxCodeInput;
+import dexforge.api.plugins.loader.JadxPluginLoader;
+import dexforge.api.plugins.options.JadxPluginOptions;
+import dexforge.api.plugins.options.OptionDescription;
 import jadx.core.plugins.versions.VerifyRequiredVersion;
 
 public class JadxPluginManager {

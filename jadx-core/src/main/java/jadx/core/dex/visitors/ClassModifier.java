@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import jadx.core.Consts;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

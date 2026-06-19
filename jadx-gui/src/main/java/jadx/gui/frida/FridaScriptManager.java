@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jadx.api.JavaMethod;
-import jadx.frida.*;
+import dexforge.frida.*;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.ui.MainWindow;
 

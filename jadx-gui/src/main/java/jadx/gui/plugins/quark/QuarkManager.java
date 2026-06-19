@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.commons.app.DexforgeSystemInfo;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.jobs.BackgroundExecutor;
 import jadx.gui.logs.LogOptions;
@@ -193,7 +193,7 @@ public class QuarkManager {
 	}
 
 	private Path getVenvPath(String cmd) {
-		if (JadxSystemInfo.IS_WINDOWS) {
+		if (DexforgeSystemInfo.IS_WINDOWS) {
 			return VENV_PATH.resolve("Scripts").resolve(cmd + ".exe");
 		}
 		return VENV_PATH.resolve("bin").resolve(cmd);

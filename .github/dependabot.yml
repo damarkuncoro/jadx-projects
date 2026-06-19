@@ -1,7 +1,61 @@
 version: 2
 updates:
-  # Set update schedule for GitHub Actions
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "damarkuncoro"
+    assignees:
+      - "damarkuncoro"
+    labels:
+      - "dependencies"
+      - "gradle"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+
+  - package-ecosystem: "npm"
+    directory: "/dexforge-vscode"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:30"
+    timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "damarkuncoro"
+    assignees:
+      - "damarkuncoro"
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "07:00"
+    timezone: "Asia/Jakarta"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "damarkuncoro"
+    assignees:
+      - "damarkuncoro"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
+      include: "scope"

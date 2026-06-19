@@ -1,9 +1,9 @@
-package jadx.api.plugins.pass.impl;
+package dexforge.api.plugins.pass.impl;
 
 import java.util.Collections;
 import java.util.List;
 
-import jadx.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.JadxPassInfo;
 
 public class SimpleJadxPassInfo implements JadxPassInfo {
 

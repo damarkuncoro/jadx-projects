@@ -1,6 +1,6 @@
 package jadx.core.dex.instructions;
 
-import jadx.api.plugins.input.insns.custom.ISwitchPayload;
+import dexforge.api.plugins.input.insns.custom.ISwitchPayload;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.utils.InsnUtils;
 

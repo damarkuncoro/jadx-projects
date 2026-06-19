@@ -21,7 +21,7 @@ import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.format.MappingFormat;
 
 import jadx.api.args.UserRenamesMappingsMode;
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.Utils;
 import jadx.gui.jobs.TaskStatus;
@@ -37,8 +37,8 @@ import jadx.gui.ui.tab.TabbedPane;
 import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
 import jadx.gui.utils.ui.ActionHandler;
-import jadx.plugins.mappings.RenameMappingsOptions;
-import jadx.plugins.mappings.save.MappingExporter;
+import dexforge.plugins.mappings.RenameMappingsOptions;
+import dexforge.plugins.mappings.save.MappingExporter;
 
 public class RenameMappingsGui {
 	private static final Logger LOG = LoggerFactory.getLogger(RenameMappingsGui.class);

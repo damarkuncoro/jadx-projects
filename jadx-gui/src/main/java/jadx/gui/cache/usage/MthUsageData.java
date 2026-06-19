@@ -2,7 +2,7 @@ package jadx.gui.cache.usage;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.IMethodRef;
 
 final class MthUsageData {
 	private final MthRef mthRef;

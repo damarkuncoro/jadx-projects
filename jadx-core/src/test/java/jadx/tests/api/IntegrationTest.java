@@ -57,7 +57,7 @@ import jadx.api.impl.SimpleCodeInfo;
 import jadx.api.metadata.ICodeMetadata;
 import jadx.api.metadata.annotations.InsnCodeOffset;
 import jadx.api.metadata.annotations.VarNode;
-import jadx.api.plugins.CustomResourcesLoader;
+import dexforge.api.plugins.CustomResourcesLoader;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;

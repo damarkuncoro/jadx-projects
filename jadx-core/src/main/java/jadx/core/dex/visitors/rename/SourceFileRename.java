@@ -8,8 +8,8 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import jadx.api.args.UseSourceNameAsClassNameAlias;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.types.SourceFileAttr;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.SourceFileAttr;
 import jadx.core.deobf.NameMapper;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.nodes.RenameReasonAttr;

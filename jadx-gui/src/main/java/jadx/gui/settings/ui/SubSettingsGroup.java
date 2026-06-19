@@ -3,7 +3,7 @@ package jadx.gui.settings.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import jadx.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.ISettingsGroup;
 
 public class SubSettingsGroup extends SettingsGroup {
 

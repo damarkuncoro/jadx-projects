@@ -1,6 +1,6 @@
-package jadx.api.plugins.data;
+package dexforge.api.plugins.data;
 
-import jadx.api.plugins.JadxPlugin;
+import dexforge.api.plugins.JadxPlugin;
 
 public interface IJadxPlugins {
 

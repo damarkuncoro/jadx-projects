@@ -1,6 +1,6 @@
 package jadx.gui.device.debugger.smali;
 
-import jadx.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.ILocalVar;
 
 public abstract class RegisterInfo implements ILocalVar {
 

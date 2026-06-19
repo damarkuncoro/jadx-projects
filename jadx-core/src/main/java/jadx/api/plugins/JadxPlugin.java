@@ -1,13 +1,13 @@
-package jadx.api.plugins;
+package dexforge.api.plugins;
 
-import jadx.api.plugins.pass.types.JadxAfterLoadPass;
-import jadx.api.plugins.pass.types.JadxPreparePass;
+import dexforge.api.plugins.pass.types.JadxAfterLoadPass;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
 
 /**
  * Base interface for all jadx plugins
  * <br>
  * To create new plugin implement this interface and add to resources
- * a {@code META-INF/services/jadx.api.plugins.JadxPlugin} file with a full name of your class.
+ * a {@code META-INF/services/dexforge.api.plugins.JadxPlugin} file with a full name of your class.
  */
 public interface JadxPlugin {
 

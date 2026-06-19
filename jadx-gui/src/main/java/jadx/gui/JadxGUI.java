@@ -7,9 +7,9 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.cli.JadxCLIArgs;
-import jadx.cli.config.JadxConfigAdapter;
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.cli.DexforgeCLIArgs;
+import dexforge.cli.config.DexforgeConfigAdapter;
+import dexforge.commons.app.DexforgeSystemInfo;
 import jadx.core.Jadx;
 import jadx.core.utils.files.FileUtils;
 import jadx.gui.logs.LogCollector;
@@ -30,8 +30,8 @@ public class JadxGUI {
 			return;
 		}
 		try {
-			JadxConfigAdapter<JadxSettingsData> configAdapter = JadxSettings.buildConfigAdapter();
-			JadxSettingsData settingsData = JadxCLIArgs.processArgs(args, new JadxSettingsData(), configAdapter);
+			DexforgeConfigAdapter<JadxSettingsData> configAdapter = JadxSettings.buildConfigAdapter();
+			JadxSettingsData settingsData = DexforgeCLIArgs.processArgs(args, new JadxSettingsData(), configAdapter);
 			if (settingsData == null) {
 				return;
 			}
@@ -71,8 +71,8 @@ public class JadxGUI {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Starting jadx-gui. Version: '{}'. JVM: {} {}. OS: {}, version: {}, arch: {}",
 					Jadx.getVersion(),
-					JadxSystemInfo.JAVA_VM, JadxSystemInfo.JAVA_VER,
-					JadxSystemInfo.OS_NAME, JadxSystemInfo.OS_VERSION, JadxSystemInfo.OS_ARCH);
+					DexforgeSystemInfo.JAVA_VM, DexforgeSystemInfo.JAVA_VER,
+					DexforgeSystemInfo.OS_NAME, DexforgeSystemInfo.OS_VERSION, DexforgeSystemInfo.OS_ARCH);
 		}
 	}
 }

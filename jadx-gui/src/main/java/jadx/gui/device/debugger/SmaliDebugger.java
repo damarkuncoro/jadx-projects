@@ -73,7 +73,7 @@ import io.github.skylot.jdwp.JDWP.VirtualMachine.AllThreads.AllThreadsReplyData;
 import io.github.skylot.jdwp.JDWP.VirtualMachine.AllThreads.AllThreadsReplyDataThreads;
 import io.github.skylot.jdwp.JDWP.VirtualMachine.CreateString.CreateStringReplyData;
 
-import jadx.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlags;
 import jadx.gui.device.debugger.smali.RegisterInfo;
 import jadx.gui.utils.IOUtils;
 import jadx.gui.utils.ObjectPool;

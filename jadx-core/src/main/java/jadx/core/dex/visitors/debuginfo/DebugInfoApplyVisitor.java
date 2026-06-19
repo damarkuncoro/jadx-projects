@@ -9,10 +9,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.input.data.AccessFlags;
-import jadx.api.plugins.input.data.ILocalVar;
-import jadx.api.plugins.input.data.attributes.JadxAttrType;
-import jadx.api.plugins.input.data.attributes.types.MethodParametersAttr;
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.MethodParametersAttr;
 import jadx.core.Consts;
 import jadx.core.deobf.NameMapper;
 import jadx.core.dex.attributes.AFlag;

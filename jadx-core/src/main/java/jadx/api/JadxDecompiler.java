@@ -26,14 +26,14 @@ import jadx.api.metadata.ICodeNodeRef;
 import jadx.api.metadata.annotations.NodeDeclareRef;
 import jadx.api.metadata.annotations.VarNode;
 import jadx.api.metadata.annotations.VarRef;
-import jadx.api.plugins.CustomResourcesLoader;
-import jadx.api.plugins.JadxPlugin;
-import jadx.api.plugins.events.IJadxEvents;
-import jadx.api.plugins.input.ICodeLoader;
-import jadx.api.plugins.input.JadxCodeInput;
-import jadx.api.plugins.pass.JadxPass;
-import jadx.api.plugins.pass.types.JadxAfterLoadPass;
-import jadx.api.plugins.pass.types.JadxPassType;
+import dexforge.api.plugins.CustomResourcesLoader;
+import dexforge.api.plugins.JadxPlugin;
+import dexforge.api.plugins.events.IJadxEvents;
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.JadxCodeInput;
+import dexforge.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.types.JadxAfterLoadPass;
+import dexforge.api.plugins.pass.types.JadxPassType;
 import jadx.api.utils.tasks.ITaskExecutor;
 import jadx.core.Jadx;
 import jadx.core.dex.attributes.AFlag;
@@ -54,7 +54,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.core.utils.tasks.TaskExecutor;
 import jadx.core.xmlgen.ResourcesSaver;
-import jadx.zip.ZipReader;
+import dexforge.zip.ZipReader;
 
 /**
  * Jadx API usage example:

@@ -3,7 +3,7 @@ package jadx.gui.ui.startpage;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.utils.CommonFileUtils;
 
 /**
  * Represents an item in the recent projects list.

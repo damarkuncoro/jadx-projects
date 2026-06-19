@@ -49,6 +49,7 @@ fun getBuildChecksMode(): String {
 
 allprojects {
 	apply(plugin = "java")
+	apply(plugin = "eclipse")
 	apply(plugin = "checkstyle")
 	apply(plugin = "com.diffplug.spotless")
 	apply(plugin = "com.github.ben-manes.versions")
@@ -138,15 +139,15 @@ dependencies {
 }
 
 val copyArtifacts by tasks.registering(Copy::class) {
-	val jarCliPattern = "jadx-cli-(.*)-all.jar".toPattern()
-	from(tasks.getByPath(":jadx-cli:installShadowDist")) {
+	val jarCliPattern = "dexforge-cli-(.*)-all.jar".toPattern()
+	from(tasks.getByPath(":dexforge-cli:installShadowDist")) {
 		exclude("**/*.jar")
 		filter { line ->
 			jarCliPattern
 				.matcher(line)
-				.replaceAll("jadx-$1-all.jar")
-				.replace("-jar \"\\\"\$CLASSPATH\\\"\"", "-cp \"\\\"\$CLASSPATH\\\"\" jadx.cli.JadxCLI")
-				.replace("-jar \"%CLASSPATH%\"", "-cp \"%CLASSPATH%\" jadx.cli.JadxCLI")
+				.replaceAll("dexforge-$1-all.jar")
+				.replace("-jar \"\\\"\$CLASSPATH\\\"\"", "-cp \"\\\"\$CLASSPATH\\\"\" dexforge.cli.DexforgeCLI")
+				.replace("-jar \"%CLASSPATH%\"", "-cp \"%CLASSPATH%\" dexforge.cli.DexforgeCLI")
 		}
 	}
 	val jarGuiPattern = "jadx-gui-(.*)-all.jar".toPattern()
@@ -158,14 +159,14 @@ val copyArtifacts by tasks.registering(Copy::class) {
 		include("**/*.jar")
 		rename("jadx-gui-(.*)-all.jar", "jadx-$1-all.jar")
 	}
-	from(tasks.getByPath(":jadx-cli:installShadowDist")) {
+	from(tasks.getByPath(":dexforge-cli:installShadowDist")) {
 		include("bin/jadx", "bin/jadx.bat")
 		filter { line ->
 			jarCliPattern
 				.matcher(line)
-				.replaceAll("jadx-$1-all.jar")
-				.replace("-jar \"\\\"\$CLASSPATH\\\"\"", "-cp \"\\\"\$CLASSPATH\\\"\" jadx.cli.JadxCLI")
-				.replace("-jar \"%CLASSPATH%\"", "-cp \"%CLASSPATH%\" jadx.cli.JadxCLI")
+				.replaceAll("dexforge-$1-all.jar")
+				.replace("-jar \"\\\"\$CLASSPATH\\\"\"", "-cp \"\\\"\$CLASSPATH\\\"\" dexforge.cli.DexforgeCLI")
+				.replace("-jar \"%CLASSPATH%\"", "-cp \"%CLASSPATH%\" dexforge.cli.DexforgeCLI")
 		}
 		rename("jadx(\\.bat)?", "dexforge$1")
 	}

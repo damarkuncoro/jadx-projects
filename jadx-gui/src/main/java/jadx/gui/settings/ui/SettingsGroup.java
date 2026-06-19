@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import jadx.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.ISettingsGroup;
 
 public class SettingsGroup implements ISettingsGroup {
 	private final String title;

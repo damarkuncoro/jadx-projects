@@ -9,7 +9,7 @@ import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxException;
 import jadx.core.xmlgen.ResContainer;
 import jadx.core.xmlgen.entry.ResourceEntry;
-import jadx.zip.IZipEntry;
+import dexforge.zip.IZipEntry;
 
 public class ResourceFile {
 	private final JadxDecompiler decompiler;

@@ -2,7 +2,7 @@ package jadx.api.usage;
 
 import java.util.List;
 
-import jadx.api.plugins.input.data.IMethodRef;
+import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;
 import jadx.core.dex.nodes.MethodNode;

@@ -1,0 +1,79 @@
+# DexForge with Android SDK - for ADB and device operations
+# Stage 1: Build
+FROM eclipse-temurin:25-jdk AS builder
+
+WORKDIR /build
+
+COPY gradlew .
+COPY gradle/wrapper/gradle-wrapper.properties gradle/wrapper/
+COPY build.gradle.kts .
+COPY settings.gradle.kts settings.gradle.kts
+COPY buildSrc/build.gradle.kts buildSrc/build.gradle.kts
+COPY buildSrc/src/main/kotlin/ buildSrc/src/main/kotlin/
+
+COPY dexforge-cli/ dexforge-cli/
+COPY dexforge-commons/ dexforge-commons/
+COPY jadx-core/ jadx-core/
+COPY jadx-commons/ jadx-commons/
+COPY jadx-plugins/ jadx-plugins/
+
+RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
+
+# Stage 2: Runtime with Android SDK
+FROM eclipse-temurin:25-jre-slim
+
+LABEL maintainer="DexForge <https://github.com/damarkuncoro/jadx-projects>"
+LABEL description="DexForge CLI with Android SDK - for ADB and device operations"
+LABEL version="android-sdk"
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    curl \
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Android SDK Command-line Tools
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV ANDROID_HOME=/opt/android-sdk
+RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    cd ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip && \
+    unzip -q cmdline-tools.zip && \
+    rm cmdline-tools.zip && \
+    mv cmdline-tools latest
+
+ENV PATH="${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools"
+
+# Install required Android SDK packages
+RUN yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} \
+    "platform-tools" \
+    "platforms;android-34" \
+    "build-tools;34.0.0" \
+    "patcher;v4" \
+    && yes | sdkmanager --licenses
+
+WORKDIR /app
+
+# Copy distribution from builder
+COPY --from=builder /build/dexforge-cli/build/install/dexforge-cli/bin/ /app/bin/
+COPY --from=builder /build/dexforge-cli/build/install/dexforge-cli/lib/ /app/lib/
+
+# Set environment variables
+ENV PATH="/app/bin:${PATH}"
+ENV DEXFORGE_HOME="/app"
+
+# Create a non-root user
+RUN useradd -m -u 1000 dexforge && \
+    chown -R dexforge:dexforge /app /opt/android-sdk
+USER dexforge
+
+# Expose LSP daemon port
+EXPOSE 8080
+# Expose ADB port
+EXPOSE 5037
+
+# Default command
+ENTRYPOINT ["/app/bin/dexforge"]
+CMD ["--help"]

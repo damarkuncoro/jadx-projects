@@ -649,7 +649,7 @@ public class Utils {
 
 	/**
 	 * @deprecated env vars shouldn't be used in core modules.
-	 *             Prefer to parse in `app` (use JadxCommonEnv from 'app-commons') and set in jadx args.
+	 *             Prefer to parse in `app` (use DexforgeCommonEnv from 'app-commons') and set in jadx args.
 	 */
 	@Deprecated
 	public static boolean getEnvVarBool(String varName, boolean defValue) {
@@ -662,7 +662,7 @@ public class Utils {
 
 	/**
 	 * @deprecated env vars shouldn't be used in core modules.
-	 *             Prefer to parse in `app` (use JadxCommonEnv from 'app-commons') and set in jadx args.
+	 *             Prefer to parse in `app` (use DexforgeCommonEnv from 'app-commons') and set in jadx args.
 	 */
 	@Deprecated
 	public static int getEnvVarInt(String varName, int defValue) {

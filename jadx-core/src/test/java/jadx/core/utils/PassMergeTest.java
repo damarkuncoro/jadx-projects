@@ -5,11 +5,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import jadx.api.impl.passes.DecompilePassWrapper;
-import jadx.api.plugins.pass.JadxPass;
-import jadx.api.plugins.pass.JadxPassInfo;
-import jadx.api.plugins.pass.impl.OrderedJadxPassInfo;
-import jadx.api.plugins.pass.impl.SimpleJadxPassInfo;
-import jadx.api.plugins.pass.types.JadxDecompilePass;
+import dexforge.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo;
+import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxDecompilePass;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;

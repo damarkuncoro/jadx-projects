@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.google.gson.annotations.SerializedName;
 
-import jadx.cli.LogHelper;
+import dexforge.cli.LogHelper;
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
 import jadx.gui.frida.CustomFridaSnippet;
@@ -29,7 +29,7 @@ import jadx.gui.utils.shortcut.Shortcut;
 /**
  * Data class to hold all jadx-gui settings.
  * Also inherit all options from jadx-cli.
- * Serialized/deserialized as JSON in {@link jadx.cli.config.JadxConfigAdapter}.
+ * Serialized/deserialized as JSON in {@link dexforge.cli.config.DexforgeConfigAdapter}.
  * Annotation {@link JadxConfigExcludeExport} used to exclude environment (files, window states)
  * fields from copy/export.
  */

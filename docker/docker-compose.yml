@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  dexforge:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: dexforge:latest
+    container_name: dexforge
+    volumes:
+      - ../:/workspace
+      - dexforge-cache:/home/dexforge/.cache
+      - dexforge-config:/home/dexforge/.config
+    working_dir: /workspace
+    ports:
+      - "8080:8080"
+    environment:
+      - DEXFORGE_HOME=/app
+    command: ["--help"]
+    restart: unless-stopped
+
+  dexforge-lsp:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: dexforge:latest
+    container_name: dexforge-lsp
+    volumes:
+      - ../:/workspace
+      - dexforge-cache:/home/dexforge/.cache
+      - dexforge-config:/home/dexforge/.config
+    working_dir: /workspace
+    ports:
+      - "8080:8080"
+    environment:
+      - DEXFORGE_HOME=/app
+    command: ["lsp", "--port", "8080"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  dexforge-frida:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frida
+    image: dexforge:frida
+    container_name: dexforge-frida
+    volumes:
+      - ../:/workspace
+      - dexforge-cache:/home/dexforge/.cache
+      - dexforge-config:/home/dexforge/.config
+      - dexforge-frida-cache:/home/dexforge/.frida
+    working_dir: /workspace
+    ports:
+      - "8080:8080"
+    environment:
+      - DEXFORGE_HOME=/app
+      - FRIDA_HOME=/app/.frida
+    command: ["lsp", "--port", "8080"]
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp=unconfined
+
+  dexforge-android:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.android-sdk
+    image: dexforge:android-sdk
+    container_name: dexforge-android
+    volumes:
+      - ../:/workspace
+      - dexforge-cache:/home/dexforge/.cache
+      - dexforge-config:/home/dexforge/.config
+      - /var/run/adb.sock:/var/run/adb.sock
+    working_dir: /workspace
+    ports:
+      - "8080:8080"
+      - "5037:5037"
+    environment:
+      - DEXFORGE_HOME=/app
+      - ANDROID_SDK_ROOT=/opt/android-sdk
+      - ANDROID_HOME=/opt/android-sdk
+    command: ["lsp", "--port", "8080"]
+    restart: unless-stopped
+    privileged: true
+
+volumes:
+  dexforge-cache:
+    name: dexforge-cache
+  dexforge-config:
+    name: dexforge-config
+  dexforge-frida-cache:
+    name: dexforge-frida-cache

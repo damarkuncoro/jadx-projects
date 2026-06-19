@@ -37,7 +37,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.commons.app.DexforgeSystemInfo;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.device.adb.ADB;
@@ -207,7 +207,7 @@ public class ADBDialog extends JDialog implements ADB.DeviceStateListener, ADB.J
 	}
 
 	private void detectADBPath() {
-		boolean isWinOS = JadxSystemInfo.IS_WINDOWS;
+		boolean isWinOS = DexforgeSystemInfo.IS_WINDOWS;
 		String slash = isWinOS ? "\\" : "/";
 		String adbName = isWinOS ? "adb.exe" : "adb";
 		String sdkPath = System.getenv("ANDROID_HOME");

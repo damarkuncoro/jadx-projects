@@ -1,4 +1,4 @@
-package jadx.api.plugins.options;
+package dexforge.api.plugins.options;
 
 import java.util.List;
 import java.util.Map;

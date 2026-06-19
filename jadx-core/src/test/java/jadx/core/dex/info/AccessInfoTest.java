@@ -2,7 +2,7 @@ package jadx.core.dex.info;
 
 import org.junit.jupiter.api.Test;
 
-import jadx.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.AccessFlags;
 import jadx.core.dex.info.AccessInfo.AFType;
 
 import static jadx.tests.api.utils.assertj.JadxAssertions.assertThat;

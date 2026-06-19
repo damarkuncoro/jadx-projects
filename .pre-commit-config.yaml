@@ -1,0 +1,113 @@
+# DexForge Pre-commit Hooks Configuration
+# Install: pip install pre-commit && pre-commit install
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.41.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+        files: \.(md|markdown)$
+
+  # Gradle Kotlin DSL formatting
+  - repo: https://github.com/diffplug/spotless-pre-commit
+    rev: v4.1.1
+    hooks:
+      - id: spotless-kotlin-gradle
+        args: [--spotless-kotlin-gradle]
+
+  # Java formatting (Google Java Format)
+  - repo: https://github.com/google/yapf
+    rev: master
+    hooks:
+      - id: yapf
+        files: \.py$
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.0
+    hooks:
+      - id: shellcheck
+
+  # YAML formatting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: [--format, parsable, --strict]
+
+  # Check for debug statements
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.59.1
+    hooks:
+      - id: golangci-lint
+        files: \.go$
+
+  # Commit message linting
+  - repo: https://github.com/compilerla/conventional-pre-commit-linter
+    rev: v2.4.0
+    hooks:
+      - id: conventional-pre-commit-linter
+        stages: [commit-msg]
+
+  # Detect secrets
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: package-lock.json|yarn.lock
+
+  # Check for merge conflict markers
+  - repo: https://github.com/compilerla/conventional-pre-commit-linter
+    rev: v2.4.0
+    hooks:
+      - id: check-merge-conflict
+
+  # Gradle wrapper validation
+  - repo: local
+    hooks:
+      - id: gradle-wrapper-validation
+        name: Validate Gradle Wrapper
+        entry: bash -c 'test -f gradle/wrapper/gradle-wrapper.jar && echo "Gradle wrapper JAR exists" || (echo "Gradle wrapper JAR missing!" && exit 1)'
+        language: system
+        pass_filenames: []
+
+  # Check for TODO/FIXME comments
+  - repo: local
+    hooks:
+      - id: check-todos
+        name: Check for TODOs
+        entry: bash -c 'grep -rn "TODO\|FIXME\|XXX\|HACK" --include="*.java" --include="*.kt" --include="*.js" --include="*.ts" || true'
+        language: system
+        pass_filenames: []
+        verbose: true
+
+  # Verify .env.example is up to date
+  - repo: local
+    hooks:
+      - id: check-env-example
+        name: Check .env.example exists
+        entry: bash -c 'test -f .env.example && echo ".env.example exists" || (echo ".env.example missing!" && exit 1)'
+        language: system
+        pass_filenames: []

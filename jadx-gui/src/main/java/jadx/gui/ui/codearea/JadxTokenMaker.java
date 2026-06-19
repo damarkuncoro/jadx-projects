@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import jadx.api.JavaClass;
 import jadx.api.JavaNode;
 
-import static jadx.api.plugins.utils.Utils.constSet;
+import static dexforge.api.plugins.utils.Utils.constSet;
 
 public final class JadxTokenMaker extends JavaTokenMaker {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxTokenMaker.class);

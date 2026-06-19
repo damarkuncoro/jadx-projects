@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import jadx.api.ResourceFile;
 import jadx.api.ResourceType;
-import jadx.api.plugins.utils.CommonFileUtils;
+import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.api.resources.ResourceContentType;
 import jadx.api.utils.CodeUtils;
 import jadx.gui.jobs.Cancelable;

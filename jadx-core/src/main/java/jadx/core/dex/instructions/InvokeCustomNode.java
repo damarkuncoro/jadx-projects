@@ -2,8 +2,8 @@ package jadx.core.dex.instructions;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.input.data.MethodHandleType;
-import jadx.api.plugins.input.insns.InsnData;
+import dexforge.api.plugins.input.data.MethodHandleType;
+import dexforge.api.plugins.input.insns.InsnData;
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.instructions.args.InsnArg;
 import jadx.core.dex.nodes.InsnNode;

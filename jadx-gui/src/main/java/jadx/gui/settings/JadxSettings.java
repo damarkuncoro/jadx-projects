@@ -29,8 +29,8 @@ import jadx.api.args.IntegerFormat;
 import jadx.api.args.ResourceNameSource;
 import jadx.api.args.UseSourceNameAsClassNameAlias;
 import jadx.api.args.UserRenamesMappingsMode;
-import jadx.cli.config.JadxConfigAdapter;
-import jadx.cli.config.JadxConfigExclude;
+import dexforge.cli.config.DexforgeConfigAdapter;
+import dexforge.cli.config.DexforgeConfigExclude;
 import jadx.core.utils.GsonUtils;
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
@@ -52,19 +52,19 @@ public class JadxSettings {
 
 	private static final int RECENT_PROJECTS_COUNT = 30;
 
-	private final JadxConfigAdapter<JadxSettingsData> configAdapter;
+	private final DexforgeConfigAdapter<JadxSettingsData> configAdapter;
 	private final Object dataWriteSync = new Object();
 	private final ShortcutsWrapper shortcutsWrapper = new ShortcutsWrapper();
 	private final FontSettings fontSettings = new FontSettings();
 
 	private JadxSettingsData settingsData;
 
-	public JadxSettings(JadxConfigAdapter<JadxSettingsData> configAdapter) {
+	public JadxSettings(DexforgeConfigAdapter<JadxSettingsData> configAdapter) {
 		this.configAdapter = configAdapter;
 	}
 
-	public static JadxConfigAdapter<JadxSettingsData> buildConfigAdapter() {
-		return new JadxConfigAdapter<>(JadxSettingsData.class, "gui", gsonBuilder -> {
+	public static DexforgeConfigAdapter<JadxSettingsData> buildConfigAdapter() {
+		return new DexforgeConfigAdapter<>(JadxSettingsData.class, "gui", gsonBuilder -> {
 			gsonBuilder.registerTypeHierarchyAdapter(Path.class, PathTypeAdapter.singleton());
 			gsonBuilder.registerTypeHierarchyAdapter(Rectangle.class, RectangleTypeAdapter.singleton());
 		});
@@ -125,7 +125,7 @@ public class JadxSettings {
 				.setExclusionStrategies(new ExclusionStrategy() {
 					@Override
 					public boolean shouldSkipField(FieldAttributes f) {
-						return f.getAnnotation(JadxConfigExclude.class) != null
+						return f.getAnnotation(DexforgeConfigExclude.class) != null
 								|| f.getAnnotation(JadxConfigExcludeExport.class) != null;
 					}
 

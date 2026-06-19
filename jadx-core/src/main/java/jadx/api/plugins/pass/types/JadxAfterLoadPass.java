@@ -1,7 +1,7 @@
-package jadx.api.plugins.pass.types;
+package dexforge.api.plugins.pass.types;
 
 import jadx.api.JadxDecompiler;
-import jadx.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.JadxPass;
 
 public interface JadxAfterLoadPass extends JadxPass {
 	JadxPassType TYPE = new JadxPassType("AfterLoadPass");

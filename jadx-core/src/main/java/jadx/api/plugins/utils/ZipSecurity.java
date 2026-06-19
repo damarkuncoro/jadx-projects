@@ -1,4 +1,4 @@
-package jadx.api.plugins.utils;
+package dexforge.api.plugins.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -12,14 +12,14 @@ import java.util.zip.ZipFile;
 import org.jetbrains.annotations.Nullable;
 
 import jadx.api.JadxDecompiler;
-import jadx.api.plugins.JadxPluginContext;
+import dexforge.api.plugins.JadxPluginContext;
 import jadx.core.utils.Utils;
-import jadx.zip.IZipEntry;
-import jadx.zip.ZipReader;
-import jadx.zip.io.LimitedInputStream;
-import jadx.zip.security.DisabledZipSecurity;
-import jadx.zip.security.IJadxZipSecurity;
-import jadx.zip.security.JadxZipSecurity;
+import dexforge.zip.IZipEntry;
+import dexforge.zip.ZipReader;
+import dexforge.zip.io.LimitedInputStream;
+import dexforge.zip.security.DisabledZipSecurity;
+import dexforge.zip.security.IDexforgeZipSecurity;
+import dexforge.zip.security.DexforgeZipSecurity;
 
 /**
  * Deprecated, migrate to {@link ZipReader}. <br>
@@ -32,15 +32,15 @@ public class ZipSecurity {
 
 	private static final int MAX_ENTRIES_COUNT = Utils.getEnvVarInt("JADX_ZIP_MAX_ENTRIES_COUNT", 100_000);
 
-	private static final IJadxZipSecurity ZIP_SECURITY = buildZipSecurity();
+	private static final IDexforgeZipSecurity ZIP_SECURITY = buildZipSecurity();
 
 	private static final ZipReader ZIP_READER = new ZipReader(ZIP_SECURITY);
 
-	private static IJadxZipSecurity buildZipSecurity() {
+	private static IDexforgeZipSecurity buildZipSecurity() {
 		if (DISABLE_CHECKS) {
 			return DisabledZipSecurity.INSTANCE;
 		}
-		JadxZipSecurity jadxZipSecurity = new JadxZipSecurity();
+		DexforgeZipSecurity jadxZipSecurity = new DexforgeZipSecurity();
 		jadxZipSecurity.setMaxEntriesCount(MAX_ENTRIES_COUNT);
 		return jadxZipSecurity;
 	}

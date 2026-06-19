@@ -2,7 +2,7 @@ package jadx.gui.settings.ui;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-import jadx.api.plugins.gui.ISettingsGroup;
+import dexforge.api.plugins.gui.ISettingsGroup;
 
 public class SettingsTreeNode extends DefaultMutableTreeNode {
 	private final ISettingsGroup group;

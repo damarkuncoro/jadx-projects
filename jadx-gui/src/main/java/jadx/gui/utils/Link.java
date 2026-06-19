@@ -13,7 +13,7 @@ import javax.swing.JTextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.commons.app.DexforgeSystemInfo;
 
 import static java.awt.Desktop.Action;
 
@@ -63,13 +63,13 @@ public class Link extends JLabel {
 			}
 		}
 		try {
-			if (JadxSystemInfo.IS_WINDOWS) {
+			if (DexforgeSystemInfo.IS_WINDOWS) {
 				new ProcessBuilder()
 						.command(new String[] { "rundll32", "url.dll,FileProtocolHandler", url })
 						.start();
 				return;
 			}
-			if (JadxSystemInfo.IS_MAC) {
+			if (DexforgeSystemInfo.IS_MAC) {
 				new ProcessBuilder()
 						.command(new String[] { "open", url })
 						.start();

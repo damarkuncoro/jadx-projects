@@ -1,9 +1,9 @@
 package jadx.gui.events;
 
-import jadx.api.plugins.events.JadxEventType;
+import dexforge.api.plugins.events.JadxEventType;
 import jadx.gui.events.types.TreeUpdate;
 
-import static jadx.api.plugins.events.JadxEventType.create;
+import static dexforge.api.plugins.events.JadxEventType.create;
 
 public class JadxGuiEvents {
 

@@ -1,0 +1,52 @@
+<idea-plugin>
+    <id>com.dexforge.intellij</id>
+    <name>DexForge</name>
+    <version>0.1.0</version>
+    <vendor email="support@dexforge.dev" url="https://github.com/damarkuncoro/jadx-projects">DexForge</vendor>
+
+    <description>
+        <![CDATA[
+        DexForge - Android Reverse Engineering Workbench for IntelliJ IDEA.
+        Decompile APK, DEX, and AAB files directly in your IDE.
+        Powered by JADX.
+        ]]>
+    </description>
+
+    <change-notes>
+        <![CDATA[
+        <h2>DexForge IntelliJ Plugin - Initial Release</h2>
+        <ul>
+            <li>Decompile APK/DEX/JAR files directly in IntelliJ IDEA</li>
+            <li>LSP daemon integration for fast decompilation</li>
+            <li>Device Explorer for ADB-connected Android devices</li>
+            <li>Frida script generation from decompiled code</li>
+        </ul>
+        ]]>
+    </change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="com.dexforge.intellij.services.DexForgeService"/>
+        <projectService serviceImplementation="com.dexforge.intellij.services.LspClientService"/>
+        <projectService serviceImplementation="com.dexforge.intellij.services.DeviceExplorerService"/>
+        <toolWindow id="DexForge" secondary="false" icon="AllIcons.Toolwindows.ToolWindowFavorites" anchor="right" factoryClass="com.dexforge.intellij.ui.DexForgeToolWindowFactory"/>
+        <fileType name="DexForge Decompiled Java" implementationClass="com.dexforge.intellij.filetypes.DexForgeJavaFileType" fieldName="INSTANCE" language="DexForgeJava" extensions="dexforge-java"/>
+        <lang.parserDefinition language="DexForgeJava" implementationClass="com.dexforge.intellij.parser.DexForgeJavaParserDefinition"/>
+    </extensions>
+
+    <actions>
+        <group id="DexForge.MainMenu" text="DexForge" description="DexForge menu">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="DexForge.DecompileFile" class="com.dexforge.intellij.actions.DecompileFileAction" text="Decompile APK/DEX/JAR" description="Decompile an Android file"/>
+            <action id="DexForge.StartDaemon" class="com.dexforge.intellij.actions.StartDaemonAction" text="Start Decompiler Daemon" description="Start the DexForge LSP daemon"/>
+            <action id="DexForge.DeviceExplorer" class="com.dexforge.intellij.actions.DeviceExplorerAction" text="Open Device Explorer" description="Open Android device explorer"/>
+            <action id="DexForge.GenerateFridaHook" class="com.dexforge.intellij.actions.GenerateFridaHookAction" text="Generate Frida Hook" description="Generate Frida hook from selected method"/>
+        </group>
+    </actions>
+
+    <applicationListeners>
+        <listener class="com.dexforge.intellij.listeners.DexForgeStartupListener" topic="com.intellij.openapi.application.ApplicationListener"/>
+    </applicationListeners>
+</idea-plugin>

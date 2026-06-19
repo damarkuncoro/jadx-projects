@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jadx.api.plugins.input.data.IDebugInfo;
-import jadx.api.plugins.input.data.ILocalVar;
+import dexforge.api.plugins.input.data.IDebugInfo;
+import dexforge.api.plugins.input.data.ILocalVar;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.nodes.LocalVarsDebugInfoAttr;
 import jadx.core.dex.attributes.nodes.RegDebugInfoAttr;

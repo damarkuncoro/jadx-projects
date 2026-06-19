@@ -16,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.plugins.events.types.ReloadProject;
+import dexforge.api.plugins.events.types.ReloadProject;
 import jadx.core.utils.ListUtils;
 import jadx.core.utils.Utils;
 import jadx.gui.cache.manager.CacheManager;

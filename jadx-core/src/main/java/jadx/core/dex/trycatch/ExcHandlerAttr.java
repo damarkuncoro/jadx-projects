@@ -1,6 +1,6 @@
 package jadx.core.dex.trycatch;
 
-import jadx.api.plugins.input.data.attributes.IJadxAttribute;
+import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import jadx.core.dex.attributes.AType;
 
 public class ExcHandlerAttr implements IJadxAttribute {

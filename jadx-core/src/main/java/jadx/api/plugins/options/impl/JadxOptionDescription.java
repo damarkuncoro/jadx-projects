@@ -1,4 +1,4 @@
-package jadx.api.plugins.options.impl;
+package dexforge.api.plugins.options.impl;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.plugins.options.OptionDescription;
-import jadx.api.plugins.options.OptionFlag;
-import jadx.api.plugins.options.OptionType;
+import dexforge.api.plugins.options.OptionDescription;
+import dexforge.api.plugins.options.OptionFlag;
+import dexforge.api.plugins.options.OptionType;
 
 public class JadxOptionDescription implements OptionDescription {
 

@@ -1,4 +1,4 @@
-package jadx.api.plugins.events;
+package dexforge.api.plugins.events;
 
 import java.util.function.Consumer;
 

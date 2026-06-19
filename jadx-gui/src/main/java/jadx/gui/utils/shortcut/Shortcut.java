@@ -8,7 +8,7 @@ import java.util.Set;
 
 import javax.swing.KeyStroke;
 
-import jadx.commons.app.JadxSystemInfo;
+import dexforge.commons.app.DexforgeSystemInfo;
 
 public class Shortcut {
 	private static final Set<Integer> FORBIDDEN_KEY_CODES = new HashSet<>(List.of(
@@ -88,7 +88,7 @@ public class Shortcut {
 	public KeyStroke toKeyStroke() {
 		return isKeyboard()
 				? KeyStroke.getKeyStroke(keyCode, modifiers,
-						modifiers != 0 && JadxSystemInfo.IS_MAC)
+						modifiers != 0 && DexforgeSystemInfo.IS_MAC)
 				: null;
 	}
 

@@ -18,8 +18,8 @@ import jadx.api.JadxDecompiler;
 import jadx.api.impl.NoOpCodeCache;
 import jadx.api.impl.SimpleCodeWriter;
 import jadx.api.usage.impl.EmptyUsageInfoCache;
-import jadx.cli.LogHelper;
-import jadx.cli.plugins.JadxFilesGetter;
+import dexforge.cli.LogHelper;
+import dexforge.cli.plugins.DexforgeFilesGetter;
 import jadx.gui.device.api.AndroidPackage;
 import jadx.gui.device.api.AndroidUser;
 import jadx.gui.device.api.ApkPath;
@@ -309,7 +309,7 @@ public class DeviceExplorerCLI {
 		jadxArgs.setReplaceConsts(false);
 
 		jadxArgs.setPluginLoader(new JadxExternalPluginsLoader());
-		jadxArgs.setFilesGetter(JadxFilesGetter.INSTANCE);
+		jadxArgs.setFilesGetter(DexforgeFilesGetter.INSTANCE);
 		jadxArgs.setCodeCache(new NoOpCodeCache());
 		jadxArgs.setUsageInfoCache(new EmptyUsageInfoCache());
 		jadxArgs.setCodeWriterProvider(SimpleCodeWriter::new);
