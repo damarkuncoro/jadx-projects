@@ -19,6 +19,7 @@ COPY dexforge-commons/ dexforge-commons/
 COPY jadx-core/ jadx-core/
 COPY jadx-commons/ jadx-commons/
 COPY jadx-plugins/ jadx-plugins/
+COPY dexforge-plugins-tools/ dexforge-plugins-tools/
 
 # Build the CLI distribution
 RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
