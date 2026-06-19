@@ -4,6 +4,7 @@ build/
 **/build/
 gradle-app.setting
 !gradle/wrapper/gradle-wrapper.properties
+!gradle/wrapper/gradle-wrapper.jar
 
 # Git
 .git/
