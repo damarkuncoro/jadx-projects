@@ -12,11 +12,11 @@ dependencies {
 	implementation(project(":dexforge-cli"))
 	implementation(project(":dexforge-plugins-tools"))
 	implementation(project(":dexforge-commons:dexforge-app-commons"))
-	implementation(project(":jadx-plugins:dexforge-frida-integration"))
-	implementation(project(":jadx-plugins:dexforge-ad-detector"))
+	implementation(project(":dexforge-plugins:dexforge-frida-integration"))
+	implementation(project(":dexforge-plugins:dexforge-ad-detector"))
 
 	// import mappings
-	implementation(project(":jadx-plugins:dexforge-rename-mappings"))
+	implementation(project(":dexforge-plugins:dexforge-rename-mappings"))
 
 	implementation("org.jcommander:jcommander:2.0")
 	implementation("ch.qos.logback:logback-classic:1.5.21")

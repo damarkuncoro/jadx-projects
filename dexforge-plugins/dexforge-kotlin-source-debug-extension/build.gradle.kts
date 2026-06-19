@@ -15,5 +15,5 @@ dependencies {
 	)
 	testImplementation("org.apache.commons:commons-lang3:3.20.0")
 
-	testRuntimeOnly(project(":jadx-plugins:dexforge-smali-input"))
+	testRuntimeOnly(project(":dexforge-plugins:dexforge-smali-input"))
 }

@@ -34,7 +34,7 @@ DexForge is built on a modular architecture:
 │                    Plugin System                                │
 ├─────────────────────────────────────────────────────────────────┤
 │  dexforge-plugins-tools (loader, registry, resolvers)           │
-│  jadx-plugins/* (input/output plugins)                          │
+│  dexforge-plugins/* (input/output plugins)                          │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼

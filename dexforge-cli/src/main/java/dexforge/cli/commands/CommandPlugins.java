@@ -32,7 +32,7 @@ public class CommandPlugins implements ICommand {
 	@Parameter(names = { "-l", "--list" }, description = "list installed plugins")
 	protected boolean list;
 
-	@Parameter(names = { "-a", "--available" }, description = "list available plugins from jadx-plugins-list (aka marketplace)")
+	@Parameter(names = { "-a", "--available" }, description = "list available plugins from dexforge-plugins-list (aka marketplace)")
 	protected boolean available;
 
 	@Parameter(names = { "-u", "--update" }, description = "update installed plugins")

@@ -5,7 +5,7 @@ plugins {
 dependencies {
 	api(project(":jadx-core"))
 
-	implementation(project(":jadx-plugins:dexforge-dex-input"))
+	implementation(project(":dexforge-plugins:dexforge-dex-input"))
 
 	implementation("com.android.tools.smali:smali:3.0.9") {
 		exclude(group = "com.beust", module = "jcommander") // exclude old jcommander namespace

@@ -6,5 +6,5 @@ plugins {
 dependencies {
 	api(project(":jadx-core"))
 
-	implementation(project(":jadx-plugins:dexforge-dex-input"))
+	implementation(project(":dexforge-plugins:dexforge-dex-input"))
 }

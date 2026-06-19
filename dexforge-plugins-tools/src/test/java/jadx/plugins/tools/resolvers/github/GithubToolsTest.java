@@ -44,7 +44,7 @@ class GithubToolsTest {
 				.body(loadFromResource("plugins-list-good.json"))
 				.build());
 
-		LocationInfo pluginsList = new LocationInfo("jadx-decompiler", "jadx-plugins-list", "list");
+		LocationInfo pluginsList = new LocationInfo("jadx-decompiler", "dexforge-plugins-list", "list");
 		Release release = githubTools.getRelease(pluginsList);
 
 		LOG.info("Result release: {}", release);
@@ -61,7 +61,7 @@ class GithubToolsTest {
 				.body("{}")
 				.build());
 
-		LocationInfo pluginsList = new LocationInfo("jadx-decompiler", "jadx-plugins-list", "list");
+		LocationInfo pluginsList = new LocationInfo("jadx-decompiler", "dexforge-plugins-list", "list");
 		Assertions.assertThatThrownBy(() -> githubTools.getRelease(pluginsList))
 				.hasMessageContaining("403")
 				.hasMessageContaining("Client Error")
