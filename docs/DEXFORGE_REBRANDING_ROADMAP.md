@@ -129,11 +129,14 @@ jadx
 jadx-gui
 ```
 
-- Beberapa fitur baru sudah memakai DexForge naming:
+- Fitur baru sudah memakai DexForge naming:
 
 ```text
 DexForge Device Explorer
 DexForge Layout Viewer
+DexForge Frida Integration
+DexForge CLI
+DexForge GUI
 com.dexforge.layoutviewer
 ```
 
@@ -142,6 +145,13 @@ com.dexforge.layoutviewer
 ```text
 docs/DEXFORGE_REPOSITORIES.md
 ```
+
+- Docker support ditambahkan untuk DexForge CLI.
+- GitHub Actions CI/CD untuk Docker, APK analysis, dan VS Code extension.
+- Dokumentasi LSP Daemon API dan Frida Integration sudah lengkap.
+- Security guidelines dan developer guide sudah ditambahkan.
+- VS Code extension marketplace README sudah dibuat.
+- Pre-commit hooks, CODEOWNERS, CHANGELOG, dan Renovate/Dependabot sudah dikonfigurasi.
 
 ## Target Brand Architecture
 

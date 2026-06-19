@@ -1,0 +1,84 @@
+{
+  "extends": [
+    "config:base",
+    ":semanticCommits",
+    ":automergeMinor",
+    ":automergePatch",
+    ":automergeBranchPush"
+  ],
+  "dependencyDashboard": true,
+  "dependencyDashboardTitle": "Dependency Dashboard",
+  "suppressNotifications": ["prIgnoreNotification"],
+  "rebaseWhen": "behind-base-branch",
+  "labels": ["dependencies"],
+  "assignees": ["damarkuncoro"],
+  "reviewers": ["damarkuncoro"],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "major-update"],
+      "automerge": false
+    },
+    {
+      "matchDepTypes": ["test"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^com\\.diffplug\\.spotless"],
+      "groupName": "spotless",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^com\\.github\\.ben-manes"],
+      "groupName": "gradle-plugins",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^org\\.jcommander"],
+      "groupName": "jcommander",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^ch\\.qos\\.logback"],
+      "groupName": "logback",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^com\\.google\\.code\\.gson"],
+      "groupName": "gson",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^com\\.github\\.spotbugs"],
+      "groupName": "spotbugs",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^org\\.junit"],
+      "groupName": "junit",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^com\\.fasterxml\\.jackson"],
+      "groupName": "jackson",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["^org\\.apache\\.commons"],
+      "groupName": "apache-commons",
+      "automerge": true
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "automerge": false,
+    "labels": ["security", "vulnerability"]
+  },
+  "ignoreDeps": [],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "timezone": "Asia/Jakarta",
+  "schedule": ["before 6am on monday"],
+  "allowPlugins": true
+}

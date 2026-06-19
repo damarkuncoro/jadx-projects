@@ -4,6 +4,8 @@ const DeviceExplorerService = require('./infrastructure/deviceService');
 const LoadApkUseCase = require('./application/loadApk');
 const DecompileClassUseCase = require('./application/decompileClass');
 const DeviceExplorerUseCase = require('./application/deviceExplorer');
+const BinaryDiffUseCase = require('./application/binaryDiff');
+const YaraScanUseCase = require('./application/yaraScan');
 const { decompilerProvider } = require('./presentation/contentProvider');
 
 /** @type {LspClientManager | null} */
@@ -31,6 +33,8 @@ function activate(context) {
     const loadApkUseCase = new LoadApkUseCase(lspClientManager, outputChannel);
     const decompileClassUseCase = new DecompileClassUseCase(lspClientManager, decompilerProvider, outputChannel);
     const deviceExplorerUseCase = new DeviceExplorerUseCase(deviceService, lspClientManager, outputChannel);
+    const binaryDiffUseCase = new BinaryDiffUseCase(lspClientManager, outputChannel);
+    const yaraScanUseCase = new YaraScanUseCase(lspClientManager, outputChannel);
 
     // 3. Register Presentation / Content Providers
     let providerDisposable = vscode.workspace.registerTextDocumentContentProvider('dexforge', decompilerProvider);
@@ -56,6 +60,16 @@ function activate(context) {
         await decompileClassUseCase.execute(vscode);
     });
     context.subscriptions.push(decompileClassDisposable);
+
+    let binaryDiffDisposable = vscode.commands.registerCommand('dexforge.binaryDiff', async () => {
+        await binaryDiffUseCase.execute(vscode);
+    });
+    context.subscriptions.push(binaryDiffDisposable);
+
+    let yaraScanDisposable = vscode.commands.registerCommand('dexforge.yaraScan', async () => {
+        await yaraScanUseCase.execute(vscode);
+    });
+    context.subscriptions.push(yaraScanDisposable);
 
     // Automatically start decompiler daemon
     lspClientManager.start(vscode);

@@ -2,7 +2,7 @@
 
 ## Ringkasan
 
-DexForge Device Explorer adalah fitur tambahan untuk `jadx-gui` yang memungkinkan pengguna mengambil APK langsung dari perangkat Android melalui ADB, termasuk `base.apk` dan semua split APK, lalu membukanya atau mendecompile otomatis dengan JADX.
+DexForge Device Explorer adalah fitur tambahan untuk `jadx-gui` yang memungkinkan pengguna mengambil APK langsung dari perangkat Android melalui ADB, termasuk `base.apk` dan semua split APK, lalu membukanya atau mendecompile otomatis dengan DexForge.
 
 Target alur utama:
 
@@ -12,7 +12,7 @@ Detect Android device via ADB
   -> user selects a package
   -> resolve base.apk and split APK paths
   -> pull APK files into a workspace
-  -> open or decompile with JADX
+  -> open or decompile with DexForge
 ```
 
 Fitur ini sebaiknya dimulai sebagai helper eksternal yang kecil dan stabil, lalu dipindahkan ke `jadx-gui` setelah perilaku ADB, folder output, dan error handling sudah matang.
@@ -283,7 +283,7 @@ Acceptance criteria:
 - Error unauthorized/offline ditampilkan jelas.
 - Tidak gagal total saat user profile tertentu tidak bisa diakses.
 
-### v0.2 - Integrasi Minimal ke JADX GUI [COMPLETED]
+### v0.2 - Integrasi Minimal ke DexForge GUI [COMPLETED]
 
 Tujuan: pengguna bisa membuka APK dari device langsung dari GUI.
 Status: **Selesai (14 Juni 2026)** - Penambahan `OPEN_DEVICE_EXPLORER` action, lokalisasi, menu, toolbar, dialog Swing `DeviceExplorerDialog` dan penarikan APK latar belakang selesai.
@@ -301,7 +301,7 @@ Acceptance criteria:
 
 - UI tidak freeze selama ADB command berjalan.
 - Pull progress dan error tampil di dialog.
-- APK yang sudah di-pull bisa langsung dibuka sebagai input JADX.
+- APK yang sudah di-pull bisa langsung dibuka sebagai input DexForge.
 - Folder workspace bisa dipilih atau memakai default setting.
 
 ### v0.3 - Split APK Inspector [COMPLETED]
@@ -348,7 +348,7 @@ Acceptance criteria:
 
 ### v0.5 - ELF & Binary XML Layout Viewer [COMPLETED]
 
-Tujuan: memberikan kemampuan membuka berkas biner ELF dan berkas layout XML biner Android di JADX GUI secara mulus dan hemat memori.
+Tujuan: memberikan kemampuan membuka berkas biner ELF dan berkas layout XML biner Android di DexForge GUI secara mulus dan hemat memori.
 Status: **Selesai (14 Juni 2026)** - Parsing header ELF 32/64-bit hemat memori (64 byte), tampilan tab Text & Hex untuk `.so`, deteksi XML biner tanpa ekstensi standar via signature magic byte (`0x03 0x00 0x08 0x00`), dan parsing ke teks XML bersih dengan ikon & penyorot sintaksis yang sesuai selesai.
 
 Fitur:
@@ -528,7 +528,7 @@ Fitur dianggap siap untuk dipakai harian jika:
 - GUI tidak freeze selama operasi.
 - Error ADB terbaca manusia.
 - Workspace tersimpan rapi.
-- Hasil pull bisa langsung dibuka di JADX.
+- Hasil pull bisa langsung dibuka di DexForge.
 - Ada test untuk parser dan split classifier.
 - Ada dokumentasi user singkat di README atau docs lanjutan.
 

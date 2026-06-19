@@ -1,0 +1,66 @@
+# DexForge Documentation Site Configuration
+# This file is used by GitHub Pages with Jekyll
+
+title: "DexForge Documentation"
+description: "Android Reverse Engineering Workbench powered by JADX"
+author: "DexForge Team"
+email: "support@dexforge.dev"
+
+# GitHub Pages settings
+url: "https://damarkuncoro.github.io"
+baseurl: "/jadx-projects"
+repository: "damarkuncoro/jadx-projects"
+
+# Theme
+theme: "just-the-docs"
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Navigation
+nav:
+  - Home: "index.md"
+  - Getting Started: "getting-started.md"
+  - CLI Usage: "CLI_USAGE.md"
+  - LSP Daemon API: "LSP_DAEMON_API.md"
+  - Frida Integration: "FRIDA_INTEGRATION.md"
+  - Device Explorer: "DEVICE_EXPLORER_ROADMAP.md"
+  - Layout Viewer: "ANDROID_XML_LAYOUT_VIEWER_ROADMAP.md"
+  - Security: "SECURITY.md"
+  - Developer Guide: "DEVELOPER_GUIDE.md"
+  - Contributing: "CONTRIBUTING.md"
+
+# Search
+search_enabled: true
+search:
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 5
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+
+# Aux links
+aux_links:
+  "DexForge on GitHub":
+    - "https://github.com/damarkuncoro/jadx-projects"
+  "VS Code Extension":
+    - "https://github.com/damarkuncoro/dexforge-vscode"
+
+# Footer
+footer_content: "DexForge is powered by JADX. Licensed under Apache 2.0."
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .github

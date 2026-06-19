@@ -1,0 +1,67 @@
+name: IntelliJ Plugin CI
+
+on:
+  push:
+    branches: [ master, main ]
+    paths:
+      - 'dexforge-intellij/**'
+  pull_request:
+    branches: [ master, main ]
+    paths:
+      - 'dexforge-intellij/**'
+  workflow_dispatch:
+
+jobs:
+  build-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dexforge-intellij
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: dexforge-intellij-plugin
+          path: dexforge-intellij/build/distributions/*.zip
+          retention-days: 30
+
+  verify-plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dexforge-intellij
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Verify plugin
+        run: ./gradlew verifyPlugin

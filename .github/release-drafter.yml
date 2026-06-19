@@ -1,0 +1,42 @@
+name-template: 'DexForge Engine $NEXT_PATCH_VERSION'
+tag-template: 'v$NEXT_PATCH_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'bug'
+      - 'fix'
+  - title: '📚 Documentation'
+    labels:
+      - 'documentation'
+      - 'docs'
+  - title: '🔧 Maintenance'
+    labels:
+      - 'dependencies'
+      - 'devops'
+      - 'refactor'
+  - title: '🔒 Security'
+    labels:
+      - 'security'
+      - 'vulnerability'
+  - title: '🧪 Testing'
+    labels:
+      - 'test'
+      - 'testing'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+template: |
+  ## DexForge Engine $NEXT_PATCH_VERSION
+
+  Powered by JADX.
+
+  ### Highlights
+  $CHANGES
+
+  ### Compatibility
+  - Includes `jadx` and `jadx-gui` aliases for existing workflows.
+  - Internal `jadx.*` packages remain unchanged.
+
+  **Full Changelog**: https://github.com/damarkuncoro/jadx-projects/compare/v$PREVIOUS_TAG...v$NEXT_PATCH_VERSION

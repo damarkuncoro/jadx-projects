@@ -1,0 +1,105 @@
+name: Build Matrix
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [17, 21, 25]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test --no-daemon
+        env:
+          JADX_BUILD_JAVA_VERSION: ${{ matrix.java-version }}
+
+      - name: Run tests
+        run: ./gradlew test --no-daemon
+        env:
+          JADX_BUILD_JAVA_VERSION: ${{ matrix.java-version }}
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: test-results-jdk${{ matrix.java-version }}
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+          retention-days: 7
+
+  build-gui-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build GUI distribution
+        run: ./gradlew :jadx-gui:dist --no-daemon
+        env:
+          JADX_BUILD_JAVA_VERSION: 11
+
+      - name: Upload macOS bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: jadx-gui-macos-${{ github.sha }}
+          path: jadx-gui/build/jadx-gui/
+          retention-days: 14
+
+  build-gui-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: oracle-actions/setup-java@v1
+        with:
+          release: 25
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Build Windows distribution
+        run: ./gradlew distWin --no-daemon
+
+      - name: Upload Windows bundle
+        uses: actions/upload-artifact@v7
+        with:
+          name: jadx-gui-windows-${{ github.sha }}
+          path: jadx-gui/build/jadx-gui-win/
+          retention-days: 14

@@ -1,1 +1,11 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Security Policy
+    url: https://github.com/damarkuncoro/jadx-projects/blob/main/docs/SECURITY.md
+    about: Please read our security policy before reporting security vulnerabilities
+  - name: Documentation
+    url: https://github.com/damarkuncoro/jadx-projects/tree/main/docs
+    about: Read the documentation before opening an issue
+  - name: Discussions
+    url: https://github.com/damarkuncoro/jadx-projects/discussions
+    about: Ask questions and discuss ideas with the community

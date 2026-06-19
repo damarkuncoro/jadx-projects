@@ -1,0 +1,64 @@
+# DexForge with Frida - for dynamic instrumentation
+# Stage 1: Build
+FROM eclipse-temurin:25-jdk AS builder
+
+WORKDIR /build
+
+COPY gradlew .
+COPY gradle/wrapper/gradle-wrapper.properties gradle/wrapper/
+COPY build.gradle.kts .
+COPY settings.gradle.kts settings.gradle.kts
+COPY buildSrc/build.gradle.kts buildSrc/build.gradle.kts
+COPY buildSrc/src/main/kotlin/ buildSrc/src/main/kotlin/
+
+COPY dexforge-cli/ dexforge-cli/
+COPY dexforge-commons/ dexforge-commons/
+COPY jadx-core/ jadx-core/
+COPY jadx-commons/ jadx-commons/
+COPY jadx-plugins/ jadx-plugins/
+
+RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
+
+# Stage 2: Runtime with Frida
+FROM eclipse-temurin:25-jre-slim
+
+LABEL maintainer="DexForge <https://github.com/damarkuncoro/jadx-projects>"
+LABEL description="DexForge CLI with Frida - Android reverse engineering workbench"
+LABEL version="frida"
+
+# Install Frida and dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash \
+    curl \
+    wget \
+    xz-utils \
+    python3 \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Frida tools
+RUN pip3 install frida-tools
+
+WORKDIR /app
+
+# Copy distribution from builder
+COPY --from=builder /build/dexforge-cli/build/install/dexforge-cli/bin/ /app/bin/
+COPY --from=builder /build/dexforge-cli/build/install/dexforge-cli/lib/ /app/lib/
+
+# Set environment variables
+ENV PATH="/app/bin:${PATH}"
+ENV DEXFORGE_HOME="/app"
+ENV FRIDA_HOME="/app/.frida"
+
+# Create a non-root user
+RUN useradd -m -u 1000 dexforge && \
+    mkdir -p /app/.frida && \
+    chown -R dexforge:dexforge /app
+USER dexforge
+
+# Expose LSP daemon port
+EXPOSE 8080
+
+# Default command
+ENTRYPOINT ["/app/bin/dexforge"]
+CMD ["--help"]

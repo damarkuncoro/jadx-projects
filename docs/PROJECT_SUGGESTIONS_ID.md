@@ -4,12 +4,12 @@
 
 Proyek DexForge sekarang memiliki modul `jadx-frida-integration` yang mengintegrasikan fungsi runtime hooking dan tracing menggunakan **Frida**! Dengan fitur ini, kamu bisa:
 - Generate script Frida langsung dari method yang dipilih di DexForge GUI (klik kanan method → "Generate Frida Hook Script")
-- Menggunakan panel Frida di JADX GUI untuk mengedit dan menjalankan script
+- Menggunakan panel Frida di DexForge GUI untuk mengedit dan menjalankan script
 - Akses snippet predefined untuk tugas umum seperti bypass SSL pinning, bypass root detection, dll.
 - Dukung multi-platform: Android, iOS, Linux, macOS, Windows
 
 ### Cara Menggunakan:
-1. Decompile APK/app target di JADX GUI
+1. Decompile APK/app target di DexForge GUI
 2. Pilih method yang ingin dihook, klik kanan → pilih "Generate Frida Hook Script"
 3. Panel Frida akan terbuka dengan script yang sudah di-generate
 4. (Opsional) Pilih snippet predefined dari dropdown

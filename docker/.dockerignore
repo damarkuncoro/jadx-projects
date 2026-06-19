@@ -1,0 +1,35 @@
+# Gradle
+.gradle/
+build/
+**/build/
+gradle-app.setting
+!gradle/wrapper/gradle-wrapper.properties
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (not needed in image)
+*.md
+docs/
+
+# Tests
+**/src/test/
+**/src/integrationTest/
+
+# CI
+.github/
+
+# Misc
+*.log
+*.tmp
+.env

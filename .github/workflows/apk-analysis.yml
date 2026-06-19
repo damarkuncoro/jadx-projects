@@ -1,0 +1,148 @@
+name: APK Analysis
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+    inputs:
+      apk_url:
+        description: 'URL to APK file for analysis'
+        required: false
+        type: string
+      apk_path:
+        description: 'Path to APK file in repository'
+        required: false
+        type: string
+
+jobs:
+  analyze-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Download APK
+        run: |
+          if [ -n "${{ github.event.inputs.apk_url }}" ]; then
+            curl -L -o target.apk "${{ github.event.inputs.apk_url }}"
+          elif [ -n "${{ github.event.inputs.apk_path }}" ]; then
+            cp "${{ github.event.inputs.apk_path }}" target.apk
+          elif [ -f "sample.apk" ]; then
+            cp sample.apk target.apk
+          else
+            echo "No APK provided, skipping analysis"
+            exit 0
+          fi
+          ls -lh target.apk
+
+      - name: Build DexForge
+        run: ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
+        env:
+          JADX_BUILD_JAVA_VERSION: 11
+
+      - name: Run APK Analysis
+        run: |
+          ./dexforge-cli/build/install/dexforge-cli/bin/dexforge deobfuscate target.apk -o analysis-output/
+        continue-on-error: true
+
+      - name: Upload Analysis Results
+        uses: actions/upload-artifact@v7
+        with:
+          name: apk-analysis-${{ github.sha }}
+          path: analysis-output/
+          retention-days: 30
+
+      - name: Generate Analysis Report
+        run: |
+          echo "# APK Analysis Report" > analysis-report.md
+          echo "" >> analysis-report.md
+          echo "## File Information" >> analysis-report.md
+          echo "- **SHA:** ${{ github.sha }}" >> analysis-report.md
+          echo "- **Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> analysis-report.md
+          echo "- **APK Size:** $(du -h target.apk | cut -f1)" >> analysis-report.md
+          echo "" >> analysis-report.md
+          echo "## Analysis Output" >> analysis-report.md
+          echo "See attached artifact for full decompiled output." >> analysis-report.md
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v7
+        with:
+          name: apk-report-${{ github.sha }}
+          path: analysis-report.md
+          retention-days: 30
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: analyze-apk
+    if: success() || failure()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Download Analysis Results
+        uses: actions/download-artifact@v8
+        with:
+          name: apk-analysis-${{ github.sha }}
+          path: analysis-output/
+
+      - name: Run Security Pattern Scan
+        run: |
+          echo "## Security Pattern Scan" > security-scan.md
+          echo "" >> security-scan.md
+
+          # Check for hardcoded secrets
+          echo "### Hardcoded Secrets Check" >> security-scan.md
+          if grep -r -i "password\|secret\|api_key\|token" analysis-output/ --include="*.java" | head -20; then
+            echo "⚠️ Potential hardcoded secrets found" >> security-scan.md
+          else
+            echo "✅ No obvious hardcoded secrets detected" >> security-scan.md
+          fi
+
+          # Check for debug flags
+          echo "" >> security-scan.md
+          echo "### Debug Configuration Check" >> security-scan.md
+          if grep -r "android:debuggable" analysis-output/ --include="*.xml" | head -5; then
+            echo "⚠️ Debuggable flag found in manifest" >> security-scan.md
+          else
+            echo "✅ No debuggable flag detected" >> security-scan.md
+          fi
+
+          # Check for network security config
+          echo "" >> security-scan.md
+          echo "### Network Security Check" >> security-scan.md
+          if grep -r "cleartextTraffic" analysis-output/ --include="*.xml" | head -5; then
+            echo "⚠️ Cleartext traffic may be allowed" >> security-scan.md
+          else
+            echo "✅ No cleartext traffic configuration found" >> security-scan.md
+          fi
+
+          # Count classes and methods
+          echo "" >> security-scan.md
+          echo "### Code Metrics" >> security-scan.md
+          CLASS_COUNT=$(find analysis-output/ -name "*.java" | wc -l)
+          echo "- **Java Classes:** $CLASS_COUNT" >> security-scan.md
+          METHOD_COUNT=$(grep -r "public\|private\|protected" analysis-output/ --include="*.java" | wc -l)
+          echo "- **Methods/Fields:** $METHOD_COUNT" >> security-scan.md
+
+      - name: Upload Security Scan
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-scan-${{ github.sha }}
+          path: security-scan.md
+          retention-days: 30
