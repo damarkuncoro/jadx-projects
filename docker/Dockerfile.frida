@@ -5,6 +5,7 @@ FROM eclipse-temurin:25-jdk AS builder
 WORKDIR /build
 
 COPY gradlew .
+COPY gradle/wrapper/gradle-wrapper.jar gradle/wrapper/
 COPY gradle/wrapper/gradle-wrapper.properties gradle/wrapper/
 COPY build.gradle.kts .
 COPY settings.gradle.kts settings.gradle.kts
