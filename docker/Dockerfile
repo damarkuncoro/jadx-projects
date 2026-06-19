@@ -4,23 +4,8 @@ FROM eclipse-temurin:25-jdk AS builder
 
 WORKDIR /build
 
-# Copy Gradle wrapper and build files
-COPY gradlew .
-COPY gradle/wrapper/gradle-wrapper.jar gradle/wrapper/
-COPY gradle/wrapper/gradle-wrapper.properties gradle/wrapper/
-COPY build.gradle.kts .
-COPY settings.gradle.kts settings.gradle.kts
-COPY buildSrc/build.gradle.kts buildSrc/build.gradle.kts
-COPY buildSrc/src/main/kotlin/ buildSrc/src/main/kotlin/
-
-# Copy all subprojects
-COPY dexforge-cli/ dexforge-cli/
-COPY dexforge-commons/ dexforge-commons/
-COPY jadx-core/ jadx-core/
-COPY jadx-commons/ jadx-commons/
-COPY jadx-plugins/ jadx-plugins/
-COPY dexforge-plugins-tools/ dexforge-plugins-tools/
-COPY jadx-gui/ jadx-gui/
+# Copy entire project (excluding .dockerignore patterns)
+COPY . .
 
 # Build the CLI distribution
 RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon

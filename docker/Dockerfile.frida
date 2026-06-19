@@ -12,13 +12,7 @@ COPY settings.gradle.kts settings.gradle.kts
 COPY buildSrc/build.gradle.kts buildSrc/build.gradle.kts
 COPY buildSrc/src/main/kotlin/ buildSrc/src/main/kotlin/
 
-COPY dexforge-cli/ dexforge-cli/
-COPY dexforge-commons/ dexforge-commons/
-COPY jadx-core/ jadx-core/
-COPY jadx-commons/ jadx-commons/
-COPY jadx-plugins/ jadx-plugins/
-COPY dexforge-plugins-tools/ dexforge-plugins-tools/
-COPY jadx-gui/ jadx-gui/
+COPY . .
 
 RUN ./gradlew :dexforge-cli:installShadowDist -x test --no-daemon
 
