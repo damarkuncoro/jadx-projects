@@ -1,0 +1,79 @@
+name: Package Linux (.deb/.rpm)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+env:
+  PACKAGE_NAME: 'dexforge'
+
+jobs:
+  build-linux-packages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Set version
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const jadxVersion = context.ref.split('/').pop().substring(1)
+            core.exportVariable('JADX_VERSION', jadxVersion);
+
+      - name: Build distribution
+        run: ./gradlew dist
+
+      - name: Extract DexForge bundle
+        run: |
+          unzip -q build/dexforge-engine-${{ env.JADX_VERSION }}.zip -d build/dexforge-engine-expanded
+
+      - name: Create Debian package structure
+        run: |
+          mkdir -p build/dexforge-deb/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}
+          mkdir -p build/dexforge-deb/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}/usr/bin
+          mkdir -p build/dexforge-deb/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}/usr/share/applications
+          
+          cp -r build/dexforge-engine-expanded/* build/dexforge-deb/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}/.
+          
+          # Create launcher script
+          cat > build/dexforge-deb/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}/usr/bin/dexforge << 'EOF'
+          #!/bin/bash
+          DIR="$(cd "$(dirname "$0")/../../share/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}" && pwd)"
+          exec java -XX:+IgnoreUnrecognizedVMOptions -Xms256M -XX:MaxRAMPercentage=70.0 -Djdk.util.zip.disableZip64ExtraFieldValidation=true --enable-native-access=ALL-UNNAMED -cp "$DIR/lib/dexforge-cli-${{ env.JADX_VERSION }}-all.jar" dexforge.cli.DexforgeCLI "$@"
+          EOF
+          
+          chmod +x build/dexforge-deb/${{ env.PACKAGE_NAME }}/${{ env.JADX_VERSION }}/usr/bin/dexforge
+
+      - name: Build Debian package
+        run: |
+          cd build/dexforge-deb/${{ env.PACKAGE_NAME }}
+          dpkg-deb --build ${{ env.JADX_VERSION }} ../../dexforge_${{ env.JADX_VERSION }}_amd64.deb
+
+      - name: Upload Debian package
+        uses: actions/upload-artifact@v7
+        with:
+          name: dexforge-linux-deb
+          path: build/dexforge_${{ env.JADX_VERSION }}_amd64.deb
+
+  release-linux:
+    needs: build-linux-packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dexforge-linux-deb
+          path: build
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          files: build/dexforge_*.deb
