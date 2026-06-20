@@ -795,7 +795,7 @@ Tasks in progress:
 - [x] PATH installation scripts (Linux/macOS + Windows)
 - [x] Migration guide for JADX users
 - [x] Linux packaging workflow (.deb)
-- [x] Java 11 compatibility fix (toplisted collectors)
+- [x] Java 11 compatibility fixes (all `.toList()` replaced)
 - [ ] Windows installer (.msi)
 - [ ] macOS app bundle (.dmg)
 - [ ] Release announcement and marketing materials
