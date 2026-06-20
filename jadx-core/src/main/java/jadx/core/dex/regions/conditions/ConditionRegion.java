@@ -2,7 +2,6 @@ package jadx.core.dex.regions.conditions;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +72,7 @@ public abstract class ConditionRegion extends AbstractRegion implements IConditi
 	 */
 	public void updateCondition(IfInfo info) {
 		this.condition = info.getCondition();
-		this.conditionBlocks = info.getMergedBlocks().collect(Collectors.toList());
+		this.conditionBlocks = info.getMergedBlocks().toList();
 	}
 
 	public void updateCondition(IfCondition condition, List<BlockNode> conditionBlocks) {
