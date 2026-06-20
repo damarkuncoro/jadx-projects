@@ -104,63 +104,17 @@ Dengan strategi ini:
 
 ## Current State
 
-Yang sudah ada:
+Yang sudah ada di repo ini:
 
-- README sudah memperkenalkan **DexForge Engine**.
-- Distribution task menghasilkan artifact seperti:
-
-```text
-dexforge-engine-<version>.zip
-dexforge-gui-<version>-win.zip
-dexforge-gui-<version>-with-jre-win.zip
-```
-
-- Binary alias sudah diarahkan:
-
-```text
-dexforge
-dexforge-gui
-```
-
-- Compatibility binary masih tersedia:
-
-```text
-jadx
-jadx-gui
-```
-
-- Fitur baru sudah memakai DexForge naming:
-
-```text
-DexForge Device Explorer
-DexForge Layout Viewer
-DexForge Frida Integration
-DexForge CLI
-DexForge GUI
-com.dexforge.layoutviewer
-```
-
-- `dexforge-core` sudah ditambahkan sebagai lapisan aplikasi/domain DexForge:
-
-```text
-dexforge-core/application    - use cases, request/result models
-dexforge-core/ports          - engine/session/progress ports
-dexforge-core/infrastructure - adapters, termasuk adapter ke jadx-core
-```
-
-- Decompile orchestration dan single-class decompile action mulai dipindahkan dari `dexforge-cli` ke `dexforge-core`.
-- Repo split sudah dijelaskan di:
-
-```text
-docs/DEXFORGE_REPOSITORIES.md
-```
-
-- Docker support ditambahkan untuk DexForge CLI.
-- GitHub Actions CI/CD untuk Docker, APK analysis, dan VS Code extension.
-- Dokumentasi LSP Daemon API dan Frida Integration sudah lengkap.
-- Security guidelines dan developer guide sudah ditambahkan.
-- VS Code extension marketplace README sudah dibuat.
-- Pre-commit hooks, CODEOWNERS, CHANGELOG, dan Renovate/Dependabot sudah dikonfigurasi.
+- [x] README title uses DexForge Engine.
+- [x] CLI help uses DexForge branding ("DexForge CLI, powered by JADX").
+- [x] Device Explorer CLI uses DexForge naming (`dexforge device-explorer`).
+- [x] All use cases have unit tests in dexforge-core.
+- [x] Distribution bundle `dexforge-engine-{version}.zip` generated.
+- [x] Compatibility aliases present (`jadx`, `jadx-gui`).
+- [x] Window title uses DexForge GUI.
+- [x] About dialog shows "DexForge GUI, powered by JADX".
+- [x] Desktop entry uses DexForge GUI branding.
 
 ## Target Brand Architecture
 
@@ -817,11 +771,19 @@ Mitigation:
 
 ## Phase 5 - IDE Extensions (In Progress)
 
-- [ ] VS Code extension uses DexForge branding.
+Status: **In Progress** - VS Code extension in separate repository.
+
+Tasks completed:
+- [x] JSON LSP daemon API documented (see LSP_DAEMON_API.md)
+- [x] `dexforge` binary is primary CLI command
+- [x] `dexforge-gui` binary is primary GUI launcher
+- [x] Compatibility aliases maintained (`jadx`, `jadx-gui`)
+- [x] Quick-start guide for IDE integration created (see IDE_INTEGRATION.md)
+
+Tasks remaining:
+- [ ] VS Code extension uses DexForge branding in marketplace.
 - [ ] IntelliJ extension uses DexForge branding.
-- [ ] IDE extensions call `dexforge` binary by default.
-- [ ] IDE settings allow custom engine binary path.
-- [ ] JSON CLI contracts are stable and documented.
+- [ ] Binary availability in PATH post-install scripts.
 
 ## Phase 6 - Public Release (Planned)
 

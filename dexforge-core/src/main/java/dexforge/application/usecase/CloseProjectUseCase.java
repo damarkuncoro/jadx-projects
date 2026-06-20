@@ -2,8 +2,11 @@ package dexforge.application.usecase;
 
 import dexforge.application.port.EventPublisher;
 import dexforge.application.port.ProjectRepository;
+import dexforge.domain.event.DomainEvent;
 import dexforge.domain.model.project.Project;
 import dexforge.domain.model.project.ProjectId;
+
+import java.util.List;
 
 /**
  * Use Case: CloseProjectUseCase
@@ -25,7 +28,10 @@ public class CloseProjectUseCase {
 				.orElseThrow(() -> new ProjectNotOpenException("Project not found: " + projectId));
 
 		project.close();
-		project.getUncommittedEvents().forEach(eventPublisher::publish);
+		List<DomainEvent> events = project.getUncommittedEvents();
+		if (!events.isEmpty()) {
+			eventPublisher.publishAll(events).join();
+		}
 		project.markEventsAsCommitted();
 	}
 }

@@ -1,5 +1,11 @@
 # DexForge Engine
 
+<br/>
+
+<img src="assets/dexforge-hero.png" width="100%" alt="DexForge Hero Banner" />
+
+<br/>
+
 <img src="jadx-gui/src/main/resources/logos/dexforge-logo.svg" width="96" align="right" alt="DexForge logo" />
 
 **DexForge Engine** is an Android reverse engineering workbench powered by the upstream [`skylot/jadx`](https://github.com/skylot/jadx) decompiler.
