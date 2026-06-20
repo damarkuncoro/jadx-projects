@@ -2,6 +2,7 @@ package dexforge.domain.service;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import dexforge.domain.model.project.Project;
 
@@ -25,7 +26,7 @@ public class ProjectService {
 		return project.getModules().stream()
 				.filter(m -> "apk".equals(m.getType()))
 				.map(m -> Path.of(m.getPath()))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	/**

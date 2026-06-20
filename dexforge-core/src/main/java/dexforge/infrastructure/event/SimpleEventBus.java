@@ -2,6 +2,7 @@ package dexforge.infrastructure.event;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,7 @@ public class SimpleEventBus implements EventBusPort {
 
 		List<CompletableFuture<Void>> futures = events.stream()
 				.map(this::publish)
-				.toList();
+				.collect(Collectors.toList());
 
 		return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 	}
