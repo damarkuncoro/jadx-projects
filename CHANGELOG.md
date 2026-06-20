@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [dev] - 2026-06
+## [v1.5.8-alpha] - 2026-06
 
 ### Added
 - DexForge rebranding: Primary CLI/GUI binaries (`dexforge`, `dexforge-gui`)
@@ -35,6 +35,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - SearchCodeUseCaseTest
   - ListPackagesUseCaseTest
   - ListDevicesUseCaseTest
+
+## [v0.6.0-dev] - 2026-06
+
+### Added
+- PATH installation scripts (`scripts/install-to-path.sh`, `install-to-path.bat`)
+- Release notes template (`RELEASE_TEMPLATE.md`)
+- Migration guide for JADX users (`docs/MIGRATION_GUIDE.md`)
 
 ---
 
