@@ -20,7 +20,7 @@ jobs:
         with:
           release: 25
 
-      - name: Set jadx version
+      - name: Set DexForge version
         uses: actions/github-script@v9
         with:
           script: |
@@ -36,8 +36,8 @@ jobs:
       - name: Save JRE bundle artifact
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ format('jadx-gui-{0}-with-jre-win', env.JADX_VERSION) }}
-          path: ${{ format('build/distWinWithJre/jadx-gui-{0}-with-jre-win.zip', env.JADX_VERSION) }}
+          name: ${{ format('dexforge-gui-{0}-with-jre-win', env.JADX_VERSION) }}
+          path: ${{ format('build/distWinWithJre/dexforge-gui-{0}-with-jre-win.zip', env.JADX_VERSION) }}
           if-no-files-found: error
           retention-days: 1
 
@@ -53,7 +53,7 @@ jobs:
           distribution: temurin
           java-version: 25
 
-      - name: Set jadx version and release name
+      - name: Set DexForge version and release name
         uses: actions/github-script@v9
         with:
           script: |
@@ -71,16 +71,16 @@ jobs:
       - name: Download Windows JRE bundle
         uses: actions/download-artifact@v8
         with:
-          name: ${{ format('jadx-gui-{0}-with-jre-win', env.JADX_VERSION) }}
-          path: ${{ format('build/jadx-gui-{0}-with-jre-win', env.JADX_VERSION) }}
+          name: ${{ format('dexforge-gui-{0}-with-jre-win', env.JADX_VERSION) }}
+          path: ${{ format('build/dexforge-gui-{0}-with-jre-win', env.JADX_VERSION) }}
 
       - run: |
           cd build
           pwd
           ls -l
-          ls jadx-gui-*-with-jre-win
-          mv jadx-gui-*-with-jre-win/jadx-gui-*-with-jre-win.zip .
-          mv distWin/jadx-gui-*-win.zip .
+          ls dexforge-gui-*-with-jre-win
+          mv dexforge-gui-*-with-jre-win/dexforge-gui-*-with-jre-win.zip .
+          mv distWin/dexforge-gui-*-win.zip .
           ls -l *.zip
 
       - name: Release
@@ -89,4 +89,7 @@ jobs:
           name: ${{ env.JADX_VERSION }}
           draft: true
           fail_on_unmatched_files: true
-          files: build/jadx-*.zip
+          files: |
+            build/dexforge-engine-${{ env.JADX_VERSION }}.zip
+            build/dexforge-gui-${{ env.JADX_VERSION }}-win.zip
+            build/dexforge-gui-${{ env.JADX_VERSION }}-with-jre-win.zip
