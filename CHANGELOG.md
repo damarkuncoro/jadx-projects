@@ -1,72 +1,53 @@
-# Changelog
+# DexForge Engine Changelog
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [dev] - 2026-06
 
 ### Added
-- Docker support for DexForge CLI with multi-stage builds
-- GitHub Actions workflow for automated Docker image builds and pushes
-- GitHub Actions workflow for automated APK analysis with security pattern scanning
-- GitHub Actions workflow for VS Code extension CI/CD
-- Comprehensive LSP Daemon API documentation
-- Enhanced Frida Integration documentation
-- Security guidelines for Frida usage
-- Docker Compose configuration for easier container management
-- Pre-commit hooks configuration for code quality
-- `.env.example` template for build configuration
-- `justfile` for development workflow automation
-- VS Code extension marketplace README
+- DexForge rebranding: Primary CLI/GUI binaries (`dexforge`, `dexforge-gui`)
+- Compatibility aliases: `jadx` and `jadx-gui` for backward compatibility
+- Clean Architecture layer in `dexforge-core/`:
+  - Domain models: Project, Device, SourceFile, SearchQuery, CodeAnalysis
+  - Application use cases: OpenProjectUseCase, CloseProjectUseCase, SearchCodeUseCase, etc.
+  - Infrastructure adapters: JadxProjectRepositoryAdapter, SimpleEventPublisher
+- IDE Integration Quick Start guide (`docs/IDE_INTEGRATION.md`)
+- Hero banner and logo images in README
+
+### Fixed
+- SwingNotificationAdapter: Added missing `notifyInfo()` and `notifyProgress()` methods
+- ExportReportUseCase: Added missing ProjectRepository import
+- PullAndDecompileUseCase: Removed undefined PullException reference
 
 ### Changed
-- Updated CONTRIBUTING.md with good first issue guidance and development setup instructions
+- Window title displays "DexForge GUI" instead of "jadx-gui"
+- About dialog shows "DexForge GUI, powered by JADX"
+- CLI help banner displays "DexForge CLI, powered by JADX"
+- Desktop entry uses DexForge GUI branding
 
-### Planned
-- Phase 5: IDE Extensions (VS Code and IntelliJ plugins)
-- Phase 6: Public Release with stabilized APIs
-
-## [1.0.0-alpha] - 2024-XX-XX
-
-### Added
-- Initial DexForge rebranding from JADX
-- DexForge CLI with LSP daemon mode
-- DexForge GUI with Swing desktop application
-- Device Explorer for ADB-driven APK extraction
-- Android XML Layout Viewer with visual preview
-- Frida Integration for dynamic instrumentation
-- Build Stack Detection (Flutter, React Native, Unity, etc.)
-- Plugin management system
-- VS Code extension (dexforge-vscode)
-
-### Changed
-- Distribution artifacts renamed to `dexforge-engine-<version>.zip`
-- Binary aliases: `dexforge`, `dexforge-gui`
-- Legacy compatibility aliases: `jadx`, `jadx-gui`
+### Tests
+- Added unit tests for core use cases:
+  - OpenProjectUseCaseTest
+  - CloseProjectUseCaseTest
+  - SearchCodeUseCaseTest
+  - ListPackagesUseCaseTest
+  - ListDevicesUseCaseTest
 
 ---
 
-## Versioning
+## Future Releases
 
-We use [Semantic Versioning](https://semver.org/). Given a version number `MAJOR.MINOR.PATCH`:
+### Phase 5 - IDE Extensions (In Progress)
+- VS Code extension marketplace listing
+- IntelliJ/Android Studio plugin integration
+- Binary PATH installation scripts
 
-- **MAJOR** version for incompatible API changes
-- **MINOR** version for new functionality in a backwards compatible manner
-- **PATCH** version for backwards compatible bug fixes
-
-## Categories
-
-Each version section may include:
-
-- **Added** for new features
-- **Changed** for changes in existing functionality
-- **Deprecated** for soon-to-be removed features
-- **Removed** for now removed features
-- **Fixed** for any bug fixes
-- **Security** in case of vulnerabilities
-
-## Contributing
-
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute.
+### Phase 6 - Public Release (Planned)
+- Windows installer (.msi)
+- Linux packages (.deb, .rpm)
+- macOS app bundle (.dmg)
+- API stability guarantees
+- Migration guide from JADX
