@@ -85,7 +85,7 @@ public class BuildStackDetector {
 				manifest,
 				frameworks,
 				libraryVersions,
-				evidence.stream().sorted().toList());
+				evidence.stream().sorted().collect(Collectors.toList()));
 	}
 
 	/**

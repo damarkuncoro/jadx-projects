@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jadx.gui.buildstack.rules.*;
 
@@ -88,7 +89,7 @@ public class FrameworkRules {
 		}
 		return frameworks.stream()
 				.sorted(Comparator.comparingInt(framework -> FRAMEWORK_ORDER.indexOf(framework.getName())))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	/**
