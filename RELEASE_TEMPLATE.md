@@ -1,63 +1,74 @@
-# DexForge Engine Release Template
+# DexForge Engine Release Notes
 
-## DexForge Engine {version}
+## DexForge Engine v0.6.0-dev
 
 **Powered by JADX**
 
 ### Highlights
 
-- [ ] Primary `dexforge` CLI command
-- [ ] Primary `dexforge-gui` GUI launcher  
-- [ ] {any breaking changes or new features}
+**New Binary Names:**
+- `dexforge` - Primary CLI command (recommended)
+- `dexforge-gui` - Primary GUI launcher
+- `jadx`, `jadx-gui` - Compatibility aliases still included
+
+**Clean Architecture Layer:**
+- New `dexforge-core/` module with DDD structure
+- Domain models: Project, Device, SourceFile, SearchQuery
+- Application use cases with unit tests
+- Infrastructure adapters to jadx-core
+
+**Documentation:**
+- IDE Integration Quick Start guide
+- Migration Guide for JADX users
+- Release notes template for contributors
 
 ### Installation
 
 ```bash
 # Download and extract
-curl -L https://github.com/damarkuncoro/jadx-projects/releases/download/{version}/dexforge-engine-{version}.zip -o dexforge-engine.zip
+curl -L https://github.com/damarkuncoro/jadx-projects/releases/download/v0.6.0-dev/dexforge-engine-0.6.0-dev.zip -o dexforge-engine.zip
 unzip dexforge-engine.zip
 
 # Optional: Install to PATH
-cd dexforge-engine-{version}
+cd dexforge-engine-0.6.0-dev
 ./scripts/install-to-path.sh  # Linux/macOS
 scripts\install-to-path.bat   # Windows
 ```
 
 ### Compatibility
 
-This release includes both DexForge and JADX compatibility aliases:
-- `dexforge` - Primary CLI (recommended)
-- `jadx` - Legacy compatibility alias
-- `dexforge-gui` - Primary GUI launcher
-- `jadx-gui` - Legacy compatibility GUI
+| Old Command | New Command |
+| --- | --- |
+| `jadx app.apk` | `dexforge app.apk` |
+| `jadx-gui` | `dexforge-gui` |
+| `jadx device-explorer` | `dexforge device-explorer` |
+| `jadx lsp` | `dexforge lsp` |
 
-Existing JADX workflows continue to work.
+Legacy `jadx` commands remain available.
 
-### CLI Changes
+### CLI Commands
 
 ```bash
-# Primary commands
-dexforge --help          # Show help
-dexforge device-explorer # Device operations
-dexforge lsp             # JSON-RPC daemon mode
+# Decompile APK
+dexforge app.apk -d output/
 
-# Legacy aliases (still supported)
-jadx --help
-jadx-gui
+# Device Explorer
+dexforge device-explorer list-devices
+dexforge device-explorer pull emulator-5554 com.example.app ./output
+
+# LSP Daemon for IDE
+dexforge lsp --port 8080
 ```
 
-### API Stability
+### Documentation
 
-- [ ] JSON-RPC daemon API stable
-- [ ] Device Explorer contract stable
-- [ ] Decompile output format stable
-
-### Resources
-
-- [Documentation](https://github.com/damarkuncoro/jadx-projects#readme)
-- [IDE Integration](docs/IDE_INTEGRATION.md)
+- [IDE Integration Quick Start](docs/IDE_INTEGRATION.md)
+- [Migration Guide](docs/MIGRATION_GUIDE.md)
 - [LSP Daemon API](docs/LSP_DAEMON_API.md)
+- [Changelog](CHANGELOG.md)
 
 ---
+
+*Licensed under Apache 2.0*
 
 *Licensed under Apache 2.0*
