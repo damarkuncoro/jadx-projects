@@ -103,6 +103,18 @@ Launch the GUI in development mode:
 ./gradlew :jadx-gui:run
 ```
 
+### Install to PATH (Optional)
+
+To make `dexforge` available system-wide after extracting the release zip:
+
+```bash
+# Linux/macOS
+./scripts/install-to-path.sh
+
+# Windows
+scripts\install-to-path.bat
+```
+
 ---
 
 ## Documentation
