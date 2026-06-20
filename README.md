@@ -111,6 +111,7 @@ For advanced usages and roadmap specifications:
 - [Command-Line & Daemon Usage](docs/CLI_USAGE.md)
 - [Project Requirements & Toolchain](docs/PROJECT_REQUIREMENTS.md)
 - [DexForge VS Code & IDE Integration Plan](docs/DEXFORGE_REPOSITORIES.md)
+- [IDE Integration Quick Start](docs/IDE_INTEGRATION.md)
 - [DexForge Rebranding Roadmap Specs](docs/DEXFORGE_REBRANDING_ROADMAP.md)
 - [Android XML Layout Viewer Roadmap Specs](docs/ANDROID_XML_LAYOUT_VIEWER_ROADMAP.md)
 - [Device Explorer Roadmap Specs](docs/DEVICE_EXPLORER_ROADMAP.md)
