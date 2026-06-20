@@ -8,14 +8,19 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.cli.LogHelper.LogLevelEnum;
+import dexforge.cli.plugins.DexforgeFilesGetter;
+import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
+import dexforge.engine.DexForgeDecompileRequest;
+import dexforge.engine.DexForgeDecompileResult;
+import dexforge.engine.DexForgeEngine;
+import dexforge.engine.DexForgeProgressReporter;
+
 import jadx.api.JadxArgs;
-import jadx.api.JadxDecompiler;
 import jadx.api.impl.AnnotatedCodeWriter;
 import jadx.api.impl.NoOpCodeCache;
 import jadx.api.impl.SimpleCodeWriter;
 import jadx.api.usage.impl.EmptyUsageInfoCache;
-import dexforge.cli.LogHelper.LogLevelEnum;
-import dexforge.cli.plugins.DexforgeFilesGetter;
 import jadx.core.utils.exceptions.JadxArgsValidateException;
 import jadx.plugins.tools.JadxExternalPluginsLoader;
 
@@ -52,7 +57,7 @@ public class CliApplication {
 					if (argsMod != null) {
 						argsMod.accept(jadxArgs);
 					}
-					return runSave(jadxArgs, cliArgs);
+					return runSave(jadxArgs, cliArgs).getExitCode();
 				default:
 					return 1;
 			}
@@ -107,55 +112,27 @@ public class CliApplication {
 		}
 	}
 
-	private int runSave(JadxArgs jadxArgs, DexforgeCLIArgs cliArgs) {
-		try (JadxDecompiler jadx = new JadxDecompiler(jadxArgs)) {
-			jadx.load();
-			if (checkForErrors(jadx)) {
-				return 2;
-			}
-			if (!SingleClassMode.process(jadx, cliArgs)) {
-				save(jadx);
-			}
-			int errorsCount = jadx.getErrorsCount();
-			if (errorsCount != 0) {
-				jadx.printErrorsReport();
-				LOG.error("finished with errors, count: {}", errorsCount);
-				return 3;
-			}
-			LOG.info("done");
-			return 0;
+	private DexForgeDecompileResult runSave(JadxArgs jadxArgs, DexforgeCLIArgs cliArgs) {
+		DexForgeEngine engine = JadxBackedDexForgeEngine.create(jadxArgs);
+		DexForgeDecompileRequest request = DexForgeDecompileRequest.builder()
+				.quiet(LogHelper.getLogLevel() == LogLevelEnum.QUIET)
+				.progressReporter(new CliProgressReporter())
+				.singleClass(cliArgs.getSingleClass(), cliArgs.getSingleClassOutput())
+				.build();
+		try (var session = engine.openSession()) {
+			return session.decompile(request);
 		}
 	}
 
-	private boolean checkForErrors(JadxDecompiler jadx) {
-		if (jadx.getRoot().getClasses().isEmpty()) {
-			if (jadx.getArgs().isSkipResources()) {
-				LOG.error("Load failed! No classes for decompile!");
-				return true;
-			}
-			if (!jadx.getArgs().isSkipSources()) {
-				LOG.warn("No classes to decompile; decoding resources only");
-				jadx.getArgs().setSkipSources(true);
-			}
+	private static final class CliProgressReporter implements DexForgeProgressReporter {
+		@Override
+		public void onProgress(long done, long total) {
+			int progress = (int) (done * 100.0 / total);
+			System.out.printf("INFO  - progress: %d of %d (%d%%)\r", done, total, progress);
 		}
-		int errorsCount = jadx.getErrorsCount();
-		if (errorsCount > 0) {
-			LOG.error("Loading finished with errors! Count: {}", errorsCount);
-			// continue processing
-		}
-		return false;
-	}
 
-	private void save(JadxDecompiler jadx) {
-		if (LogHelper.getLogLevel() == LogLevelEnum.QUIET) {
-			jadx.save();
-		} else {
-			LOG.info("processing ...");
-			jadx.save(500, (done, total) -> {
-				int progress = (int) (done * 100.0 / total);
-				System.out.printf("INFO  - progress: %d of %d (%d%%)\r", done, total, progress);
-			});
-			// dumb line clear :)
+		@Override
+		public void clear() {
 			System.out.print("                                                             \r");
 		}
 	}

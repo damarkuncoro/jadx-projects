@@ -13,13 +13,10 @@ import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
 import jadx.api.JavaClass;
 import jadx.api.JavaNode;
+import dexforge.core.infrastructure.jadx.JadxDiagnosticMapper;
+import dexforge.engine.DexForgeDiagnostic;
 import dexforge.cli.dto.ClassDto;
 import dexforge.cli.dto.DaemonResponse;
-import jadx.core.dex.attributes.AType;
-import jadx.core.dex.attributes.nodes.JadxError;
-import jadx.core.dex.nodes.ClassNode;
-import jadx.core.dex.nodes.FieldNode;
-import jadx.core.dex.nodes.MethodNode;
 
 public class DaemonService {
 	private volatile JadxDecompiler decompiler;
@@ -91,68 +88,22 @@ public class DaemonService {
 		result.put("lineMapping", codeInfo.getCodeMetadata().getLineMapping());
 
 		// Collect and append diagnostics (warnings/errors)
-		List<Map<String, Object>> diagnostics = collectDiagnostics(cls.getClassNode(), code);
-		result.put("diagnostics", diagnostics);
+		result.put("diagnostics", toJsonDiagnostics(JadxDiagnosticMapper.collectDiagnostics(cls.getClassNode(), code)));
 
 		return DaemonResponse.success(requestId, result);
 	}
 
-	private List<Map<String, Object>> collectDiagnostics(ClassNode classNode, String code) {
+	private List<Map<String, Object>> toJsonDiagnostics(List<DexForgeDiagnostic> diagnostics) {
 		List<Map<String, Object>> list = new ArrayList<>();
-		collectDiagnosticsRecursive(classNode, code, list);
+		for (DexForgeDiagnostic diagnostic : diagnostics) {
+			Map<String, Object> map = new HashMap<>();
+			map.put("line", diagnostic.getLine());
+			map.put("character", diagnostic.getColumn());
+			map.put("severity", diagnostic.getSeverity().name());
+			map.put("message", diagnostic.getMessage());
+			list.add(map);
+		}
 		return list;
-	}
-
-	private void collectDiagnosticsRecursive(ClassNode cls, String code, List<Map<String, Object>> list) {
-		// Class errors
-		for (JadxError err : cls.getAll(AType.JADX_ERROR)) {
-			list.add(createDiagnosticMap(cls, err.getError(), code));
-		}
-		// Method errors
-		for (MethodNode mth : cls.getMethods()) {
-			for (JadxError err : mth.getAll(AType.JADX_ERROR)) {
-				list.add(createDiagnosticMap(mth, err.getError(), code));
-			}
-		}
-		// Field errors
-		for (FieldNode fld : cls.getFields()) {
-			for (JadxError err : fld.getAll(AType.JADX_ERROR)) {
-				list.add(createDiagnosticMap(fld, err.getError(), code));
-			}
-		}
-		// Inner classes
-		for (ClassNode inner : cls.getInnerClasses()) {
-			collectDiagnosticsRecursive(inner, code, list);
-		}
-	}
-
-	private Map<String, Object> createDiagnosticMap(jadx.core.dex.nodes.IDexNode node, String message, String code) {
-		int defPos = 0;
-		if (node instanceof jadx.core.dex.attributes.ILineAttributeNode) {
-			defPos = ((jadx.core.dex.attributes.ILineAttributeNode) node).getDefPosition();
-		}
-
-		int line = 0;
-		int character = 0;
-		if (defPos > 0 && defPos < code.length()) {
-			int pos = 0;
-			while (pos < defPos && pos < code.length()) {
-				if (code.charAt(pos) == '\n') {
-					line++;
-					character = 0;
-				} else {
-					character++;
-				}
-				pos++;
-			}
-		}
-
-		Map<String, Object> diag = new HashMap<>();
-		diag.put("line", line);
-		diag.put("character", character);
-		diag.put("severity", "ERROR");
-		diag.put("message", message);
-		return diag;
 	}
 
 	public DaemonResponse getDefinition(int requestId, String className, int pos) {

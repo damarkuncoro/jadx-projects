@@ -1,0 +1,5 @@
+#!/bin/sh
+# DexForge CLI compatibility wrapper - forwards to jadx (the actual implementation)
+# Installed as bin/dexforge
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+exec "$SCRIPT_DIR/jadx" "$@"

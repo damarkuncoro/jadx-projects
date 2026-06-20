@@ -298,7 +298,7 @@ public class FridaApkPatcher {
 		int exitCode = FridaUtils.runCommand(new String[] {
 				keytoolPath, "-genkey", "-v", "-keystore", keystoreFile.getAbsolutePath(),
 				"-alias", "jadx", "-keyalg", "RSA", "-keysize", "2048", "-validity", "10000",
-				"-storepass", "android", "-keypass", "android", "-dname", "CN=JadxPatch"
+				"-storepass", "android", "-keypass", "android", "-dname", "CN=DexForgePatch"
 		}, "keytool", logAppender);
 		if (exitCode != 0) {
 			throw new IOException("Failed to generate debug keystore using keytool");

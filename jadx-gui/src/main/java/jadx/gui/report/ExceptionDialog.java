@@ -36,6 +36,7 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.settings.JadxSettingsData;
 import jadx.gui.ui.MainWindow;
+import jadx.gui.utils.DexForgeBrand;
 import jadx.gui.utils.LafManager;
 import jadx.gui.utils.Link;
 import jadx.gui.utils.TextStandardActions;
@@ -47,7 +48,7 @@ public class ExceptionDialog extends JDialog {
 	private static final String FMT_DETAIL_LENGTH = "-13";
 
 	ExceptionDialog(MainWindow mainWindow, ExceptionData data) {
-		super(mainWindow, "Jadx Error");
+		super(mainWindow, DexForgeBrand.GUI_NAME + " Error");
 		this.getContentPane().setLayout(new BorderLayout());
 		JPanel titlePanel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -55,10 +56,11 @@ public class ExceptionDialog extends JDialog {
 		c.gridx = 0;
 		c.weightx = 1.0;
 		c.insets = new Insets(2, 5, 5, 5);
-		JLabel titleLabel = new JLabel("<html><h1>An error occurred</h1><p>Jadx encountered an unexpected error.</p></html>");
+		JLabel titleLabel = new JLabel("<html><h1>An error occurred</h1><p>"
+				+ DexForgeBrand.GUI_NAME + " encountered an unexpected error.</p></html>");
 
 		Map<String, String> details = new LinkedHashMap<>();
-		details.put("Jadx version", JadxDecompiler.getVersion());
+		details.put("DexForge engine version", JadxDecompiler.getVersion());
 		details.put("Java version", DexforgeSystemInfo.JAVA_VER);
 		details.put("Java VM", String.format("%s %s",
 				System.getProperty("java.vm.vendor", "?"), System.getProperty("java.vm.name", "?")));
@@ -101,7 +103,7 @@ public class ExceptionDialog extends JDialog {
 			issueBody = URLEncoder.encode(body, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			LOG.error("URL encoding of body failed", e);
-			issueBody = "Please copy the displayed text in the Jadx error dialog and paste it here";
+			issueBody = "Please copy the displayed text in the DexForge error dialog and paste it here";
 		}
 
 		c.gridy = 0;
@@ -128,10 +130,10 @@ public class ExceptionDialog extends JDialog {
 		messageArea.setText(detailsTextBuilder + "\n" + stackTrace);
 
 		JPanel buttonPanel = new JPanel();
-		JButton exitButton = new JButton("Terminate Jadx");
+		JButton exitButton = new JButton("Terminate " + DexForgeBrand.PRODUCT_NAME);
 		exitButton.addActionListener(event -> System.exit(1));
 		buttonPanel.add(exitButton);
-		JButton closeButton = new JButton("Go back to Jadx");
+		JButton closeButton = new JButton("Go back to " + DexForgeBrand.PRODUCT_NAME);
 		closeButton.addActionListener(event -> setVisible(false));
 		buttonPanel.add(closeButton);
 		JScrollPane messageAreaScroller = new JScrollPane(messageArea);

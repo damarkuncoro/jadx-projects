@@ -26,7 +26,15 @@ DexForge is built on a modular architecture:
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Application Layer                            │
 ├─────────────────────────────────────────────────────────────────┤
-│  DaemonService │ DeviceExplorer │ FridaPanel │ LayoutViewer     │
+│  dexforge-core: use cases, ports, request/result models         │
+│  DecompileApplicationService │ DeviceExplorer │ LSP contracts   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Infrastructure Adapters                      │
+├─────────────────────────────────────────────────────────────────┤
+│  infrastructure/jadx adapters │ filesystem │ reports │ plugins  │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -42,9 +50,37 @@ DexForge is built on a modular architecture:
 │                    Core Engine (JADX)                           │
 ├─────────────────────────────────────────────────────────────────┤
 │  jadx-core (decompiler, codegen, dex parser)                    │
-│  jadx-commons (shared utilities)                                │
+│  dexforge-commons/* (shared DexForge utilities)                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+### DexForge Core
+
+`dexforge-core` is the boundary where new DexForge behavior should grow. It follows a gradual Clean Architecture style:
+
+- `application/` owns use cases such as decompile orchestration.
+- `ports/` defines interfaces consumed by use cases.
+- `infrastructure/` adapts existing engines and IO, currently including `infrastructure/jadx`.
+- `jadx-core` remains upstream-aligned and should not be mass-renamed.
+
+Current decompile flow:
+
+```text
+dexforge-cli
+  -> DecompileRequest
+  -> DecompileApplicationService
+  -> DecompilerEngine port
+  -> JadxDecompilerEngine adapter
+  -> jadx-core
+```
+
+When adding new product behavior, prefer this order:
+
+1. Add request/result models in `dexforge-core/application`.
+2. Add ports for behavior that should be replaceable or testable.
+3. Put direct `JadxDecompiler` usage in `dexforge-core/infrastructure/jadx`.
+4. Keep CLI, GUI, and IDE integration layers thin.
+5. Preserve `jadx.*` APIs unless there is a dedicated compatibility migration plan.
 
 ## Setting Up Development Environment
 
@@ -110,6 +146,7 @@ cp .env.example .env
 
 # Build specific module
 ./gradlew :jadx-core:build
+./gradlew :dexforge-core:build
 
 # Build distribution packages
 ./gradlew dist          # Linux/macOS
@@ -127,6 +164,7 @@ cp .env.example .env
 
 # Run tests for specific module
 ./gradlew :jadx-core:test
+./gradlew :dexforge-core:check
 
 # Run with coverage
 ./gradlew test jacocoTestReport

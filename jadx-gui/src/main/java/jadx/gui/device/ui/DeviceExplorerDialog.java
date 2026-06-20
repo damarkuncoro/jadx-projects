@@ -103,7 +103,7 @@ public class DeviceExplorerDialog extends JDialog {
 
 		// Initialize default output folder
 		String userHome = System.getProperty("user.home");
-		File defaultOut = new File(userHome, "JadxDeviceExplorer");
+		File defaultOut = new File(userHome, "DexForgeDeviceExplorer");
 		outDirTextField.setText(defaultOut.getAbsolutePath());
 
 		SwingUtilities.invokeLater(this::loadDevices);

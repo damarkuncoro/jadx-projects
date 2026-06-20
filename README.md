@@ -39,12 +39,14 @@ DexForge is designed for practical Android reverse engineering:
 ## Repository Architecture
 
 ```text
-jadx-core/               - Core decompiler engine logic (upstream-aligned)
-jadx-cli/                - CLI frontend wrapper (handles 'lsp', 'device-explorer')
-jadx-gui/                - Swing desktop GUI application
-jadx-frida-integration/  - Frida integration logic and predefined snippet providers
-docs/                    - Detailed feature documents, architecture roadmaps, and guides
-scripts/                 - Release automation and package helper utilities
+jadx-core/                         - Core decompiler engine logic (upstream-aligned)
+dexforge-core/                     - DexForge application/domain layer and JADX adapters
+dexforge-cli/                      - CLI frontend wrapper (handles 'lsp', 'device-explorer')
+jadx-gui/                          - Swing desktop GUI application
+dexforge-plugins/dexforge-frida-integration/
+                                  - Frida integration logic and predefined snippet providers
+docs/                              - Detailed feature documents, architecture roadmaps, and guides
+scripts/                           - Release automation and package helper utilities
 ```
 
 ---
@@ -114,6 +116,7 @@ For advanced usages and roadmap specifications:
 DexForge preserves JADX compatibility where it matters:
 - Internal package namespaces (`jadx.*`) and module titles (`jadx-core`, etc.) are kept unchanged to ease upstream merges and maintain plugin compatibility.
 - Legacy `jadx` and `jadx-gui` launcher binaries remain shipped alongside `dexforge` commands.
+- New DexForge orchestration should grow in `dexforge-core` first, using ports and adapters over `jadx-core` instead of mass-renaming upstream code.
 
 ---
 

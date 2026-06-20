@@ -140,6 +140,15 @@ DexForge GUI
 com.dexforge.layoutviewer
 ```
 
+- `dexforge-core` sudah ditambahkan sebagai lapisan aplikasi/domain DexForge:
+
+```text
+dexforge-core/application    - use cases, request/result models
+dexforge-core/ports          - engine/session/progress ports
+dexforge-core/infrastructure - adapters, termasuk adapter ke jadx-core
+```
+
+- Decompile orchestration dan single-class decompile action mulai dipindahkan dari `dexforge-cli` ke `dexforge-core`.
 - Repo split sudah dijelaskan di:
 
 ```text
@@ -166,6 +175,7 @@ damarkuncoro/jadx-projects
 Role:
 
 - Core decompiler engine.
+- DexForge application/domain facade through `dexforge-core`.
 - CLI.
 - GUI desktop.
 - Device Explorer.
@@ -536,7 +546,8 @@ Keep:
 ```text
 rootProject.name = "jadx"
 include("jadx-core")
-include("jadx-cli")
+include("dexforge-core")
+include("dexforge-cli")
 include("jadx-gui")
 ```
 
@@ -545,10 +556,11 @@ Reason:
 - Lower merge risk.
 - Lower plugin breakage.
 - Lower build script churn.
+- Allows DexForge-owned use cases to grow without mass-renaming upstream code.
 
 Medium-term optional:
 
-Add distribution tasks and aliases with DexForge names only.
+Add DexForge facade APIs and distribution tasks with DexForge names only.
 
 Long-term optional:
 
@@ -565,13 +577,15 @@ Recommended rule:
 
 ```text
 Existing upstream-derived code: keep jadx.*
-New DexForge-owned features: allow com.dexforge.*
+New DexForge-owned features and orchestration: allow dexforge.* or com.dexforge.*
 ```
 
 Good examples:
 
 ```text
 com.dexforge.layoutviewer
+dexforge.core.application.decompile
+dexforge.core.infrastructure.jadx
 jadx.gui.device
 jadx.core
 ```
@@ -632,43 +646,73 @@ Acceptance criteria:
 - Compatibility aliases are still present.
 - Docs do not confuse primary command and legacy alias.
 
-## Phase 3 - IDE Integration Branding
+## Phase 3 - Android XML Layout Viewer (Completed)
 
 Tasks:
 
-- VS Code extension uses DexForge naming.
-- IntelliJ extension uses DexForge naming.
-- IDE extensions call `dexforge` binary by default.
-- IDE settings allow custom engine binary path.
-- JSON CLI contracts remain stable.
+- Implement embedded Swing-based Android XML layout parser.
+- Add layout preview and hierarchy inspector.
+- Integrate Layout Viewer panel into DexForge GUI.
+- Support resource reference resolving.
 
 Acceptance criteria:
 
-- IDE users do not need to understand JADX internals to use DexForge.
-- Advanced users can still point extensions to compatibility binaries.
+- Users can visually preview Android layouts.
+- Resource references are resolved correctly.
+- DexForge Layout Viewer is accessible from File menu.
 
-## Phase 4 - Optional Internal Namespace Review
+## Phase 4 - Frida Script Generator (Completed)
 
-Only consider after v1-level stability.
+Tasks:
 
-Questions:
+- Implement right-click context hooks builder.
+- Create Frida script generation from decompiled methods.
+- Add predefined snippet providers (SSL pinning bypass, root detection bypass, etc.).
+- Integrate Frida panel into DexForge GUI.
 
-- Are upstream merges still important?
-- Are JADX plugins expected to work unchanged?
-- Do external users import `jadx.api.*`?
-- Is there a breaking major version planned?
+Acceptance criteria:
 
-Possible outcomes:
+- Users can generate Frida hooks directly from GUI.
+- Predefined snippets are available and functional.
+- Frida panel shows generated and custom scripts.
 
-1. Keep internal `jadx.*` forever.
-2. Introduce DexForge facade APIs while keeping `jadx.*`.
-3. Rename internal packages in a major version.
+## Phase 5 - IDE Integration Branding (Current)
 
-Recommended default:
+Status: **In Progress**
 
-```text
-Keep internal jadx.* and build DexForge facade APIs only where useful.
-```
+Tasks:
+
+- Finalize VS Code extension DexForge branding in marketplace.
+- Finalize IntelliJ extension DexForge branding.
+- Document IDE extensions calling `dexforge` binary by default.
+- Publish stable JSON-RPC/LSP daemon API contracts.
+- Ensure IDE users do not need to understand JADX internals.
+
+Acceptance criteria:
+
+- VS Code extension is published and branded as DexForge.
+- IntelliJ extension is published and branded as DexForge.
+- IDE users see DexForge as the primary product.
+- JSON CLI contracts are stable and backward-compatible.
+
+## Phase 6 - Public Release (Planned)
+
+Status: **Planned**
+
+Tasks:
+
+- Stabilize all public APIs, schema structures, and JSON contracts.
+- Finalize public binary packaging (Windows installer, Linux deb/rpm, macOS app bundle).
+- Create comprehensive user documentation and tutorials.
+- Prepare marketing materials and release announcement.
+- Establish community feedback and support channels.
+
+Acceptance criteria:
+
+- Binary packages available on all major platforms.
+- Documentation covers setup, usage, and troubleshooting.
+- Community feedback loop is operational.
+- Version 1.0 ready for general availability.
 
 ## Risk Register
 
@@ -731,55 +775,74 @@ Mitigation:
 
 ## Docs
 
-- [ ] README title and intro use DexForge Engine.
-- [ ] README explains “powered by JADX”.
-- [ ] Device Explorer docs use DexForge naming.
-- [ ] Release notes template uses DexForge.
-- [ ] Repository split docs remain current.
-- [ ] Layout Viewer docs use DexForge naming.
+- [x] README title and intro use DexForge Engine.
+- [x] README explains “powered by JADX”.
+- [x] Device Explorer docs use DexForge naming.
+- [x] Release notes template uses DexForge.
+- [x] Repository split docs remain current.
+- [x] Layout Viewer docs use DexForge naming.
 
 ## GUI
 
-- [ ] Main window title says DexForge GUI.
-- [ ] About dialog says DexForge GUI, powered by JADX.
-- [ ] Desktop template uses DexForge GUI.
-- [ ] App icon/logo uses DexForge asset.
-- [ ] Menus and panels use DexForge feature names where relevant.
+- [x] Main window title says DexForge GUI.
+- [x] About dialog says DexForge GUI, powered by JADX.
+- [x] Desktop template uses DexForge GUI.
+- [x] App icon/logo uses DexForge asset.
+- [x] Menus and panels use DexForge feature names where relevant.
 
 ## CLI
 
-- [ ] `dexforge` binary works.
-- [ ] `dexforge-gui` binary works.
-- [ ] `jadx` compatibility alias works.
-- [ ] `jadx-gui` compatibility alias works.
-- [ ] Help output prefers DexForge.
-- [ ] Compatibility note is visible.
+- [x] `dexforge` binary works (primary command).
+- [x] `dexforge-gui` binary works (primary GUI launcher).
+- [x] `jadx` compatibility alias works (legacy support).
+- [x] `jadx-gui` compatibility alias works (legacy support).
+- [x] Help output prefers DexForge.
+- [x] Compatibility note is visible.
 
 ## Release
 
-- [ ] Zip names use DexForge.
-- [ ] Windows launcher uses DexForge.
-- [ ] Release notes use DexForge.
-- [ ] Checksums/artifact names are consistent.
-- [ ] Compatibility aliases are included.
+- [x] Zip names use DexForge.
+- [x] Windows launcher uses DexForge.
+- [x] Release notes use DexForge.
+- [x] Checksums/artifact names are consistent.
+- [x] Compatibility aliases are included.
 
 ## Code
 
-- [ ] New DexForge-owned features may use `com.dexforge.*`.
-- [ ] Upstream-derived code remains `jadx.*`.
-- [ ] No mass rename without migration plan.
-- [ ] Public APIs remain backward compatible.
+- [x] New DexForge-owned features may use `com.dexforge.*`.
+- [x] New DexForge use cases may grow in `dexforge-core`.
+- [x] Upstream-derived code remains `jadx.*`.
+- [x] No mass rename without migration plan.
+- [x] Public APIs remain backward compatible.
+
+## Phase 5 - IDE Extensions (In Progress)
+
+- [ ] VS Code extension uses DexForge branding.
+- [ ] IntelliJ extension uses DexForge branding.
+- [ ] IDE extensions call `dexforge` binary by default.
+- [ ] IDE settings allow custom engine binary path.
+- [ ] JSON CLI contracts are stable and documented.
+
+## Phase 6 - Public Release (Planned)
+
+- [ ] Stabilize all APIs and schema structures.
+- [ ] Finalize public binary packaging.
+- [ ] Release artifacts available for broad distribution.
+- [ ] Marketing materials and case studies ready.
 
 ## Recommended Next Actions
 
-Best immediate sequence:
+**Current Status**: Phase 1-4 complete, Phase 5 in progress.
 
-1. Update user-facing docs terminology.
-2. Update GUI title/About/desktop template.
-3. Add DexForge logo assets.
-4. Standardize CLI help banner.
-5. Keep internal modules/packages unchanged.
-6. Create release note template for DexForge Engine.
+Best sequence for Phase 5-6:
+
+1. **VS Code Extension**: Finalize DexForge branding in marketplace.
+2. **IntelliJ Extension**: Add DexForge naming and `dexforge` binary support.
+3. **JSON-RPC Contracts**: Publish stable OpenAPI/Swagger documentation for LSP daemon.
+4. **Binary Availability**: Ensure `dexforge` and `dexforge-gui` are in system PATH post-install.
+5. **Release Process**: Automate Phase 6 release artifacts (Windows installer, Linux packages, macOS app bundle).
+6. **Documentation**: Create quick-start guide for IDE extensions and JSON-RPC API consumers.
+7. **Community**: Announce Phase 5 completion and call for feedback on IDE integration.
 
 ## Decision Summary
 
@@ -791,5 +854,6 @@ JADX is the upstream engine foundation.
 dexforge is the primary command.
 jadx remains as compatibility alias.
 Internal jadx.* packages remain until a major migration is justified.
-New DexForge-owned features may use com.dexforge.*.
+New DexForge-owned features may use dexforge.* or com.dexforge.*.
+DexForge use cases should be introduced in dexforge-core before being wired into CLI, GUI, or IDE integrations.
 ```

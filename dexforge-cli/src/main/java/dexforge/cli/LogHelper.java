@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
+import dexforge.core.infrastructure.jadx.JadxSingleClassDecompileAction;
+
 import jadx.api.JadxDecompiler;
 
 public class LogHelper {
@@ -71,7 +73,7 @@ public class LogHelper {
 	private static void fixForShowProgress() {
 		setLevelForClass(DexforgeCLI.class, Level.INFO);
 		setLevelForClass(JadxDecompiler.class, Level.INFO);
-		setLevelForClass(SingleClassMode.class, Level.INFO);
+		setLevelForClass(JadxSingleClassDecompileAction.class, Level.INFO);
 
 		// show warnings and errors from input plugins
 		setLevelForPackage("jadx.plugins.input", Level.WARN);

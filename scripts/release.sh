@@ -100,4 +100,11 @@ else
   gh release create "$TAG" "$ARTIFACT" --title "$TAG" --notes "Binary-only release for end users."
 fi
 
+# Also upload checksum files if they exist
+CHECKSUM_ARTIFACT="${ARTIFACT}.sha256"
+if [[ -f "$CHECKSUM_ARTIFACT" ]]; then
+  gh release upload "$TAG" "$CHECKSUM_ARTIFACT"
+  printf "Checksum %s uploaded\n" "$CHECKSUM_ARTIFACT"
+fi
+
 printf "Release %s created with artifact %s\n" "$TAG" "$ARTIFACT"

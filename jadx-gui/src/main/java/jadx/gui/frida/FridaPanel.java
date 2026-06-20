@@ -20,7 +20,7 @@ import jadx.gui.ui.MainWindow;
 import jadx.gui.ui.action.JadxAutoCompletion;
 
 /**
- * Main panel for Frida integration in jadx-gui.
+ * Main panel for Frida integration in DexForge GUI.
  */
 public class FridaPanel extends JPanel {
 	private static final Logger LOG = LoggerFactory.getLogger(FridaPanel.class);

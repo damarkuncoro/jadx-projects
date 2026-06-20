@@ -44,7 +44,7 @@ public class DeviceExplorerAssistant {
 	};
 
 	public static void runAnalysis(File outputDir, File reportFile) {
-		LOG.info("Starting JADX Device Explorer Security Assistant scanning...");
+		LOG.info("Starting DexForge Device Explorer Security Assistant scanning...");
 		long startTime = System.currentTimeMillis();
 
 		File sourcesDir = new File(outputDir, "sources");

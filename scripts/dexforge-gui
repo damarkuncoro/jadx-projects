@@ -1,0 +1,5 @@
+#!/bin/sh
+# DexForge GUI compatibility wrapper - forwards to jadx-gui (the actual implementation)
+# Installed as bin/dexforge-gui
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+exec "$SCRIPT_DIR/jadx-gui" "$@"
