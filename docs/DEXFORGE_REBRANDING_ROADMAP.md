@@ -785,20 +785,18 @@ Tasks remaining:
 - [ ] IntelliJ extension uses DexForge branding.
 - [ ] Binary availability in PATH post-install scripts.
 
-## Phase 6 - Public Release (Planned)
+## Phase 6 - Public Release (In Progress)
 
-Status: **Preparation**
+Status: **In Progress**
 
 Tasks in progress:
 - [x] Distribution bundle generation (`dexforge-engine-{version}.zip`)
-- [x] Release notes template created (see RELEASE_TEMPLATE.md)
+- [x] Release notes template created
 - [x] PATH installation scripts (Linux/macOS + Windows)
-
-Remaining tasks:
+- [x] Migration guide for JADX users
+- [x] Linux packaging workflow (.deb)
 - [ ] Windows installer (.msi)
-- [ ] Linux packages (.deb, .rpm)
 - [ ] macOS app bundle (.dmg)
-- [ ] API schema structures stabilized
 - [ ] Release announcement and marketing materials
 
 ## Recommended Next Actions
