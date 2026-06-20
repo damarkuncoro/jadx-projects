@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
@@ -95,7 +96,7 @@ final class LoopRegionMaker {
 		loopRegion.updateCondition(condInfo);
 		// prevent if's merge with loop condition
 		condInfo.getMergedBlocks().forEach(b -> b.add(AFlag.ADDED_TO_REGION));
-		exitBlocks.removeAll(condInfo.getMergedBlocks().toList());
+		exitBlocks.removeAll(condInfo.getMergedBlocks().collect(Collectors.toList()));
 
 		if (!exitBlocks.isEmpty()) {
 
