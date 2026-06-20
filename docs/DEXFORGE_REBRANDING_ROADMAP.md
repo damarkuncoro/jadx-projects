@@ -787,10 +787,19 @@ Tasks remaining:
 
 ## Phase 6 - Public Release (Planned)
 
-- [ ] Stabilize all APIs and schema structures.
-- [ ] Finalize public binary packaging.
-- [ ] Release artifacts available for broad distribution.
-- [ ] Marketing materials and case studies ready.
+Status: **Preparation**
+
+Tasks in progress:
+- [x] Distribution bundle generation (`dexforge-engine-{version}.zip`)
+- [x] Release notes template created (see RELEASE_TEMPLATE.md)
+- [x] PATH installation scripts (Linux/macOS + Windows)
+
+Remaining tasks:
+- [ ] Windows installer (.msi)
+- [ ] Linux packages (.deb, .rpm)
+- [ ] macOS app bundle (.dmg)
+- [ ] API schema structures stabilized
+- [ ] Release announcement and marketing materials
 
 ## Recommended Next Actions
 
