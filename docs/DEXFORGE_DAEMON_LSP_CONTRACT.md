@@ -341,7 +341,7 @@ Response result:
 
 ## Compatibility Notes
 
-- Clients should treat this as a preview contract until a stable schema version is announced.
+- This contract is a stable schema version (v1.0.0) for production integrations.
 - New IDE clients should prefer the LSP-compatible methods.
 - `get-definition` remains available for older daemon clients.
 - The daemon currently returns `SUCCESS` and `ERROR` strings rather than JSON-RPC
