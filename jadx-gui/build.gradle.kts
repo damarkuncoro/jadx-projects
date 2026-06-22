@@ -192,9 +192,18 @@ runtime {
 		"jdk.accessibility",
 	)
 	jpackage {
-		imageOptions = listOf("--icon", "$projectDir/src/main/resources/logos/dexforge-logo.ico")
+		val currentOs =
+			org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+				.getCurrentOperatingSystem()
+		if (currentOs.isWindows) {
+			imageOptions = listOf("--icon", "$projectDir/src/main/resources/logos/dexforge-logo.ico")
+			targetPlatformName = "win"
+		} else if (currentOs.isMacOsX) {
+			targetPlatformName = "mac"
+		} else {
+			targetPlatformName = "linux"
+		}
 		skipInstaller = true
-		targetPlatformName = "win"
 	}
 	launcher {
 		noConsole = true
