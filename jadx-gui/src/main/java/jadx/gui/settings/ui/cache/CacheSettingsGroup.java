@@ -25,6 +25,7 @@ import javax.swing.UIManager;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.gui.ISettingsGroup;
+
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
 import jadx.gui.settings.JadxSettings;

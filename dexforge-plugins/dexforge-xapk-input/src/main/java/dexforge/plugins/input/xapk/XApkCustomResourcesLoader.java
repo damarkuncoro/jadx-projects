@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import dexforge.api.plugins.CustomResourcesLoader;
+import dexforge.api.plugins.JadxPluginContext;
+import dexforge.plugins.input.xapk.data.XApkData;
+
 import jadx.api.ResourceFile;
 import jadx.api.ResourceType;
 import jadx.api.ResourcesLoader;
-import dexforge.api.plugins.CustomResourcesLoader;
-import dexforge.api.plugins.JadxPluginContext;
 import jadx.core.utils.files.FileUtils;
-import dexforge.plugins.input.xapk.data.XApkData;
 
 public class XApkCustomResourcesLoader implements CustomResourcesLoader {
 	private final JadxPluginContext context;

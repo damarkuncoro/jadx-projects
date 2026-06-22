@@ -19,8 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import dexforge.api.plugins.JadxPluginContext;
 import dexforge.api.plugins.utils.CommonFileUtils;
-import jadx.api.security.IJadxSecurity;
 import dexforge.zip.ZipReader;
+
+import jadx.api.security.IJadxSecurity;
 
 public class JavaConvertLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(JavaConvertLoader.class);

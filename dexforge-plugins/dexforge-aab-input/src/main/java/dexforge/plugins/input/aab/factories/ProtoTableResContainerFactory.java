@@ -5,10 +5,11 @@ import java.io.InputStream;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.ResourceFile;
-import jadx.api.ResourceType;
 import dexforge.api.plugins.resources.IResContainerFactory;
 import dexforge.api.plugins.resources.IResTableParserProvider;
+
+import jadx.api.ResourceFile;
+import jadx.api.ResourceType;
 import jadx.core.xmlgen.IResTableParser;
 import jadx.core.xmlgen.ResContainer;
 

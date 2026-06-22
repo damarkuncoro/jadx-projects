@@ -1,52 +1,46 @@
 package dexforge.cli.daemon;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jadx.api.CommentsLevel;
-import jadx.api.DecompilationMode;
-import jadx.api.ICodeInfo;
-import jadx.api.JadxArgs;
-import jadx.api.JadxDecompiler;
-import jadx.api.JavaClass;
-import jadx.api.JavaNode;
-import dexforge.core.infrastructure.jadx.JadxDiagnosticMapper;
-import dexforge.engine.DexForgeDiagnostic;
 import dexforge.cli.dto.ClassDto;
 import dexforge.cli.dto.DaemonResponse;
+import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
+import dexforge.engine.DexForgeClassDecompileResult;
+import dexforge.engine.DexForgeClassInfo;
+import dexforge.engine.DexForgeDefinitionInfo;
+import dexforge.engine.DexForgeOpenProjectRequest;
+import dexforge.engine.DexForgeProjectSession;
 
 public class DaemonService {
-	private volatile JadxDecompiler decompiler;
+	private volatile DexForgeProjectSession projectSession;
 
-	public JadxDecompiler getDecompiler() {
-		return decompiler;
+	public DexForgeProjectSession getProjectSession() {
+		return projectSession;
 	}
 
 	public synchronized DaemonResponse load(int requestId, String path, Map<String, Object> params) {
 		close();
 		try {
-			JadxArgs jadxArgs = new JadxArgs();
-			jadxArgs.getInputFiles().add(new File(path));
-
+			DexForgeOpenProjectRequest.Builder requestBuilder = DexForgeOpenProjectRequest.builder(Path.of(path));
 			if (params.containsKey("deobfuscationOn")) {
-				jadxArgs.setDeobfuscationOn((Boolean) params.get("deobfuscationOn"));
+				requestBuilder.deobfuscationOn((Boolean) params.get("deobfuscationOn"));
 			}
 			if (params.containsKey("commentsLevel")) {
-				jadxArgs.setCommentsLevel(CommentsLevel.valueOf(((String) params.get("commentsLevel")).toUpperCase()));
+				requestBuilder.commentsLevel((String) params.get("commentsLevel"));
 			}
 			if (params.containsKey("decompilationMode")) {
-				jadxArgs.setDecompilationMode(DecompilationMode.valueOf(((String) params.get("decompilationMode")).toUpperCase()));
+				requestBuilder.decompilationMode((String) params.get("decompilationMode"));
 			}
 
-			decompiler = new JadxDecompiler(jadxArgs);
-			decompiler.load();
+			projectSession = JadxBackedDexForgeEngine.create().openProject(requestBuilder.build());
 
 			Map<String, Object> result = new HashMap<>();
-			result.put("classesCount", decompiler.getClasses().size());
-			result.put("resourcesCount", decompiler.getResources().size());
+			result.put("classesCount", projectSession.getClassesCount());
+			result.put("resourcesCount", projectSession.getResourcesCount());
 			return DaemonResponse.success(requestId, result);
 		} catch (Exception e) {
 			return DaemonResponse.error(requestId, "Load failed: " + e.getMessage());
@@ -54,96 +48,68 @@ public class DaemonService {
 	}
 
 	public DaemonResponse listClasses(int requestId) {
-		if (decompiler == null) {
+		if (projectSession == null) {
 			return DaemonResponse.error(requestId, "No active decompiler. Call 'load' first.");
 		}
 		List<ClassDto> list = new ArrayList<>();
-		for (JavaClass cls : decompiler.getClasses()) {
+		for (DexForgeClassInfo cls : projectSession.listClasses()) {
 			list.add(new ClassDto(
 					cls.getFullName(),
-					cls.getName(),
-					cls.getClassNode().getAlias(),
-					cls.getPackage()));
+					cls.getShortName(),
+					cls.getAlias(),
+					cls.getPackageName()));
 		}
 		return DaemonResponse.success(requestId, list);
 	}
 
 	public DaemonResponse decompile(int requestId, String className) {
-		if (decompiler == null) {
+		if (projectSession == null) {
 			return DaemonResponse.error(requestId, "No active decompiler. Call 'load' first.");
 		}
-		JavaClass cls = decompiler.searchJavaClassByOrigFullName(className);
-		if (cls == null) {
-			cls = decompiler.searchJavaClassByAliasFullName(className);
-		}
-		if (cls == null) {
+		DexForgeClassDecompileResult decompileResult;
+		try {
+			decompileResult = projectSession.decompileClass(className);
+		} catch (IllegalArgumentException e) {
 			return DaemonResponse.error(requestId, "Class not found: " + className);
 		}
 
-		ICodeInfo codeInfo = cls.getCodeInfo();
-		String code = codeInfo.getCodeStr();
-
 		Map<String, Object> result = new HashMap<>();
-		result.put("code", code);
-		result.put("lineMapping", codeInfo.getCodeMetadata().getLineMapping());
+		result.put("code", decompileResult.getCode());
+		result.put("lineMapping", decompileResult.getLineMapping());
 
 		// Collect and append diagnostics (warnings/errors)
-		result.put("diagnostics", toJsonDiagnostics(JadxDiagnosticMapper.collectDiagnostics(cls.getClassNode(), code)));
+		result.put("diagnostics", DaemonDiagnosticJsonMapper.toJsonDiagnostics(decompileResult.getDiagnostics()));
 
 		return DaemonResponse.success(requestId, result);
 	}
 
-	private List<Map<String, Object>> toJsonDiagnostics(List<DexForgeDiagnostic> diagnostics) {
-		List<Map<String, Object>> list = new ArrayList<>();
-		for (DexForgeDiagnostic diagnostic : diagnostics) {
-			Map<String, Object> map = new HashMap<>();
-			map.put("line", diagnostic.getLine());
-			map.put("character", diagnostic.getColumn());
-			map.put("severity", diagnostic.getSeverity().name());
-			map.put("message", diagnostic.getMessage());
-			list.add(map);
-		}
-		return list;
-	}
-
 	public DaemonResponse getDefinition(int requestId, String className, int pos) {
-		if (decompiler == null) {
+		if (projectSession == null) {
 			return DaemonResponse.error(requestId, "No active decompiler. Call 'load' first.");
 		}
-		JavaClass cls = decompiler.searchJavaClassByOrigFullName(className);
-		if (cls == null) {
-			cls = decompiler.searchJavaClassByAliasFullName(className);
-		}
-		if (cls == null) {
-			return DaemonResponse.error(requestId, "Class not found: " + className);
-		}
-
-		ICodeInfo codeInfo = cls.getCodeInfo();
-		JavaNode node = decompiler.getJavaNodeAtPosition(codeInfo, pos);
-		if (node == null) {
-			node = decompiler.getClosestJavaNode(codeInfo, pos);
-		}
-
-		if (node == null) {
-			return DaemonResponse.error(requestId, "No symbol found at position " + pos);
+		DexForgeDefinitionInfo definitionInfo;
+		try {
+			definitionInfo = projectSession.getDefinition(className, pos);
+		} catch (IllegalArgumentException e) {
+			return DaemonResponse.error(requestId, e.getMessage());
 		}
 
 		Map<String, Object> result = new HashMap<>();
-		result.put("name", node.getName());
-		result.put("fullName", node.getFullName());
-		result.put("declaringClass", node.getDeclaringClass() != null ? node.getDeclaringClass().getFullName() : null);
-		result.put("defPos", node.getDefPos());
+		result.put("name", definitionInfo.getName());
+		result.put("fullName", definitionInfo.getFullName());
+		result.put("declaringClass", definitionInfo.getDeclaringClass());
+		result.put("defPos", definitionInfo.getDefinitionPosition());
 		return DaemonResponse.success(requestId, result);
 	}
 
 	public synchronized void close() {
-		if (decompiler != null) {
+		if (projectSession != null) {
 			try {
-				decompiler.close();
+				projectSession.close();
 			} catch (Exception e) {
 				// ignore
 			}
-			decompiler = null;
+			projectSession = null;
 		}
 	}
 }

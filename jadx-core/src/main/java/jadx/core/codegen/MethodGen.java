@@ -6,6 +6,11 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
+
 import jadx.api.CommentsLevel;
 import jadx.api.DecompilationMode;
 import jadx.api.ICodeWriter;
@@ -13,10 +18,6 @@ import jadx.api.JadxArgs;
 import jadx.api.args.IntegerFormat;
 import jadx.api.metadata.annotations.InsnCodeOffset;
 import jadx.api.metadata.annotations.VarNode;
-import dexforge.api.plugins.input.data.AccessFlags;
-import dexforge.api.plugins.input.data.annotations.EncodedValue;
-import dexforge.api.plugins.input.data.attributes.JadxAttrType;
-import dexforge.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
 import jadx.core.Consts;
 import jadx.core.Jadx;
 import jadx.core.codegen.utils.CodeGenUtils;

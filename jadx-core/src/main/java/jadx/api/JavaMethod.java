@@ -6,9 +6,10 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import dexforge.api.plugins.input.data.IMethodRef;
+
 import jadx.api.metadata.ICodeAnnotation;
 import jadx.api.metadata.ICodeNodeRef;
-import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.MethodOverrideAttr;
 import jadx.core.dex.info.AccessInfo;

@@ -6,11 +6,12 @@ import java.util.regex.Pattern;
 
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+import dexforge.api.plugins.input.data.attributes.types.SourceFileAttr;
+
 import jadx.api.CommentsLevel;
 import jadx.api.ICodeWriter;
 import jadx.api.data.CommentStyle;
-import dexforge.api.plugins.input.data.attributes.JadxAttrType;
-import dexforge.api.plugins.input.data.attributes.types.SourceFileAttr;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.IAttributeNode;
 import jadx.core.dex.attributes.nodes.JadxCommentsAttr;

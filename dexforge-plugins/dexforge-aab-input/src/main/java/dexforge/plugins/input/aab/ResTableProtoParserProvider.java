@@ -2,11 +2,12 @@ package dexforge.plugins.input.aab;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.ResourceFile;
 import dexforge.api.plugins.resources.IResTableParserProvider;
+import dexforge.plugins.input.aab.parsers.ResTableProtoParser;
+
+import jadx.api.ResourceFile;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.xmlgen.IResTableParser;
-import dexforge.plugins.input.aab.parsers.ResTableProtoParser;
 
 public class ResTableProtoParserProvider implements IResTableParserProvider {
 	private RootNode root;

@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
-
 import dexforge.api.plugins.events.types.ReloadProject;
 import dexforge.api.plugins.gui.ISettingsGroup;
 import dexforge.api.plugins.gui.JadxGuiContext;
@@ -26,6 +25,7 @@ import dexforge.api.plugins.options.JadxPluginOptions;
 import dexforge.api.plugins.options.OptionDescription;
 import dexforge.api.plugins.options.OptionFlag;
 import dexforge.api.plugins.options.OptionType;
+
 import jadx.core.plugins.PluginContext;
 import jadx.core.utils.Utils;
 import jadx.gui.logs.LogOptions;

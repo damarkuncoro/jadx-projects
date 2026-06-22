@@ -15,16 +15,17 @@ import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.annotations.EncodedType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+
 import jadx.api.CommentsLevel;
 import jadx.api.ICodeInfo;
 import jadx.api.ICodeWriter;
 import jadx.api.JadxArgs;
 import jadx.api.args.IntegerFormat;
 import jadx.api.metadata.annotations.NodeEnd;
-import dexforge.api.plugins.input.data.AccessFlags;
-import dexforge.api.plugins.input.data.annotations.EncodedType;
-import dexforge.api.plugins.input.data.annotations.EncodedValue;
-import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import jadx.core.Consts;
 import jadx.core.codegen.utils.CodeGenUtils;
 import jadx.core.dex.attributes.AFlag;

@@ -15,12 +15,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.JadxDecompiler;
 import dexforge.api.plugins.JadxPlugin;
 import dexforge.api.plugins.input.JadxCodeInput;
 import dexforge.api.plugins.loader.JadxPluginLoader;
 import dexforge.api.plugins.options.JadxPluginOptions;
 import dexforge.api.plugins.options.OptionDescription;
+
+import jadx.api.JadxDecompiler;
 import jadx.core.plugins.versions.VerifyRequiredVersion;
 
 public class JadxPluginManager {

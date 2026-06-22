@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.CodeFeaturesAttr;

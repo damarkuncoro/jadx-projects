@@ -22,6 +22,12 @@ import com.beust.jcommander.DynamicParameter;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 
+import dexforge.cli.config.DexforgeConfigAdapter;
+import dexforge.cli.config.DexforgeConfigExclude;
+import dexforge.cli.config.IDexforgeConfig;
+import dexforge.commons.app.DexforgeCommonFiles;
+import dexforge.commons.app.DexforgeTempFiles;
+
 import jadx.api.CommentsLevel;
 import jadx.api.DecompilationMode;
 import jadx.api.JadxArgs;
@@ -33,11 +39,6 @@ import jadx.api.args.IntegerFormat;
 import jadx.api.args.ResourceNameSource;
 import jadx.api.args.UseSourceNameAsClassNameAlias;
 import jadx.api.args.UserRenamesMappingsMode;
-import dexforge.cli.config.IDexforgeConfig;
-import dexforge.cli.config.DexforgeConfigAdapter;
-import dexforge.cli.config.DexforgeConfigExclude;
-import dexforge.commons.app.DexforgeCommonFiles;
-import dexforge.commons.app.DexforgeTempFiles;
 import jadx.core.deobf.conditions.DeobfWhitelist;
 import jadx.core.export.ExportGradleType;
 import jadx.core.utils.exceptions.JadxArgsValidateException;

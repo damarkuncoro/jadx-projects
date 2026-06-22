@@ -1,14 +1,14 @@
 package dexforge.plugins.kotlin.metadata.utils
 
+import dexforge.plugins.kotlin.metadata.model.ClassAliasRename
+import dexforge.plugins.kotlin.metadata.model.CompanionRename
+import dexforge.plugins.kotlin.metadata.model.FieldRename
+import dexforge.plugins.kotlin.metadata.model.MethodArgRename
 import jadx.core.deobf.NameMapper
 import jadx.core.dex.attributes.nodes.RenameReasonAttr
 import jadx.core.dex.nodes.ClassNode
 import jadx.core.dex.nodes.MethodNode
 import jadx.core.utils.Utils
-import dexforge.plugins.kotlin.metadata.model.ClassAliasRename
-import dexforge.plugins.kotlin.metadata.model.CompanionRename
-import dexforge.plugins.kotlin.metadata.model.FieldRename
-import dexforge.plugins.kotlin.metadata.model.MethodArgRename
 import kotlin.metadata.KmClass
 
 object KotlinMetadataUtils {

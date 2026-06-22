@@ -7,6 +7,7 @@ import com.beust.jcommander.JCommander;
 
 import dexforge.cli.commands.CommandPlugins;
 import dexforge.cli.commands.ICommand;
+
 import jadx.core.utils.exceptions.JadxArgsValidateException;
 
 public class DexforgeCLICommands {

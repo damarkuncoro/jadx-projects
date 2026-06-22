@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.ICodeWriter;
 import dexforge.api.plugins.input.data.IFieldRef;
 import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import dexforge.api.plugins.input.data.annotations.IAnnotation;
@@ -15,6 +14,8 @@ import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import dexforge.api.plugins.input.data.attributes.types.AnnotationDefaultAttr;
 import dexforge.api.plugins.input.data.attributes.types.AnnotationMethodParamsAttr;
 import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
+
+import jadx.api.ICodeWriter;
 import jadx.core.Consts;
 import jadx.core.dex.attributes.IAttributeNode;
 import jadx.core.dex.info.FieldInfo;

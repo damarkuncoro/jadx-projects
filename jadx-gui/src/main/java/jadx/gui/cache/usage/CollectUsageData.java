@@ -3,6 +3,7 @@ package jadx.gui.cache.usage;
 import java.util.List;
 
 import dexforge.api.plugins.input.data.IMethodRef;
+
 import jadx.api.usage.IUsageInfoVisitor;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;

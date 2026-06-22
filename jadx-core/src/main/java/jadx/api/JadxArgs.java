@@ -18,6 +18,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.loader.JadxBasePluginLoader;
+import dexforge.api.plugins.loader.JadxPluginLoader;
+
 import jadx.api.args.GeneratedRenamesMappingFileMode;
 import jadx.api.args.IntegerFormat;
 import jadx.api.args.ResourceNameSource;
@@ -28,8 +31,6 @@ import jadx.api.deobf.IAliasProvider;
 import jadx.api.deobf.IRenameCondition;
 import jadx.api.impl.AnnotatedCodeWriter;
 import jadx.api.impl.InMemoryCodeCache;
-import dexforge.api.plugins.loader.JadxBasePluginLoader;
-import dexforge.api.plugins.loader.JadxPluginLoader;
 import jadx.api.security.IJadxSecurity;
 import jadx.api.security.JadxSecurityFlag;
 import jadx.api.security.impl.JadxSecurity;

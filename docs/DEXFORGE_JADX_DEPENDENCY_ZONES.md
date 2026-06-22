@@ -84,13 +84,33 @@ Domain models are DexForge-owned concepts and should remain stable if the backen
 
 ## `dexforge.application`
 
-Status: **Disallowed by default**
+Status: **Disallowed**
 
 Application use cases should depend on DexForge ports and domain models.
 
-Exception:
+Reason:
 
-Temporary migration code may be allowed only when there is no adapter boundary yet, and it should be tracked for removal.
+Application layer orchestrates workflows using domain models and port abstractions; it should not leak implementation details.
+
+## `dexforge.core.application`
+
+Status: **Disallowed**
+
+Core application services must not directly depend on JADX internals.
+
+Reason:
+
+Keeps use case workflow orchestration independent of the JADX compiler backend.
+
+## `dexforge.core.ports`
+
+Status: **Disallowed**
+
+Core interface definitions (ports) must not reference JADX types.
+
+Reason:
+
+Ports define the abstract boundaries/contracts that adapters (like JADX adapters) must implement.
 
 ## `dexforge.engine`
 
@@ -126,17 +146,17 @@ dexforge.core.infrastructure.jadx.JadxMethodSignatureMapper
 
 Remaining direct JADX dependencies in `dexforge-core` should be limited to adapter/infrastructure packages.
 
-## Next Enforcement Options
+## Enforcement Mechanisms
 
-Possible enforcement mechanisms:
-
-- Checkstyle custom import rule.
-- ArchUnit-style dependency tests.
-- Gradle source-set boundaries.
-- Review checklist for new DexForge-owned features.
-
-Recommended first enforcement:
+Enforced via the custom Gradle check task:
 
 ```text
-Fail the build if dexforge.domain or dexforge.engine imports jadx.api.* or jadx.core.*.
+checkDexForgeBoundaryImports
 ```
+
+This task runs automatically during the Gradle `check` lifecycle (e.g., when running `./gradlew check` or `./gradlew build`). It scans source files under the disallowed packages and fails the build if any JADX import or dependency reference is found. Enforced packages:
+- `dexforge.domain`
+- `dexforge.engine`
+- `dexforge.application`
+- `dexforge.core.application`
+- `dexforge.core.ports`

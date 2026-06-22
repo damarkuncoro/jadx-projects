@@ -18,8 +18,9 @@ import javax.swing.SwingUtilities;
 
 import org.jetbrains.annotations.NotNull;
 
-import jadx.api.metadata.ICodeNodeRef;
 import dexforge.api.plugins.events.types.NodeRenamedByUser;
+
+import jadx.api.metadata.ICodeNodeRef;
 import jadx.core.utils.Utils;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.treemodel.JNode;

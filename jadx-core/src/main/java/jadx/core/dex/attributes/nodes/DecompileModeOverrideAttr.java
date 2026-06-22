@@ -1,8 +1,9 @@
 package jadx.core.dex.attributes.nodes;
 
-import jadx.api.DecompilationMode;
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
+import jadx.api.DecompilationMode;
 import jadx.core.dex.attributes.AType;
 
 public class DecompileModeOverrideAttr implements IJadxAttribute {

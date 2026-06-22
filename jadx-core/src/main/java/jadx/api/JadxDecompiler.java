@@ -21,11 +21,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.metadata.ICodeAnnotation;
-import jadx.api.metadata.ICodeNodeRef;
-import jadx.api.metadata.annotations.NodeDeclareRef;
-import jadx.api.metadata.annotations.VarNode;
-import jadx.api.metadata.annotations.VarRef;
 import dexforge.api.plugins.CustomResourcesLoader;
 import dexforge.api.plugins.JadxPlugin;
 import dexforge.api.plugins.events.IJadxEvents;
@@ -34,6 +29,13 @@ import dexforge.api.plugins.input.JadxCodeInput;
 import dexforge.api.plugins.pass.JadxPass;
 import dexforge.api.plugins.pass.types.JadxAfterLoadPass;
 import dexforge.api.plugins.pass.types.JadxPassType;
+import dexforge.zip.ZipReader;
+
+import jadx.api.metadata.ICodeAnnotation;
+import jadx.api.metadata.ICodeNodeRef;
+import jadx.api.metadata.annotations.NodeDeclareRef;
+import jadx.api.metadata.annotations.VarNode;
+import jadx.api.metadata.annotations.VarRef;
 import jadx.api.utils.tasks.ITaskExecutor;
 import jadx.core.Jadx;
 import jadx.core.dex.attributes.AFlag;
@@ -54,7 +56,6 @@ import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.core.utils.tasks.TaskExecutor;
 import jadx.core.xmlgen.ResourcesSaver;
-import dexforge.zip.ZipReader;
 
 /**
  * Jadx API usage example:

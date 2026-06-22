@@ -4,15 +4,15 @@ import dexforge.api.plugins.input.data.AccessFlags
 import dexforge.api.plugins.pass.JadxPassInfo
 import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo
 import dexforge.api.plugins.pass.types.JadxDecompilePass
+import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions
+import dexforge.plugins.kotlin.metadata.utils.KmClassWrapper
+import dexforge.plugins.kotlin.metadata.utils.KmClassWrapper.Companion.getWrapper
 import jadx.core.deobf.NameMapper
 import jadx.core.dex.attributes.AFlag
 import jadx.core.dex.attributes.nodes.RenameReasonAttr
 import jadx.core.dex.nodes.ClassNode
 import jadx.core.dex.nodes.MethodNode
 import jadx.core.dex.nodes.RootNode
-import dexforge.plugins.kotlin.metadata.KotlinMetadataOptions
-import dexforge.plugins.kotlin.metadata.utils.KmClassWrapper
-import dexforge.plugins.kotlin.metadata.utils.KmClassWrapper.Companion.getWrapper
 
 class KotlinMetadataDecompilePass(
 	private val options: KotlinMetadataOptions,

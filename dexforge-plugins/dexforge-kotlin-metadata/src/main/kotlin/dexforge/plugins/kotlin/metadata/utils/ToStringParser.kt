@@ -1,5 +1,7 @@
 package dexforge.plugins.kotlin.metadata.utils
 
+import dexforge.plugins.kotlin.metadata.model.FieldRename
+import dexforge.plugins.kotlin.metadata.model.ToStringRename
 import jadx.core.Consts
 import jadx.core.dex.info.FieldInfo
 import jadx.core.dex.instructions.ConstStringNode
@@ -14,8 +16,6 @@ import jadx.core.dex.nodes.BlockNode
 import jadx.core.dex.nodes.InsnNode
 import jadx.core.dex.nodes.MethodNode
 import jadx.core.utils.BlockUtils
-import dexforge.plugins.kotlin.metadata.model.FieldRename
-import dexforge.plugins.kotlin.metadata.model.ToStringRename
 
 class ToStringParser private constructor(mthToString: MethodNode) {
 	private var isStarted = false

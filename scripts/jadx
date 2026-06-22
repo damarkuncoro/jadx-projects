@@ -1,24 +1,4 @@
 #!/bin/sh
-# DexForge CLI launcher - main script with DexForge branding
-PRG="$0"
-while [ -h "$PRG" ] ; do
-	ls=`ls -ld "$PRG"`
-	link=`expr "$ls" : '.*-> \(.*\)$'`
-	if expr "$link" : '/.*' > /dev/null; then
-		PRG="$link"
-	else
-		PRG=`dirname "$PRG"`"/$link"
-	fi
-done
-
-PROGDIR=`cd "$(dirname "$PRG")/.." && pwd`
-
-# Find the CLI jar file (handles version numbers)
-JAR_FILE=$(ls "$PROGDIR/lib/jadx-cli-all.jar" "$PROGDIR/lib/dexforge-cli-all.jar" 2>/dev/null | head -n 1)
-
-if [ -z "$JAR_FILE" ] || [ ! -f "$JAR_FILE" ]; then
-	echo "Error: jadx-cli jar not found in $PROGDIR/lib/"
-	exit 1
-fi
-
-exec java -XX:+IgnoreUnrecognizedVMOptions -Xms256M -XX:MaxRAMPercentage=70.0 -XX:ParallelGCThreads=3 -Djdk.util.zip.disableZip64ExtraFieldValidation=true --enable-native-access=ALL-UNNAMED -cp "$JAR_FILE" dexforge.cli.DexforgeCLI "$@"
+# DexForge CLI compatibility alias for JADX command
+echo "Warning: The 'jadx' command is deprecated, please use 'dexforge' instead."
+exec "$(dirname "$0")/dexforge" "$@"

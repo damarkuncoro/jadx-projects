@@ -36,6 +36,8 @@ import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.CustomResourcesLoader;
+
 import jadx.api.CommentsLevel;
 import jadx.api.DecompilationMode;
 import jadx.api.ICodeInfo;
@@ -57,7 +59,6 @@ import jadx.api.impl.SimpleCodeInfo;
 import jadx.api.metadata.ICodeMetadata;
 import jadx.api.metadata.annotations.InsnCodeOffset;
 import jadx.api.metadata.annotations.VarNode;
-import dexforge.api.plugins.CustomResourcesLoader;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.FieldNode;

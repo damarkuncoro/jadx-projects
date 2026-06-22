@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import com.android.apksig.ApkVerifier;
 
+import dexforge.zip.IZipEntry;
+
 import jadx.api.ICodeInfo;
 import jadx.api.ResourceFile;
 import jadx.api.ResourceType;
@@ -30,7 +32,6 @@ import jadx.gui.ui.tab.TabbedPane;
 import jadx.gui.utils.CertificateManager;
 import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
-import dexforge.zip.IZipEntry;
 
 public class ApkSignatureNode extends JNode {
 	private static final long serialVersionUID = -9121321926113143407L;

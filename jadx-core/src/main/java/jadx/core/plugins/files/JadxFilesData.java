@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import dexforge.api.plugins.JadxPluginInfo;
 import dexforge.api.plugins.data.IJadxFiles;
+
 import jadx.core.utils.files.FileUtils;
 
 public class JadxFilesData implements IJadxFiles {

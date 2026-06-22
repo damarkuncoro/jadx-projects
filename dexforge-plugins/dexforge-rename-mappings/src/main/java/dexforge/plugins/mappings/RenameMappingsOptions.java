@@ -4,10 +4,10 @@ import java.util.Locale;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.mappingio.format.MappingFormat;
-
 import dexforge.api.plugins.options.OptionFlag;
 import dexforge.api.plugins.options.impl.BasePluginOptionsBuilder;
+import net.fabricmc.mappingio.format.MappingFormat;
+
 import jadx.core.utils.ListUtils;
 
 import static dexforge.plugins.mappings.RenameMappingsPlugin.PLUGIN_ID;

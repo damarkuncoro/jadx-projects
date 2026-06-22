@@ -12,6 +12,16 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
+import dexforge.cli.DexforgeAppCommon;
+import dexforge.cli.plugins.DexforgeFilesGetter;
+import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
+import dexforge.engine.DexForgeEngine;
+import dexforge.engine.DexForgeOpenProjectRequest;
+import dexforge.engine.DexForgeProjectSession;
+
 import jadx.api.ICodeInfo;
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
@@ -21,13 +31,8 @@ import jadx.api.JavaPackage;
 import jadx.api.ResourceFile;
 import jadx.api.impl.InMemoryCodeCache;
 import jadx.api.metadata.ICodeNodeRef;
-import dexforge.api.plugins.pass.JadxPassInfo;
-import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
-import dexforge.api.plugins.pass.types.JadxPreparePass;
 import jadx.api.usage.impl.EmptyUsageInfoCache;
 import jadx.api.usage.impl.InMemoryUsageInfoCache;
-import dexforge.cli.DexforgeAppCommon;
-import dexforge.cli.plugins.DexforgeFilesGetter;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.ProcessState;
 import jadx.core.dex.nodes.RootNode;
@@ -56,6 +61,7 @@ public class JadxWrapper {
 	private static final Object DECOMPILER_UPDATE_SYNC = new Object();
 
 	private final MainWindow mainWindow;
+	private volatile @Nullable DexForgeProjectSession projectSession;
 	private volatile @Nullable JadxDecompiler decompiler;
 	private CommonGuiPluginsContext guiPluginsContext;
 
@@ -68,18 +74,32 @@ public class JadxWrapper {
 		try {
 			synchronized (DECOMPILER_UPDATE_SYNC) {
 				JadxProject project = getProject();
+				List<java.nio.file.Path> filePaths = project.getFilePaths();
+				if (filePaths.isEmpty()) {
+					throw new JadxRuntimeException("No input files selected");
+				}
+				java.nio.file.Path inputPath = filePaths.get(0);
+
 				JadxArgs jadxArgs = getSettings().toJadxArgs();
 				jadxArgs.setPluginLoader(new JadxExternalPluginsLoader());
 				jadxArgs.setFilesGetter(DexforgeFilesGetter.INSTANCE);
 				project.fillJadxArgs(jadxArgs);
 				DexforgeAppCommon.applyEnvVars(jadxArgs);
 
-				decompiler = new JadxDecompiler(jadxArgs);
-				guiPluginsContext = initGuiPluginsContext(decompiler, mainWindow);
-				initUsageCache(jadxArgs);
-				registerCodeCache(decompiler);
-				decompiler.setEventsImpl(mainWindow.events());
-				decompiler.load();
+				DexForgeEngine engine = JadxBackedDexForgeEngine.create(jadxArgs);
+				DexForgeOpenProjectRequest openRequest = DexForgeOpenProjectRequest.builder(inputPath)
+						.deobfuscationOn(getSettings().isDeobfuscationOn())
+						.decompilerConfigurator(obj -> {
+							JadxDecompiler dec = (JadxDecompiler) obj;
+							this.decompiler = dec;
+							this.guiPluginsContext = initGuiPluginsContext(dec, mainWindow);
+							initUsageCache(jadxArgs);
+							registerCodeCache(dec);
+							dec.setEventsImpl(mainWindow.events());
+						})
+						.build();
+
+				projectSession = engine.openProject(openRequest);
 			}
 		} catch (Exception e) {
 			LOG.error("Jadx decompiler wrapper init error", e);
@@ -101,10 +121,11 @@ public class JadxWrapper {
 	public void close() {
 		try {
 			synchronized (DECOMPILER_UPDATE_SYNC) {
-				if (decompiler != null) {
-					decompiler.close();
-					decompiler = null;
+				if (projectSession != null) {
+					projectSession.close();
+					projectSession = null;
 				}
+				decompiler = null;
 				if (guiPluginsContext != null) {
 					resetGuiPluginsContext();
 					guiPluginsContext = null;
@@ -188,7 +209,7 @@ public class JadxWrapper {
 
 	public void reloadPasses() {
 		resetGuiPluginsContext();
-		decompiler.reloadPasses();
+		getDecompiler().reloadPasses();
 	}
 
 	/**
@@ -279,10 +300,14 @@ public class JadxWrapper {
 	 * Do not store JadxDecompiler in fields to not leak old instances
 	 */
 	public @NotNull JadxDecompiler getDecompiler() {
-		if (decompiler == null || decompiler.getRoot() == null) {
+		if (projectSession == null) {
+			throw new JadxRuntimeException("Session not yet loaded");
+		}
+		JadxDecompiler dec = projectSession.unwrap(JadxDecompiler.class);
+		if (dec == null || dec.getRoot() == null) {
 			throw new JadxRuntimeException("Decompiler not yet loaded");
 		}
-		return decompiler;
+		return dec;
 	}
 
 	// TODO: forbid usage of this method

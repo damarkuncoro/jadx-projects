@@ -10,6 +10,7 @@ import dexforge.api.plugins.input.insns.InsnData;
 import dexforge.api.plugins.input.insns.custom.IArrayPayload;
 import dexforge.api.plugins.input.insns.custom.ICustomPayload;
 import dexforge.api.plugins.input.insns.custom.ISwitchPayload;
+
 import jadx.core.Consts;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

@@ -1,18 +1,18 @@
 package dexforge.application.usecase;
 
-import dexforge.application.port.EventPublisher;
-import dexforge.application.port.ProjectRepository;
-import dexforge.domain.model.project.Project;
-import dexforge.domain.model.project.ProjectId;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import dexforge.application.port.EventPublisher;
+import dexforge.application.port.ProjectRepository;
+import dexforge.domain.model.project.Project;
+import dexforge.domain.model.project.ProjectId;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;

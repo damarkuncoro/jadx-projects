@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
+import dexforge.api.plugins.utils.CommonFileUtils;
+
 import jadx.api.JadxArgs;
 import jadx.api.data.ICodeComment;
 import jadx.api.data.ICodeRename;
@@ -32,7 +34,6 @@ import jadx.api.data.impl.JadxCodeData;
 import jadx.api.data.impl.JadxCodeRef;
 import jadx.api.data.impl.JadxCodeRename;
 import jadx.api.data.impl.JadxNodeRef;
-import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
 import jadx.gui.cache.manager.CacheManager;

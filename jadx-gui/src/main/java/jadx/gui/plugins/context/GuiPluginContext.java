@@ -14,16 +14,17 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.JadxDecompiler;
-import jadx.api.JavaClass;
-import jadx.api.JavaNode;
-import jadx.api.gui.tree.ITreeNode;
-import jadx.api.metadata.ICodeNodeRef;
 import dexforge.api.plugins.events.IJadxEvents;
 import dexforge.api.plugins.events.types.NodeRenamedByUser;
 import dexforge.api.plugins.gui.ISettingsGroup;
 import dexforge.api.plugins.gui.JadxGuiContext;
 import dexforge.api.plugins.gui.JadxGuiSettings;
+
+import jadx.api.JadxDecompiler;
+import jadx.api.JavaClass;
+import jadx.api.JavaNode;
+import jadx.api.gui.tree.ITreeNode;
+import jadx.api.metadata.ICodeNodeRef;
 import jadx.core.plugins.PluginContext;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.settings.data.ITabStatePersist;

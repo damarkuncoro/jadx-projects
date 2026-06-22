@@ -14,11 +14,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.impl.SimpleCodeInfo;
 import dexforge.api.plugins.CustomResourcesLoader;
 import dexforge.api.plugins.resources.IResContainerFactory;
 import dexforge.api.plugins.resources.IResTableParserProvider;
 import dexforge.api.plugins.resources.IResourcesLoader;
+import dexforge.zip.IZipEntry;
+import dexforge.zip.ZipContent;
+
+import jadx.api.impl.SimpleCodeInfo;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.Utils;
 import jadx.core.utils.android.Res9patchStreamDecoder;
@@ -29,8 +32,6 @@ import jadx.core.xmlgen.BinaryXMLParser;
 import jadx.core.xmlgen.IResTableParser;
 import jadx.core.xmlgen.ResContainer;
 import jadx.core.xmlgen.ResTableBinaryParserProvider;
-import dexforge.zip.IZipEntry;
-import dexforge.zip.ZipContent;
 
 import static jadx.core.utils.files.FileUtils.READ_BUFFER_SIZE;
 import static jadx.core.utils.files.FileUtils.copyStream;

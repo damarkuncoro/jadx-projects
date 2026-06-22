@@ -16,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.ICodeInfo;
-import jadx.api.JadxArgs;
 import dexforge.api.plugins.input.data.AccessFlags;
 import dexforge.api.plugins.input.data.AccessFlagsScope;
 import dexforge.api.plugins.input.data.ICatch;
@@ -38,6 +36,9 @@ import dexforge.api.plugins.input.insns.InsnData;
 import dexforge.api.plugins.input.insns.InsnIndexType;
 import dexforge.api.plugins.input.insns.Opcode;
 import dexforge.api.plugins.input.insns.custom.ISwitchPayload;
+
+import jadx.api.ICodeInfo;
+import jadx.api.JadxArgs;
 import jadx.core.dex.attributes.AttributeStorage;
 import jadx.core.dex.instructions.IndexInsnNode;
 import jadx.core.dex.instructions.InsnDecoder;

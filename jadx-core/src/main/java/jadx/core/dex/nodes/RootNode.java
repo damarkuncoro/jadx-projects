@@ -16,6 +16,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.input.ICodeLoader;
+import dexforge.api.plugins.input.data.IClassData;
+import dexforge.api.plugins.pass.JadxPass;
+import dexforge.api.plugins.pass.types.JadxDecompilePass;
+import dexforge.api.plugins.pass.types.JadxPassType;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
+
 import jadx.api.DecompilationMode;
 import jadx.api.ICodeCache;
 import jadx.api.ICodeWriter;
@@ -27,12 +34,6 @@ import jadx.api.ResourcesLoader;
 import jadx.api.data.ICodeData;
 import jadx.api.impl.passes.DecompilePassWrapper;
 import jadx.api.impl.passes.PreparePassWrapper;
-import dexforge.api.plugins.input.ICodeLoader;
-import dexforge.api.plugins.input.data.IClassData;
-import dexforge.api.plugins.pass.JadxPass;
-import dexforge.api.plugins.pass.types.JadxDecompilePass;
-import dexforge.api.plugins.pass.types.JadxPassType;
-import dexforge.api.plugins.pass.types.JadxPreparePass;
 import jadx.core.Jadx;
 import jadx.core.ProcessClass;
 import jadx.core.clsp.ClspGraph;

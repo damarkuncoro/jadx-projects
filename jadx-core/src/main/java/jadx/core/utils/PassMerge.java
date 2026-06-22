@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import dexforge.api.plugins.pass.JadxPass;
 import dexforge.api.plugins.pass.JadxPassInfo;
+
 import jadx.core.dex.visitors.IDexTreeVisitor;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 

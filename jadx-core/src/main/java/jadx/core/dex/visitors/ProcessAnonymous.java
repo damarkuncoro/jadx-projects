@@ -11,6 +11,7 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.data.AccessFlags;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.AnonymousClassAttr;

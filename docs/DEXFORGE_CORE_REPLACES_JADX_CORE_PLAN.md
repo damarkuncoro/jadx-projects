@@ -225,6 +225,8 @@ Acceptance criteria:
 
 ## Phase 3 - Move Workflow Logic from CLI and GUI into DexForge Core
 
+Status: **Started for daemon load/list/decompile and LSP operations**
+
 Goal:
 
 Make CLI and GUI thin clients over `dexforge-core`.
@@ -493,12 +495,10 @@ This gives immediate value:
 
 ## Immediate Next Actions
 
-1. Add build enforcement for disallowed JADX imports in `dexforge.domain` and `dexforge.engine`.
-2. Add compatibility tests for CLI and JSON output.
-3. Move more CLI/GUI workflow logic behind `dexforge-core` use cases.
-4. Define a DexForge project/session lifecycle API.
-5. Add IDE-facing JSON schema tests.
-6. Continue mapping daemon/LSP diagnostics and responses to public `dexforge.engine` models.
+1. Expand build enforcement beyond `dexforge.domain` and `dexforge.engine` once adapter boundaries are complete.
+2. Start moving GUI workflows behind DexForge project/session APIs.
+3. Promote `docs/DEXFORGE_DAEMON_LSP_CONTRACT.md` from preview to stable once downstream IDE clients validate it.
+4. Add end-to-end IDE client smoke tests around the documented daemon/LSP contract.
 
 ## Decision Summary
 

@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import dexforge.zip.ZipReader;
+
 import jadx.core.utils.files.FileUtils;
 import jadx.plugins.tools.data.JadxPluginListCache;
 import jadx.plugins.tools.data.JadxPluginListEntry;
@@ -25,7 +27,6 @@ import jadx.plugins.tools.resolvers.github.LocationInfo;
 import jadx.plugins.tools.resolvers.github.data.Asset;
 import jadx.plugins.tools.resolvers.github.data.Release;
 import jadx.plugins.tools.utils.PluginUtils;
-import dexforge.zip.ZipReader;
 
 import static jadx.core.utils.GsonUtils.buildGson;
 import static jadx.plugins.tools.utils.PluginFiles.PLUGINS_LIST_CACHE;

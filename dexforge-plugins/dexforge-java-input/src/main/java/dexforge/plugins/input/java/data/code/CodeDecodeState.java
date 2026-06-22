@@ -7,12 +7,13 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.insns.Opcode;
-import jadx.core.utils.Utils;
 import dexforge.plugins.input.java.data.DataReader;
 import dexforge.plugins.input.java.data.JavaClassData;
 import dexforge.plugins.input.java.data.attributes.stack.StackFrame;
 import dexforge.plugins.input.java.data.attributes.stack.StackValueType;
 import dexforge.plugins.input.java.data.attributes.types.StackMapTableAttr;
+
+import jadx.core.utils.Utils;
 
 @SuppressWarnings("UnusedReturnValue")
 public class CodeDecodeState {

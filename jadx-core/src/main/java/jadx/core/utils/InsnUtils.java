@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.instructions.ConstClassNode;

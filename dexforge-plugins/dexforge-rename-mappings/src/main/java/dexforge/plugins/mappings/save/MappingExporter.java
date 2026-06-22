@@ -14,6 +14,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
+import dexforge.plugins.mappings.utils.VariablesUtils;
 import net.fabricmc.mappingio.MappedElementKind;
 import net.fabricmc.mappingio.MappingUtil;
 import net.fabricmc.mappingio.MappingWriter;
@@ -39,9 +42,6 @@ import jadx.core.dex.nodes.FieldNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.files.FileUtils;
-import dexforge.plugins.mappings.RenameMappingsData;
-import dexforge.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
-import dexforge.plugins.mappings.utils.VariablesUtils;
 
 public class MappingExporter {
 	private static final Logger LOG = LoggerFactory.getLogger(MappingExporter.class);

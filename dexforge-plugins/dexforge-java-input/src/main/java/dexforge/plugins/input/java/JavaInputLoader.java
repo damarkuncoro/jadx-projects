@@ -18,11 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dexforge.api.plugins.utils.CommonFileUtils;
-import jadx.core.plugins.files.TempFilesGetter;
-import jadx.core.utils.files.FileUtils;
 import dexforge.zip.IZipEntry;
 import dexforge.zip.ZipContent;
 import dexforge.zip.ZipReader;
+
+import jadx.core.plugins.files.TempFilesGetter;
+import jadx.core.utils.files.FileUtils;
 
 public class JavaInputLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(JavaInputLoader.class);

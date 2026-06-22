@@ -2,10 +2,10 @@ package dexforge.plugins.mappings;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.mappingio.tree.MappingTreeView;
-
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+import net.fabricmc.mappingio.tree.MappingTreeView;
+
 import jadx.core.dex.nodes.RootNode;
 
 public class RenameMappingsData implements IJadxAttribute {

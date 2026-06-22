@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.nodes.MethodNode;
 

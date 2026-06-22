@@ -1,11 +1,11 @@
 package dexforge.plugins.kotlin.smap.utils
 
+import dexforge.plugins.kotlin.smap.model.ClassAliasRename
+import dexforge.plugins.kotlin.smap.model.SMAP
 import jadx.core.deobf.NameMapper
 import jadx.core.dex.attributes.nodes.RenameReasonAttr
 import jadx.core.dex.nodes.ClassNode
 import jadx.core.utils.Utils
-import dexforge.plugins.kotlin.smap.model.ClassAliasRename
-import dexforge.plugins.kotlin.smap.model.SMAP
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java

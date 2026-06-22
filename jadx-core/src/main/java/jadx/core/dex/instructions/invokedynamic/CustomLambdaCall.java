@@ -11,6 +11,7 @@ import dexforge.api.plugins.input.data.MethodHandleType;
 import dexforge.api.plugins.input.data.annotations.EncodedType;
 import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import dexforge.api.plugins.input.insns.InsnData;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.MethodInfo;

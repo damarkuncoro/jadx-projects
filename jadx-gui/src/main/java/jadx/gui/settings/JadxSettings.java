@@ -21,6 +21,9 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 
+import dexforge.cli.config.DexforgeConfigAdapter;
+import dexforge.cli.config.DexforgeConfigExclude;
+
 import jadx.api.CommentsLevel;
 import jadx.api.DecompilationMode;
 import jadx.api.JadxArgs;
@@ -29,8 +32,6 @@ import jadx.api.args.IntegerFormat;
 import jadx.api.args.ResourceNameSource;
 import jadx.api.args.UseSourceNameAsClassNameAlias;
 import jadx.api.args.UserRenamesMappingsMode;
-import dexforge.cli.config.DexforgeConfigAdapter;
-import dexforge.cli.config.DexforgeConfigExclude;
 import jadx.core.utils.GsonUtils;
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;

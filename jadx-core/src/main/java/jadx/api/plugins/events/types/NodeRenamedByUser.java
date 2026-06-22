@@ -2,10 +2,11 @@ package dexforge.api.plugins.events.types;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.metadata.ICodeNodeRef;
 import dexforge.api.plugins.events.IJadxEvent;
 import dexforge.api.plugins.events.JadxEventType;
 import dexforge.api.plugins.events.JadxEvents;
+
+import jadx.api.metadata.ICodeNodeRef;
 
 public class NodeRenamedByUser implements IJadxEvent {
 

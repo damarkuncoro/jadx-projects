@@ -4,8 +4,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.JadxArgs;
-import jadx.api.JadxDecompiler;
 import dexforge.api.plugins.data.IJadxFiles;
 import dexforge.api.plugins.data.IJadxPlugins;
 import dexforge.api.plugins.events.IJadxEvents;
@@ -15,6 +13,9 @@ import dexforge.api.plugins.options.JadxPluginOptions;
 import dexforge.api.plugins.pass.JadxPass;
 import dexforge.api.plugins.resources.IResourcesLoader;
 import dexforge.zip.ZipReader;
+
+import jadx.api.JadxArgs;
+import jadx.api.JadxDecompiler;
 
 public interface JadxPluginContext {
 

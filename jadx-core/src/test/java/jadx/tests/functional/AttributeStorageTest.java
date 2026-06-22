@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.AttributeStorage;
 

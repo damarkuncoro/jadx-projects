@@ -1,6 +1,7 @@
 package jadx.gui.events;
 
 import dexforge.api.plugins.events.JadxEventType;
+
 import jadx.gui.events.types.TreeUpdate;
 
 import static dexforge.api.plugins.events.JadxEventType.create;

@@ -10,8 +10,6 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.JadxArgs;
-import jadx.api.JadxDecompiler;
 import dexforge.api.plugins.JadxPlugin;
 import dexforge.api.plugins.JadxPluginContext;
 import dexforge.api.plugins.JadxPluginInfo;
@@ -28,11 +26,14 @@ import dexforge.api.plugins.options.OptionDescription;
 import dexforge.api.plugins.options.OptionFlag;
 import dexforge.api.plugins.pass.JadxPass;
 import dexforge.api.plugins.resources.IResourcesLoader;
+import dexforge.zip.ZipReader;
+
+import jadx.api.JadxArgs;
+import jadx.api.JadxDecompiler;
 import jadx.core.plugins.files.JadxFilesData;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.core.utils.files.FileUtils;
-import dexforge.zip.ZipReader;
 
 public class PluginContext implements JadxPluginContext, JadxPluginRuntimeData, Comparable<PluginContext> {
 	private final JadxDecompiler decompiler;

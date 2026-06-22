@@ -1,18 +1,18 @@
 package dexforge.application.usecase;
 
-import dexforge.application.dto.SearchCodeRequest;
-import dexforge.application.port.EventPublisher;
-import dexforge.domain.model.search.SearchQuery;
-import dexforge.domain.model.search.SearchType;
-import dexforge.domain.model.project.ProjectId;
-import dexforge.domain.service.SearchService;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.concurrent.CompletableFuture;
+import dexforge.application.dto.SearchCodeRequest;
+import dexforge.application.port.EventPublisher;
+import dexforge.domain.model.project.ProjectId;
+import dexforge.domain.model.search.SearchQuery;
+import dexforge.domain.model.search.SearchType;
+import dexforge.domain.service.SearchService;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;

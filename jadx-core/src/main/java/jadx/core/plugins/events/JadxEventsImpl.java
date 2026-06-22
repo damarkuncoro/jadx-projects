@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import dexforge.api.plugins.events.IJadxEvent;
 import dexforge.api.plugins.events.IJadxEvents;
 import dexforge.api.plugins.events.JadxEventType;
+
 import jadx.core.Consts;
 
 public class JadxEventsImpl implements IJadxEvents {

@@ -50,7 +50,11 @@ public class DexforgeCommonFiles {
 		}
 
 		private static Path loadEnvDir(String envVar, Supplier<String> dirFunc) throws IOException {
-			String envDir = DexforgeCommonEnv.get(envVar, null);
+			String newVar = envVar.replace("JADX_", "DEXFORGE_");
+			String envDir = DexforgeCommonEnv.get(newVar, null);
+			if (envDir == null) {
+				envDir = DexforgeCommonEnv.get(envVar, null);
+			}
 			String dirStr;
 			if (envDir != null) {
 				dirStr = envDir;

@@ -43,6 +43,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.events.JadxEvents;
+import dexforge.api.plugins.events.types.ReloadSettingsWindow;
+import dexforge.api.plugins.gui.ISettingsGroup;
+
 import jadx.api.CommentsLevel;
 import jadx.api.DecompilationMode;
 import jadx.api.JadxArgs;
@@ -52,9 +56,6 @@ import jadx.api.args.GeneratedRenamesMappingFileMode;
 import jadx.api.args.IntegerFormat;
 import jadx.api.args.ResourceNameSource;
 import jadx.api.args.UseSourceNameAsClassNameAlias;
-import dexforge.api.plugins.events.JadxEvents;
-import dexforge.api.plugins.events.types.ReloadSettingsWindow;
-import dexforge.api.plugins.gui.ISettingsGroup;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.settings.JadxSettings;

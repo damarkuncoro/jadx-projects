@@ -6,11 +6,12 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.frida.FridaScriptGenerator;
+import dexforge.frida.IFridaScriptGenerator;
+
 import jadx.api.JavaClass;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-import dexforge.frida.FridaScriptGenerator;
-import dexforge.frida.IFridaScriptGenerator;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.treemodel.JField;
 import jadx.gui.treemodel.JMethod;

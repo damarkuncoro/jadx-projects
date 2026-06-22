@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.input.data.AccessFlags;
 import io.github.skylot.jdwp.JDWP;
 import io.github.skylot.jdwp.JDWP.ArrayReference.Length.LengthReplyData;
 import io.github.skylot.jdwp.JDWP.ByteBuffer;
@@ -73,7 +74,6 @@ import io.github.skylot.jdwp.JDWP.VirtualMachine.AllThreads.AllThreadsReplyData;
 import io.github.skylot.jdwp.JDWP.VirtualMachine.AllThreads.AllThreadsReplyDataThreads;
 import io.github.skylot.jdwp.JDWP.VirtualMachine.CreateString.CreateStringReplyData;
 
-import dexforge.api.plugins.input.data.AccessFlags;
 import jadx.gui.device.debugger.smali.RegisterInfo;
 import jadx.gui.utils.IOUtils;
 import jadx.gui.utils.ObjectPool;

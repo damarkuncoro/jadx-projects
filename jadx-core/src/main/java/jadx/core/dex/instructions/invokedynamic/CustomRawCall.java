@@ -7,6 +7,7 @@ import dexforge.api.plugins.input.data.IMethodHandle;
 import dexforge.api.plugins.input.data.IMethodProto;
 import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import dexforge.api.plugins.input.insns.InsnData;
+
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.instructions.ConstStringNode;

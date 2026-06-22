@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.SortedSet;
 
+import dexforge.cli.plugins.DexforgeFilesGetter;
+
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
-import dexforge.cli.plugins.DexforgeFilesGetter;
 import jadx.core.plugins.AppContext;
 import jadx.core.plugins.JadxPluginManager;
 import jadx.core.plugins.PluginContext;

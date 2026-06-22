@@ -3,15 +3,16 @@ package dexforge.plugins.mappings;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import jadx.api.JadxArgs;
-import jadx.api.args.UserRenamesMappingsMode;
 import dexforge.api.plugins.JadxPlugin;
 import dexforge.api.plugins.JadxPluginContext;
 import dexforge.api.plugins.JadxPluginInfo;
-import jadx.core.utils.files.FileUtils;
 import dexforge.plugins.mappings.load.ApplyMappingsPass;
 import dexforge.plugins.mappings.load.CodeMappingsPass;
 import dexforge.plugins.mappings.load.LoadMappingsPass;
+
+import jadx.api.JadxArgs;
+import jadx.api.args.UserRenamesMappingsMode;
+import jadx.core.utils.files.FileUtils;
 
 public class RenameMappingsPlugin implements JadxPlugin {
 	public static final String PLUGIN_ID = "rename-mappings";

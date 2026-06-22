@@ -10,13 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
+import dexforge.zip.IZipEntry;
+import dexforge.zip.security.DexforgeZipSecurity;
+import dexforge.zip.security.DisabledZipSecurity;
+import dexforge.zip.security.IDexforgeZipSecurity;
+
 import jadx.api.security.IJadxSecurity;
 import jadx.api.security.JadxSecurityFlag;
 import jadx.core.deobf.NameMapper;
-import dexforge.zip.IZipEntry;
-import dexforge.zip.security.DisabledZipSecurity;
-import dexforge.zip.security.IDexforgeZipSecurity;
-import dexforge.zip.security.DexforgeZipSecurity;
 
 import static jadx.api.security.JadxSecurityFlag.SECURE_ZIP_READER;
 

@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import dexforge.api.plugins.input.data.ICatch;
 import dexforge.api.plugins.input.data.ITry;
 import dexforge.api.plugins.utils.Utils;
+
 import jadx.core.Consts;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

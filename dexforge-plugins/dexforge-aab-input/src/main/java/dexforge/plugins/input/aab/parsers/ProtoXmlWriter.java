@@ -14,7 +14,7 @@ import jadx.core.xmlgen.XmlDeobf;
 
 public class ProtoXmlWriter {
 	private static final String ANDROID_NS_URL = "http://schemas.android.com/apk/res/android";
-	
+
 	private final RootNode rootNode;
 	private final boolean isPrettyPrint;
 
@@ -26,10 +26,10 @@ public class ProtoXmlWriter {
 	public ICodeInfo write(ProtoXmlElement rootElement) {
 		ICodeWriter writer = rootNode.makeCodeWriter();
 		writer.add("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-		
+
 		Map<String, String> nsMap = new HashMap<>();
 		writeNode(rootElement, writer, nsMap);
-		
+
 		return writer.finish();
 	}
 
@@ -78,14 +78,14 @@ public class ProtoXmlWriter {
 		Set<String> attrCache = new HashSet<>();
 		for (int i = 0; i < attrsCount; i++) {
 			ProtoXmlAttribute attr = e.getAttributes().get(i);
-			
+
 			String name = getAttributeFullName(attr, nsMap);
 			if (XmlDeobf.isDuplicatedAttr(name, attrCache)) {
 				continue;
 			}
-			
+
 			writer.add(name).add("=\"").add(StringUtils.escapeXML(attr.getValue())).add('\"');
-			
+
 			if (i < attrsCount - 1) {
 				if (attrNewLine) {
 					writer.startLine().addIndent();

@@ -9,13 +9,14 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.input.data.AccessFlags;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+
 import jadx.api.CommentsLevel;
 import jadx.api.ICodeWriter;
 import jadx.api.metadata.annotations.InsnCodeOffset;
 import jadx.api.metadata.annotations.VarNode;
-import dexforge.api.plugins.input.data.AccessFlags;
-import dexforge.api.plugins.input.data.annotations.EncodedValue;
-import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import jadx.core.clsp.ClspClass;
 import jadx.core.codegen.utils.CodeGenUtils;
 import jadx.core.dex.attributes.AFlag;

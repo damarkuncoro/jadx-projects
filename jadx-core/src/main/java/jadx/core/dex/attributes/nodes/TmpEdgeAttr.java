@@ -2,6 +2,7 @@ package jadx.core.dex.attributes.nodes;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.nodes.BlockNode;
 

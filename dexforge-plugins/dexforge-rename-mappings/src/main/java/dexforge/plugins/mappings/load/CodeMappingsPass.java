@@ -4,20 +4,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxDecompilePass;
+import dexforge.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
 import net.fabricmc.mappingio.tree.MappingTreeView;
 import net.fabricmc.mappingio.tree.MappingTreeView.ClassMappingView;
 import net.fabricmc.mappingio.tree.MappingTreeView.MethodArgMappingView;
 import net.fabricmc.mappingio.tree.MappingTreeView.MethodMappingView;
 
-import dexforge.api.plugins.pass.JadxPassInfo;
-import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo;
-import dexforge.api.plugins.pass.types.JadxDecompilePass;
 import jadx.core.dex.instructions.args.SSAVar;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.dex.nodes.RootNode;
-import dexforge.plugins.mappings.RenameMappingsData;
-import dexforge.plugins.mappings.utils.DalvikToJavaBytecodeUtils;
 
 public class CodeMappingsPass implements JadxDecompilePass {
 	private volatile Map<String, ClassMappingView> clsRenamesMap;

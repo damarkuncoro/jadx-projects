@@ -4,6 +4,7 @@ import java.util.List;
 
 import dexforge.api.plugins.input.data.ILocalVar;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.utils.Utils;
 

@@ -1,5 +1,7 @@
 package dexforge.plugins.kotlin.metadata.utils
 
+import dexforge.plugins.kotlin.metadata.model.MethodRename
+import dexforge.plugins.kotlin.metadata.model.ToStringRename
 import jadx.core.Consts
 import jadx.core.dex.info.FieldInfo
 import jadx.core.dex.instructions.IndexInsnNode
@@ -9,8 +11,6 @@ import jadx.core.dex.instructions.args.PrimitiveType
 import jadx.core.dex.nodes.ClassNode
 import jadx.core.dex.nodes.FieldNode
 import jadx.core.dex.nodes.MethodNode
-import dexforge.plugins.kotlin.metadata.model.MethodRename
-import dexforge.plugins.kotlin.metadata.model.ToStringRename
 import java.util.Locale
 
 object KotlinUtils {

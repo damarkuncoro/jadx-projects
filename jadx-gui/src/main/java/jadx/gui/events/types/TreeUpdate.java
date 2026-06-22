@@ -2,6 +2,7 @@ package jadx.gui.events.types;
 
 import dexforge.api.plugins.events.IJadxEvent;
 import dexforge.api.plugins.events.JadxEventType;
+
 import jadx.gui.events.JadxGuiEvents;
 import jadx.gui.treemodel.JRoot;
 

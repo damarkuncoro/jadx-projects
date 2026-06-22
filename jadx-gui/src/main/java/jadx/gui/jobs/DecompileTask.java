@@ -10,10 +10,11 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.commons.app.DexforgeCommonEnv;
+
 import jadx.api.ICodeCache;
 import jadx.api.JavaClass;
 import jadx.api.utils.tasks.ITaskExecutor;
-import dexforge.commons.app.DexforgeCommonEnv;
 import jadx.core.utils.tasks.TaskExecutor;
 import jadx.gui.JadxWrapper;
 import jadx.gui.ui.MainWindow;

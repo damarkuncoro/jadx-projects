@@ -5,8 +5,8 @@ package dexforge.plugins.kotlin.metadata.utils
 import dexforge.api.plugins.input.data.annotations.EncodedType
 import dexforge.api.plugins.input.data.annotations.EncodedValue
 import dexforge.api.plugins.input.data.annotations.IAnnotation
-import jadx.core.dex.nodes.ClassNode
 import dexforge.plugins.kotlin.metadata.model.KotlinMetadataConsts
+import jadx.core.dex.nodes.ClassNode
 import kotlin.metadata.jvm.KotlinClassMetadata
 import kotlin.metadata.jvm.Metadata
 

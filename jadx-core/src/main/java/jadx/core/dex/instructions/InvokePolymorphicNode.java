@@ -2,6 +2,7 @@ package jadx.core.dex.instructions;
 
 import dexforge.api.plugins.input.data.IMethodProto;
 import dexforge.api.plugins.input.insns.InsnData;
+
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.utils.InsnUtils;

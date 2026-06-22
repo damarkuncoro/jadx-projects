@@ -4,6 +4,7 @@ import java.util.Set;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
+
 import jadx.core.dex.attributes.AType;
 
 public class MethodThrowsAttr extends PinnedAttribute {

@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+
 import jadx.core.dex.info.AccessInfo;
 import jadx.core.dex.info.ConstStorage;
 import jadx.core.dex.nodes.ClassNode;

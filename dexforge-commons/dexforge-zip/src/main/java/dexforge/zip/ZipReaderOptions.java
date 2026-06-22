@@ -2,8 +2,8 @@ package dexforge.zip;
 
 import java.util.Set;
 
-import dexforge.zip.security.IDexforgeZipSecurity;
 import dexforge.zip.security.DexforgeZipSecurity;
+import dexforge.zip.security.IDexforgeZipSecurity;
 
 public class ZipReaderOptions {
 

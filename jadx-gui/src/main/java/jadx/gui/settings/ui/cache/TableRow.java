@@ -3,6 +3,7 @@ package jadx.gui.settings.ui.cache;
 import java.nio.file.Paths;
 
 import dexforge.api.plugins.utils.CommonFileUtils;
+
 import jadx.gui.cache.manager.CacheEntry;
 
 final class TableRow {

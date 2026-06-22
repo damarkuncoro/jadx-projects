@@ -1,9 +1,10 @@
 package jadx.core.plugins;
 
-import jadx.api.JadxDecompiler;
 import dexforge.api.plugins.JadxPlugin;
 import dexforge.api.plugins.data.IJadxPlugins;
 import dexforge.api.plugins.data.JadxPluginRuntimeData;
+
+import jadx.api.JadxDecompiler;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
 public class JadxPluginsData implements IJadxPlugins {

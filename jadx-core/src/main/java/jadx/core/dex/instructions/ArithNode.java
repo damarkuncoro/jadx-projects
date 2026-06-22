@@ -3,6 +3,7 @@ package jadx.core.dex.instructions;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.insns.InsnData;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.InsnArg;

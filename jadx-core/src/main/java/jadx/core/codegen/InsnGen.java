@@ -7,12 +7,13 @@ import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.api.plugins.input.data.MethodHandleType;
+import dexforge.api.plugins.input.data.annotations.EncodedValue;
+
 import jadx.api.CommentsLevel;
 import jadx.api.ICodeWriter;
 import jadx.api.metadata.annotations.InsnCodeOffset;
 import jadx.api.metadata.annotations.VarNode;
-import dexforge.api.plugins.input.data.MethodHandleType;
-import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import jadx.core.codegen.utils.CodeGenUtils;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

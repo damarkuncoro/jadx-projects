@@ -47,6 +47,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import dexforge.commons.app.DexforgeCommonEnv;
 import dexforge.commons.app.DexforgeSystemInfo;
+
 import jadx.core.dex.info.AccessInfo;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.utils.StringUtils;

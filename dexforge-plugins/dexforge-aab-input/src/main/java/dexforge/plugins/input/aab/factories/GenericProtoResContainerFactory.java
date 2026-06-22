@@ -5,10 +5,11 @@ import java.io.InputStream;
 
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.api.plugins.resources.IResContainerFactory;
+
 import jadx.api.ICodeInfo;
 import jadx.api.ResourceFile;
 import jadx.api.impl.SimpleCodeInfo;
-import dexforge.api.plugins.resources.IResContainerFactory;
 import jadx.core.xmlgen.ResContainer;
 
 public class GenericProtoResContainerFactory implements IResContainerFactory {

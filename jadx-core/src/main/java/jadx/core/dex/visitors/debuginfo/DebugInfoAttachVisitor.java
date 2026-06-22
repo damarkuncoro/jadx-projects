@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import dexforge.api.plugins.input.data.IDebugInfo;
 import dexforge.api.plugins.input.data.ILocalVar;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.nodes.LocalVarsDebugInfoAttr;
 import jadx.core.dex.attributes.nodes.RegDebugInfoAttr;

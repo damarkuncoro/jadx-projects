@@ -3,6 +3,7 @@ package jadx.core.dex.instructions;
 import java.util.List;
 
 import dexforge.api.plugins.input.insns.InsnData;
+
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.InsnArg;
 import jadx.core.dex.instructions.args.LiteralArg;

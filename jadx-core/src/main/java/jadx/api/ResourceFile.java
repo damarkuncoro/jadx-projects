@@ -4,12 +4,13 @@ import java.io.File;
 
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.zip.IZipEntry;
+
 import jadx.core.deobf.FileTypeDetector;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.exceptions.JadxException;
 import jadx.core.xmlgen.ResContainer;
 import jadx.core.xmlgen.entry.ResourceEntry;
-import dexforge.zip.IZipEntry;
 
 public class ResourceFile {
 	private final JadxDecompiler decompiler;

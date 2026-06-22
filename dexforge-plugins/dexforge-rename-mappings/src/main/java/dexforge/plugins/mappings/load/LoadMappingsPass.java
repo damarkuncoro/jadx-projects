@@ -3,6 +3,11 @@ package dexforge.plugins.mappings.load;
 import java.nio.file.Path;
 import java.util.Collections;
 
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
+import dexforge.plugins.mappings.RenameMappingsData;
+import dexforge.plugins.mappings.RenameMappingsOptions;
 import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.MappingUtil;
 import net.fabricmc.mappingio.adapter.MappingSourceNsSwitch;
@@ -11,13 +16,8 @@ import net.fabricmc.mappingio.tree.MemoryMappingTree;
 import net.fabricmc.mappingio.tree.VisitableMappingTree;
 
 import jadx.api.JadxArgs;
-import dexforge.api.plugins.pass.JadxPassInfo;
-import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
-import dexforge.api.plugins.pass.types.JadxPreparePass;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-import dexforge.plugins.mappings.RenameMappingsData;
-import dexforge.plugins.mappings.RenameMappingsOptions;
 
 public class LoadMappingsPass implements JadxPreparePass {
 

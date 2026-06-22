@@ -25,7 +25,7 @@ Most JADX workflows continue to work unchanged in DexForge:
 - Menu: "DexForge Device Explorer" instead of generic names
 
 ### New Features
-- `dexforge lsp` - JSON-RPC daemon mode for IDE integrations
+- `dexforge lsp` - Stable JSON-RPC daemon mode (schema v1.0.0) for IDE integrations
 - Device Explorer CLI: `dexforge device-explorer list-devices`
 - Frida panel integration in GUI
 - Layout Viewer integration in GUI

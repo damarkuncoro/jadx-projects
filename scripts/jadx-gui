@@ -1,25 +1,4 @@
 #!/bin/sh
-# DexForge GUI launcher - main script with DexForge branding
-PRG="$0"
-while [ -h "$PRG" ] ; do
-	ls=`ls -ld "$PRG"`
-	link=`expr "$ls" : '.*-> \(.*\)$'`
-	if expr "$link" : '/.*' > /dev/null; then
-		PRG="$link"
-	else
-		PRG=`dirname "$PRG"`"/$link"
-	fi
-done
-
-PROGDIR=`cd "$(dirname "$PRG")/.." && pwd`
-
-# Find the GUI jar file (handles version numbers)
-JAR_FILE=$(ls "$PROGDIR/lib/jadx-gui-all.jar" 2>/dev/null | head -n 1)
-
-if [ -z "$JAR_FILE" ] || [ ! -f "$JAR_FILE" ]; then
-	echo "Error: jadx-gui jar not found in $PROGDIR/lib/"
-	exit 1
-fi
-
-# Add launch script path property for settings
-exec java -Xms128M -XX:MaxRAMPercentage=70.0 -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Djava.util.Arrays.useLegacyMergeSort=true -Djdk.util.zip.disableZip64ExtraFieldValidation=true -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --enable-native-access=ALL-UNNAMED -cp "$JAR_FILE" jadx.gui.JadxGUI "$@"
+# DexForge GUI compatibility alias for JADX-GUI command
+echo "Warning: The 'jadx-gui' command is deprecated, please use 'dexforge-gui' instead."
+exec "$(dirname "$0")/dexforge-gui" "$@"

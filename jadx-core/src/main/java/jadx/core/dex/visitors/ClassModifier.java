@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import dexforge.api.plugins.input.data.AccessFlags;
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
+
 import jadx.core.Consts;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

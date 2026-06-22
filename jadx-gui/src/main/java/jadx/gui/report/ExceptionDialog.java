@@ -29,9 +29,10 @@ import javax.swing.KeyStroke;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.JadxDecompiler;
 import dexforge.cli.config.DexforgeConfigAdapter;
 import dexforge.commons.app.DexforgeSystemInfo;
+
+import jadx.api.JadxDecompiler;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.settings.JadxSettingsData;

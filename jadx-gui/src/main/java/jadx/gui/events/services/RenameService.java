@@ -13,12 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.events.JadxEvents;
+import dexforge.api.plugins.events.types.NodeRenamedByUser;
+
 import jadx.api.JadxDecompiler;
 import jadx.api.JavaNode;
 import jadx.api.data.ICodeRename;
 import jadx.api.data.impl.JadxCodeData;
-import dexforge.api.plugins.events.JadxEvents;
-import dexforge.api.plugins.events.types.NodeRenamedByUser;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.jobs.TaskStatus;

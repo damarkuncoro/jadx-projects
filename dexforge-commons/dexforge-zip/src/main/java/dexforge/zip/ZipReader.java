@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import dexforge.zip.fallback.FallbackException;
 import dexforge.zip.fallback.FallbackZipParser;
 import dexforge.zip.parser.DexforgeZipParser;
-import dexforge.zip.security.IDexforgeZipSecurity;
 import dexforge.zip.security.DexforgeZipSecurity;
+import dexforge.zip.security.IDexforgeZipSecurity;
 
 /**
  * Jadx wrapper to provide custom zip parser ({@link DexforgeZipParser})

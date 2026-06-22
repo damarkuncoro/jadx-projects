@@ -13,17 +13,18 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.ICodeInfo;
-import jadx.api.JavaMethod;
-import jadx.api.metadata.ICodeNodeRef;
-import jadx.api.metadata.annotations.NodeDeclareRef;
-import jadx.api.metadata.annotations.VarNode;
 import dexforge.api.plugins.input.data.ICodeReader;
 import dexforge.api.plugins.input.data.IDebugInfo;
 import dexforge.api.plugins.input.data.IMethodData;
 import dexforge.api.plugins.input.data.IMethodRef;
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import dexforge.api.plugins.input.data.attributes.types.ExceptionsAttr;
+
+import jadx.api.ICodeInfo;
+import jadx.api.JavaMethod;
+import jadx.api.metadata.ICodeNodeRef;
+import jadx.api.metadata.annotations.NodeDeclareRef;
+import jadx.api.metadata.annotations.VarNode;
 import jadx.api.utils.CodeUtils;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

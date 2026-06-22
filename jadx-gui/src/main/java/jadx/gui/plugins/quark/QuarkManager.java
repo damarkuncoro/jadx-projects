@@ -15,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
-
 import dexforge.commons.app.DexforgeSystemInfo;
+
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.jobs.BackgroundExecutor;
 import jadx.gui.logs.LogOptions;

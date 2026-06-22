@@ -15,11 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.api.DecompilationMode;
-import jadx.api.ICodeCache;
-import jadx.api.ICodeInfo;
-import jadx.api.JavaClass;
-import jadx.api.impl.SimpleCodeWriter;
 import dexforge.api.plugins.input.data.IClassData;
 import dexforge.api.plugins.input.data.IFieldData;
 import dexforge.api.plugins.input.data.IMethodData;
@@ -31,6 +26,12 @@ import dexforge.api.plugins.input.data.attributes.types.InnerClassesAttr;
 import dexforge.api.plugins.input.data.attributes.types.InnerClsInfo;
 import dexforge.api.plugins.input.data.attributes.types.SourceFileAttr;
 import dexforge.api.plugins.input.data.impl.ListConsumer;
+
+import jadx.api.DecompilationMode;
+import jadx.api.ICodeCache;
+import jadx.api.ICodeInfo;
+import jadx.api.JavaClass;
+import jadx.api.impl.SimpleCodeWriter;
 import jadx.api.usage.IUsageInfoData;
 import jadx.core.Consts;
 import jadx.core.dex.attributes.AFlag;

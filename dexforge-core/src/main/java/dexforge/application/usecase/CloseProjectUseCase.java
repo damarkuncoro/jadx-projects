@@ -1,12 +1,12 @@
 package dexforge.application.usecase;
 
+import java.util.List;
+
 import dexforge.application.port.EventPublisher;
 import dexforge.application.port.ProjectRepository;
 import dexforge.domain.event.DomainEvent;
 import dexforge.domain.model.project.Project;
 import dexforge.domain.model.project.ProjectId;
-
-import java.util.List;
 
 /**
  * Use Case: CloseProjectUseCase

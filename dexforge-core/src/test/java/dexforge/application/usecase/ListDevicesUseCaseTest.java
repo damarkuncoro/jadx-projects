@@ -1,11 +1,11 @@
 package dexforge.application.usecase;
 
-import dexforge.domain.model.device.Device;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import dexforge.domain.model.device.Device;
 
 import static org.assertj.core.api.Assertions.*;
 

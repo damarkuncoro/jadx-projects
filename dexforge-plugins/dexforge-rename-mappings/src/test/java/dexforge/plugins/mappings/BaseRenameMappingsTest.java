@@ -10,9 +10,10 @@ import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.loader.JadxBasePluginLoader;
+
 import jadx.api.JadxArgs;
 import jadx.api.JavaClass;
-import dexforge.api.plugins.loader.JadxBasePluginLoader;
 import jadx.core.plugins.files.SingleDirFilesGetter;
 
 import static org.assertj.core.api.Assertions.assertThat;

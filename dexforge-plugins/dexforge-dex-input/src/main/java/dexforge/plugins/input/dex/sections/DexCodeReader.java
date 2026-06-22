@@ -16,12 +16,13 @@ import dexforge.api.plugins.input.data.ITry;
 import dexforge.api.plugins.input.data.impl.CatchData;
 import dexforge.api.plugins.input.data.impl.TryData;
 import dexforge.api.plugins.input.insns.InsnData;
-import jadx.core.utils.exceptions.InvalidDataException;
 import dexforge.plugins.input.dex.DexException;
 import dexforge.plugins.input.dex.insns.DexInsnData;
 import dexforge.plugins.input.dex.insns.DexInsnFormat;
 import dexforge.plugins.input.dex.insns.DexInsnInfo;
 import dexforge.plugins.input.dex.sections.debuginfo.DebugInfoParser;
+
+import jadx.core.utils.exceptions.InvalidDataException;
 
 public class DexCodeReader implements ICodeReader {
 

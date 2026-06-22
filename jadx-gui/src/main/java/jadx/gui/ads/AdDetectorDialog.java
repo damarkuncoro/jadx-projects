@@ -15,10 +15,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import jadx.api.JadxDecompiler;
 import dexforge.plugins.detector.ad.AdDetector;
 import dexforge.plugins.detector.ad.AdFinding;
-import dexforge.plugins.detector.ad.AdNetwork;
+
+import jadx.api.JadxDecompiler;
 import jadx.gui.treemodel.JClass;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.utils.UiUtils;

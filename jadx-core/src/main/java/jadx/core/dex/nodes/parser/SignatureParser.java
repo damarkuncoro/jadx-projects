@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import dexforge.api.plugins.input.data.attributes.types.SignatureAttr;
+
 import jadx.core.dex.attributes.IAttributeNode;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.utils.exceptions.JadxRuntimeException;

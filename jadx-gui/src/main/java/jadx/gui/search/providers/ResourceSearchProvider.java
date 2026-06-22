@@ -11,9 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.utils.CommonFileUtils;
+
 import jadx.api.ResourceFile;
 import jadx.api.ResourceType;
-import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.api.resources.ResourceContentType;
 import jadx.api.utils.CodeUtils;
 import jadx.gui.jobs.Cancelable;

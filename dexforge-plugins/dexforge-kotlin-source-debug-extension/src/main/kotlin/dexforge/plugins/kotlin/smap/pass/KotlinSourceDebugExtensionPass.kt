@@ -3,10 +3,10 @@ package dexforge.plugins.kotlin.smap.pass
 import dexforge.api.plugins.pass.JadxPassInfo
 import dexforge.api.plugins.pass.impl.OrderedJadxPassInfo
 import dexforge.api.plugins.pass.types.JadxPreparePass
-import jadx.core.dex.attributes.AFlag
-import jadx.core.dex.nodes.RootNode
 import dexforge.plugins.kotlin.smap.KotlinSmapOptions
 import dexforge.plugins.kotlin.smap.utils.KotlinSmapUtils
+import jadx.core.dex.attributes.AFlag
+import jadx.core.dex.nodes.RootNode
 
 class KotlinSourceDebugExtensionPass(
 	private val options: KotlinSmapOptions,

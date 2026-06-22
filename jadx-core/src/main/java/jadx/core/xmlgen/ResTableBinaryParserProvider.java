@@ -2,8 +2,9 @@ package jadx.core.xmlgen;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.ResourceFile;
 import dexforge.api.plugins.resources.IResTableParserProvider;
+
+import jadx.api.ResourceFile;
 import jadx.core.dex.nodes.RootNode;
 
 public class ResTableBinaryParserProvider implements IResTableParserProvider {

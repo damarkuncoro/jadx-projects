@@ -23,9 +23,10 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import dexforge.api.plugins.input.data.IMethodRef;
+
 import jadx.api.JavaMethod;
 import jadx.api.JavaNode;
-import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.utils.DotGraphUtils;
 import jadx.gui.treemodel.JMethod;
 import jadx.gui.ui.MainWindow;

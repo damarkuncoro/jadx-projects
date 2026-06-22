@@ -32,4 +32,3 @@ public class JavaConvertPlugin implements JadxPlugin {
 		context.addCodeInput(new JavaConvertCodeInput(loader, dexInput));
 	}
 }
-

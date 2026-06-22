@@ -12,6 +12,7 @@ import dexforge.api.plugins.input.data.IMethodProto;
 import dexforge.api.plugins.input.data.IMethodRef;
 import dexforge.api.plugins.input.data.MethodHandleType;
 import dexforge.api.plugins.input.data.annotations.EncodedValue;
+
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.info.MethodInfo;

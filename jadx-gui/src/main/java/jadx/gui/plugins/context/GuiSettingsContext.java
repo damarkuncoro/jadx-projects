@@ -5,6 +5,7 @@ import java.util.List;
 import dexforge.api.plugins.gui.ISettingsGroup;
 import dexforge.api.plugins.gui.JadxGuiSettings;
 import dexforge.api.plugins.options.OptionDescription;
+
 import jadx.gui.settings.ui.SubSettingsGroup;
 import jadx.gui.settings.ui.plugins.PluginSettings;
 import jadx.gui.ui.MainWindow;

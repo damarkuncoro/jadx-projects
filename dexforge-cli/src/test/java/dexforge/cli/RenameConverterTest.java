@@ -5,8 +5,9 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import jadx.api.JadxArgs.RenameEnum;
 import dexforge.cli.DexforgeCLIArgs.RenameConverter;
+
+import jadx.api.JadxArgs.RenameEnum;
 import jadx.core.utils.exceptions.JadxArgsValidateException;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,6 +1,7 @@
 package jadx.core.dex.instructions.invokedynamic;
 
 import dexforge.api.plugins.input.data.MethodHandleType;
+
 import jadx.core.dex.instructions.InvokeType;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 

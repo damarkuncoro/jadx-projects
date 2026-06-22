@@ -10,8 +10,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import jadx.core.xmlgen.ResContainer;
 import dexforge.plugins.input.dex.DexInputPlugin;
+
+import jadx.core.xmlgen.ResContainer;
 
 import static jadx.tests.api.utils.assertj.JadxAssertions.assertThat;
 

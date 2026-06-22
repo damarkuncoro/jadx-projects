@@ -17,11 +17,13 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dexforge.api.plugins.utils.CommonFileUtils;
+import dexforge.plugins.mappings.RenameMappingsOptions;
+import dexforge.plugins.mappings.save.MappingExporter;
 import net.fabricmc.mappingio.MappingReader;
 import net.fabricmc.mappingio.format.MappingFormat;
 
 import jadx.api.args.UserRenamesMappingsMode;
-import dexforge.api.plugins.utils.CommonFileUtils;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.utils.Utils;
 import jadx.gui.jobs.TaskStatus;
@@ -37,8 +39,6 @@ import jadx.gui.ui.tab.TabbedPane;
 import jadx.gui.utils.NLS;
 import jadx.gui.utils.UiUtils;
 import jadx.gui.utils.ui.ActionHandler;
-import dexforge.plugins.mappings.RenameMappingsOptions;
-import dexforge.plugins.mappings.save.MappingExporter;
 
 public class RenameMappingsGui {
 	private static final Logger LOG = LoggerFactory.getLogger(RenameMappingsGui.class);

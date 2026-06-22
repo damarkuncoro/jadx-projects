@@ -1,6 +1,7 @@
 package jadx.core.dex.attributes.nodes;
 
 import dexforge.api.plugins.input.data.attributes.PinnedAttribute;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.nodes.ClassNode;

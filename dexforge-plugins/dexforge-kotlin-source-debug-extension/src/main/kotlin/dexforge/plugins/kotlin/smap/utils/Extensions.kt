@@ -5,9 +5,9 @@ package dexforge.plugins.kotlin.smap.utils
 import dexforge.api.plugins.input.data.annotations.EncodedType
 import dexforge.api.plugins.input.data.annotations.EncodedValue
 import dexforge.api.plugins.input.data.annotations.IAnnotation
-import jadx.core.dex.nodes.ClassNode
 import dexforge.plugins.kotlin.smap.model.Constants
 import dexforge.plugins.kotlin.smap.model.SMAP
+import jadx.core.dex.nodes.ClassNode
 
 fun ClassNode.getSourceDebugExtension(): SMAP? {
 	val annotation: IAnnotation? = getAnnotation(Constants.KOTLIN_SOURCE_DEBUG_EXTENSION)

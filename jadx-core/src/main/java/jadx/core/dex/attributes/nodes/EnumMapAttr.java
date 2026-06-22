@@ -6,6 +6,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.nodes.FieldNode;
 

@@ -2,9 +2,10 @@ package dexforge.api.plugins.pass.impl;
 
 import java.util.function.Consumer;
 
-import jadx.api.JadxDecompiler;
 import dexforge.api.plugins.pass.JadxPassInfo;
 import dexforge.api.plugins.pass.types.JadxAfterLoadPass;
+
+import jadx.api.JadxDecompiler;
 
 public class SimpleAfterLoadPass implements JadxAfterLoadPass {
 

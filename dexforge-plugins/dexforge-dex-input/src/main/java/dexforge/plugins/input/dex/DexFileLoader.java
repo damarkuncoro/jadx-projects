@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dexforge.api.plugins.utils.CommonFileUtils;
-import jadx.core.utils.files.FileUtils;
 import dexforge.plugins.input.dex.sections.DexConsts;
 import dexforge.plugins.input.dex.sections.DexHeaderV41;
 import dexforge.plugins.input.dex.utils.DataReader;
@@ -27,6 +26,8 @@ import dexforge.plugins.input.dex.utils.DexCheckSum;
 import dexforge.zip.IZipEntry;
 import dexforge.zip.ZipContent;
 import dexforge.zip.ZipReader;
+
+import jadx.core.utils.files.FileUtils;
 
 public class DexFileLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(DexFileLoader.class);

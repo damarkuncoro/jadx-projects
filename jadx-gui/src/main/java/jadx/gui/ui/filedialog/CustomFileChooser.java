@@ -26,6 +26,7 @@ import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 
 import dexforge.api.plugins.utils.CommonFileUtils;
+
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.Utils;
 import jadx.core.utils.files.FileUtils;

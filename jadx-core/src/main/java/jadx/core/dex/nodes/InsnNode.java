@@ -11,6 +11,7 @@ import java.util.function.Function;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.input.insns.InsnData;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.LineAttrNode;

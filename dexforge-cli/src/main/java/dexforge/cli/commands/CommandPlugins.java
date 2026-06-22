@@ -10,9 +10,9 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
 import dexforge.api.plugins.JadxPluginInfo;
-
 import dexforge.cli.JCommanderWrapper;
 import dexforge.cli.LogHelper;
+
 import jadx.core.utils.StringUtils;
 import jadx.plugins.tools.JadxPluginsList;
 import jadx.plugins.tools.JadxPluginsTools;

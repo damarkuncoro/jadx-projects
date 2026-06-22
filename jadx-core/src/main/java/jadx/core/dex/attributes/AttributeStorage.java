@@ -14,6 +14,7 @@ import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
+
 import jadx.core.utils.ListUtils;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.JadxRuntimeException;

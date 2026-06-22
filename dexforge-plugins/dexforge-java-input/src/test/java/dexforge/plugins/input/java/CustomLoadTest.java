@@ -17,9 +17,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import dexforge.api.plugins.input.ICodeLoader;
+
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
-import dexforge.api.plugins.input.ICodeLoader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;

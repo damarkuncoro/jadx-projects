@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.gson.annotations.SerializedName;
 
 import dexforge.cli.LogHelper;
+
 import jadx.gui.cache.code.CodeCacheMode;
 import jadx.gui.cache.usage.UsageCacheMode;
 import jadx.gui.frida.CustomFridaSnippet;

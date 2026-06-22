@@ -18,6 +18,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.gui.ISettingsGroup;
+
 import jadx.core.utils.exceptions.JadxRuntimeException;
 import jadx.gui.utils.NLS;
 

@@ -5,14 +5,15 @@ import java.io.InputStream;
 
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.api.plugins.resources.IResContainerFactory;
+import dexforge.plugins.input.aab.parsers.ResXmlProtoParser;
+import dexforge.zip.IZipEntry;
+
 import jadx.api.ICodeInfo;
 import jadx.api.ResourceFile;
 import jadx.api.ResourceType;
-import dexforge.api.plugins.resources.IResContainerFactory;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.xmlgen.ResContainer;
-import dexforge.plugins.input.aab.parsers.ResXmlProtoParser;
-import dexforge.zip.IZipEntry;
 
 public class ProtoXmlResContainerFactory implements IResContainerFactory {
 	private ResXmlProtoParser xmlParser;

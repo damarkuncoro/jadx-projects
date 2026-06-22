@@ -7,6 +7,7 @@ import dexforge.api.plugins.input.data.annotations.EncodedValue;
 import dexforge.api.plugins.input.data.annotations.IAnnotation;
 import dexforge.api.plugins.input.data.attributes.JadxAttrType;
 import dexforge.api.plugins.input.data.attributes.types.AnnotationsAttr;
+
 import jadx.core.dex.attributes.nodes.CodeFeaturesAttr;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.nodes.ClassNode;

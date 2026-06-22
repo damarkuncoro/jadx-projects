@@ -11,11 +11,12 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
+import dexforge.api.plugins.input.data.IMethodRef;
+
 import jadx.api.ICodeWriter;
 import jadx.api.JadxArgs;
 import jadx.api.JavaMethod;
 import jadx.api.impl.SimpleCodeWriter;
-import dexforge.api.plugins.input.data.IMethodRef;
 import jadx.core.codegen.MethodGen;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;

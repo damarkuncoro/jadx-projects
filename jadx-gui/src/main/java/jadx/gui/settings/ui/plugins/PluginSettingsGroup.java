@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dexforge.api.plugins.gui.ISettingsGroup;
+
 import jadx.core.plugins.PluginContext;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.Utils;

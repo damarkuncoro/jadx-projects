@@ -11,15 +11,16 @@ import java.util.zip.ZipFile;
 
 import org.jetbrains.annotations.Nullable;
 
-import jadx.api.JadxDecompiler;
 import dexforge.api.plugins.JadxPluginContext;
-import jadx.core.utils.Utils;
 import dexforge.zip.IZipEntry;
 import dexforge.zip.ZipReader;
 import dexforge.zip.io.LimitedInputStream;
+import dexforge.zip.security.DexforgeZipSecurity;
 import dexforge.zip.security.DisabledZipSecurity;
 import dexforge.zip.security.IDexforgeZipSecurity;
-import dexforge.zip.security.DexforgeZipSecurity;
+
+import jadx.api.JadxDecompiler;
+import jadx.core.utils.Utils;
 
 /**
  * Deprecated, migrate to {@link ZipReader}. <br>

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import dexforge.api.plugins.input.data.AccessFlags;
+
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.nodes.IMethodDetails;

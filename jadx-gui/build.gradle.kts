@@ -9,6 +9,7 @@ plugins {
 
 dependencies {
 	implementation(project(":jadx-core"))
+	implementation(project(":dexforge-core"))
 	implementation(project(":dexforge-cli"))
 	implementation(project(":dexforge-plugins-tools"))
 	implementation(project(":dexforge-commons:dexforge-app-commons"))

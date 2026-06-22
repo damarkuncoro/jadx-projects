@@ -3,6 +3,7 @@ package jadx.core.dex.visitors.fixaccessmodifiers;
 import java.util.function.Consumer;
 
 import dexforge.api.plugins.input.data.AccessFlags;
+
 import jadx.core.dex.info.AccessInfo;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.ICodeNode;

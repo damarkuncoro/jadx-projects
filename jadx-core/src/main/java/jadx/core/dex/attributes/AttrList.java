@@ -5,6 +5,7 @@ import java.util.List;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.utils.Utils;
 
 public class AttrList<T> implements IJadxAttribute {

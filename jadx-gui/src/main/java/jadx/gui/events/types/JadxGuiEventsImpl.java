@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import dexforge.api.plugins.events.IJadxEvent;
 import dexforge.api.plugins.events.IJadxEvents;
 import dexforge.api.plugins.events.JadxEventType;
+
 import jadx.core.plugins.events.JadxEventsImpl;
 
 /**

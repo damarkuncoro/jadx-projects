@@ -2,6 +2,7 @@ package jadx.core.dex.attributes;
 
 import dexforge.api.plugins.input.data.attributes.IJadxAttrType;
 import dexforge.api.plugins.input.data.attributes.IJadxAttribute;
+
 import jadx.core.codegen.utils.CodeComment;
 import jadx.core.dex.attributes.nodes.AnonymousClassAttr;
 import jadx.core.dex.attributes.nodes.ClassTypeVarsAttr;
