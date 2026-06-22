@@ -39,6 +39,12 @@ val checkDexForgeBoundaryImports by tasks.registering {
 			fileTree("src/main/java/dexforge/core/ports") {
 				include("**/*.java")
 			},
+			fileTree("src/main/java/dexforge/presentation") {
+				include("**/*.java")
+			},
+			fileTree("src/main/java/dexforge/infrastructure/event") {
+				include("**/*.java")
+			},
 		)
 	inputs.files(checkedSources)
 
