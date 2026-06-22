@@ -3,7 +3,10 @@ plugins {
 }
 
 dependencies {
-	api(project(":jadx-core"))
+	// Public API must not leak JADX types
+	implementation(project(":dexforge-core"))
+
+	testImplementation(project(":jadx-core"))
 }
 
 tasks.named("check") {

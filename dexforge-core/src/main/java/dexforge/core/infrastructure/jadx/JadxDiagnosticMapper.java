@@ -1,6 +1,7 @@
 package dexforge.core.infrastructure.jadx;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import dexforge.engine.DexForgeDiagnostic;
@@ -18,9 +19,12 @@ public final class JadxDiagnosticMapper {
 	private JadxDiagnosticMapper() {
 	}
 
-	public static List<DexForgeDiagnostic> collectDiagnostics(ClassNode classNode, String code) {
+	public static List<DexForgeDiagnostic> collectDiagnostics(Object classNode, String code) {
+		if (!(classNode instanceof ClassNode)) {
+			return Collections.emptyList();
+		}
 		List<DexForgeDiagnostic> list = new ArrayList<>();
-		collectDiagnosticsRecursive(classNode, code, list);
+		collectDiagnosticsRecursive((ClassNode) classNode, code, list);
 		return list;
 	}
 

@@ -12,6 +12,7 @@ include("jadx-core")
 include("dexforge-api")
 include("dexforge-core")
 include("dexforge-cli")
+include("dexforge-gui")
 include("jadx-gui")
 
 include("dexforge-plugins-tools")

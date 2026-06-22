@@ -5,6 +5,13 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
+import dexforge.api.core.DexForgeCommentsLevel;
+import dexforge.api.core.DexForgeDecompilationMode;
+import dexforge.api.core.DexForgeDecompiler;
+import dexforge.api.core.DexForgeProject;
+import dexforge.api.core.DexForgeSettings;
+import dexforge.api.exception.DexForgeException;
+
 import jadx.api.JadxArgs;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +22,7 @@ class DexForgeSettingsTest {
 	void shouldApplySettingsToJadxArgs() {
 		JadxArgs args = new JadxArgs();
 
-		DexForgeSettings.create()
+		DexForgeSettings.builder()
 				.threadsCount(8)
 				.typeUpdatesLimit(42)
 				.skipSources(true)
@@ -24,6 +31,7 @@ class DexForgeSettingsTest {
 				.commentsLevel(DexForgeCommentsLevel.ERROR)
 				.decompilationMode(DexForgeDecompilationMode.SIMPLE)
 				.useDexForgeApi(true)
+				.build()
 				.applyTo(args);
 
 		assertThat(args.getThreadsCount()).isEqualTo(8);
@@ -44,15 +52,15 @@ class DexForgeSettingsTest {
 
 	@Test
 	void shouldCreateDecompilerWithNativeBuilder() {
-		DexForgeDecompiler decompiler = DexForgeDecompiler.builder()
-				.inputFiles(Collections.singletonList(new File("sample.apk")))
-				.settings(DexForgeSettings.create().threadsCount(2))
+		DexForgeProject project = DexForgeDecompiler.builder()
+				.inputFile(new File("sample.apk"))
+				.settings(DexForgeSettings.builder().threadsCount(2).build())
 				.build();
 
 		try {
-			assertThat(decompiler.getSettings().getThreadsCount()).isEqualTo(2);
+			assertThat(project.getSettings().getThreadsCount()).isEqualTo(2);
 		} finally {
-			decompiler.close();
+			project.close();
 		}
 	}
 }
