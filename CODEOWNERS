@@ -7,7 +7,7 @@
 
 # Core decompiler engine
 /jadx-core/ @damarkuncoro
-/jadx-commons/ @damarkuncoro
+/dexforge-commons/ @damarkuncoro
 
 # GUI application
 /jadx-gui/ @damarkuncoro
