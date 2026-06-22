@@ -33,8 +33,6 @@ import jadx.api.impl.InMemoryCodeCache;
 import jadx.api.metadata.ICodeNodeRef;
 import jadx.api.usage.impl.EmptyUsageInfoCache;
 import jadx.api.usage.impl.InMemoryUsageInfoCache;
-import jadx.core.dex.nodes.ClassNode;
-import jadx.core.dex.nodes.ProcessState;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.plugins.AppContext;
 import jadx.core.utils.exceptions.JadxRuntimeException;
@@ -50,10 +48,6 @@ import jadx.gui.ui.MainWindow;
 import jadx.gui.utils.CacheObject;
 import jadx.plugins.tools.JadxExternalPluginsLoader;
 
-import static jadx.core.dex.nodes.ProcessState.GENERATED_AND_UNLOADED;
-import static jadx.core.dex.nodes.ProcessState.NOT_LOADED;
-import static jadx.core.dex.nodes.ProcessState.PROCESS_COMPLETE;
-
 @SuppressWarnings("ConstantConditions")
 public class JadxWrapper {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxWrapper.class);
@@ -62,7 +56,6 @@ public class JadxWrapper {
 
 	private final MainWindow mainWindow;
 	private volatile @Nullable DexForgeProjectSession projectSession;
-	private volatile @Nullable JadxDecompiler decompiler;
 	private CommonGuiPluginsContext guiPluginsContext;
 
 	public JadxWrapper(MainWindow mainWindow) {
@@ -91,7 +84,6 @@ public class JadxWrapper {
 						.deobfuscationOn(getSettings().isDeobfuscationOn())
 						.decompilerConfigurator(obj -> {
 							JadxDecompiler dec = (JadxDecompiler) obj;
-							this.decompiler = dec;
 							this.guiPluginsContext = initGuiPluginsContext(dec, mainWindow);
 							initUsageCache(jadxArgs);
 							registerCodeCache(dec);
@@ -109,13 +101,9 @@ public class JadxWrapper {
 
 	// TODO: check and move into core package
 	public void unloadClasses() {
-		getCurrentDecompiler().ifPresent(decompiler -> {
-			for (ClassNode cls : decompiler.getRoot().getClasses()) {
-				ProcessState clsState = cls.getState();
-				cls.unload();
-				cls.setState(clsState == PROCESS_COMPLETE ? GENERATED_AND_UNLOADED : NOT_LOADED);
-			}
-		});
+		if (projectSession != null) {
+			projectSession.unloadClasses();
+		}
 	}
 
 	public void close() {
@@ -125,7 +113,6 @@ public class JadxWrapper {
 					projectSession.close();
 					projectSession = null;
 				}
-				decompiler = null;
 				if (guiPluginsContext != null) {
 					resetGuiPluginsContext();
 					guiPluginsContext = null;
@@ -291,7 +278,10 @@ public class JadxWrapper {
 
 	public Optional<JadxDecompiler> getCurrentDecompiler() {
 		synchronized (DECOMPILER_UPDATE_SYNC) {
-			return Optional.ofNullable(decompiler);
+			if (projectSession == null) {
+				return Optional.empty();
+			}
+			return Optional.ofNullable(projectSession.unwrap(JadxDecompiler.class));
 		}
 	}
 

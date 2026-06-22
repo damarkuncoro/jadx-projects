@@ -29,6 +29,9 @@ public interface DexForgeProjectSession extends AutoCloseable {
 
 	List<DexForgeDiagnostic> getDiagnostics();
 
+	default void unloadClasses() {
+	}
+
 	default boolean isIndexingComplete() {
 		return true;
 	}

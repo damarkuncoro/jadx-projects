@@ -33,6 +33,8 @@ import jadx.api.JavaNode;
 import jadx.api.ResourceFile;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.JadxError;
+import jadx.core.dex.nodes.ClassNode;
+import jadx.core.dex.nodes.ProcessState;
 import jadx.core.utils.ErrorsCounter;
 
 final class JadxProjectSession implements DexForgeProjectSession {
@@ -259,6 +261,15 @@ final class JadxProjectSession implements DexForgeProjectSession {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public void unloadClasses() {
+		for (ClassNode cls : decompiler.getRoot().getClasses()) {
+			ProcessState clsState = cls.getState();
+			cls.unload();
+			cls.setState(clsState == ProcessState.PROCESS_COMPLETE ? ProcessState.GENERATED_AND_UNLOADED : ProcessState.NOT_LOADED);
+		}
 	}
 
 	@Override
