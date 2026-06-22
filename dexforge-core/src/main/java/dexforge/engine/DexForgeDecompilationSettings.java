@@ -10,6 +10,9 @@ public final class DexForgeDecompilationSettings {
 
 	private int threadsCount = DEFAULT_THREADS_COUNT;
 	private int typeUpdatesLimit = DEFAULT_TYPE_UPDATES_LIMIT;
+	private CodeCacheMode codeCacheMode = CodeCacheMode.MEMORY;
+	private UsageCacheMode usageCacheMode = UsageCacheMode.NONE;
+	private java.nio.file.Path cacheDir;
 
 	private DexForgeDecompilationSettings() {
 	}
@@ -33,6 +36,33 @@ public final class DexForgeDecompilationSettings {
 
 	public DexForgeDecompilationSettings typeUpdatesLimit(int limit) {
 		this.typeUpdatesLimit = Math.max(1, limit);
+		return this;
+	}
+
+	public CodeCacheMode getCodeCacheMode() {
+		return codeCacheMode;
+	}
+
+	public DexForgeDecompilationSettings codeCacheMode(CodeCacheMode codeCacheMode) {
+		this.codeCacheMode = codeCacheMode;
+		return this;
+	}
+
+	public UsageCacheMode getUsageCacheMode() {
+		return usageCacheMode;
+	}
+
+	public DexForgeDecompilationSettings usageCacheMode(UsageCacheMode usageCacheMode) {
+		this.usageCacheMode = usageCacheMode;
+		return this;
+	}
+
+	public java.nio.file.Path getCacheDir() {
+		return cacheDir;
+	}
+
+	public DexForgeDecompilationSettings cacheDir(java.nio.file.Path cacheDir) {
+		this.cacheDir = cacheDir;
 		return this;
 	}
 }

@@ -7,7 +7,7 @@ import javax.swing.JOptionPane;
 import jadx.api.ICodeCache;
 import jadx.api.utils.tasks.ITaskExecutor;
 import jadx.gui.JadxWrapper;
-import jadx.gui.cache.code.CodeCacheMode;
+import dexforge.engine.CodeCacheMode;
 import jadx.gui.cache.code.FixedCodeCache;
 import jadx.gui.ui.MainWindow;
 import jadx.gui.utils.NLS;

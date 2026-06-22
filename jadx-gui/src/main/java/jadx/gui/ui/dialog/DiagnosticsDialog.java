@@ -43,7 +43,7 @@ public class DiagnosticsDialog extends JDialog {
 
 		StringBuilder sb = new StringBuilder();
 		List<DexForgeDiagnostic> diagnostics = mainWindow.getWrapper().getDiagnostics();
-		int totalClasses = mainWindow.getWrapper().getDecompiler().getClasses().size();
+		int totalClasses = mainWindow.getWrapper().getClassesCount();
 
 		sb.append("=== DexForge Diagnostics Summary ===\n\n");
 		sb.append("Total classes: ").append(totalClasses).append("\n");

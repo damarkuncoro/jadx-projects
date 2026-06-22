@@ -24,6 +24,9 @@ import dexforge.engine.DexForgeDiagnosticCategory;
 import dexforge.engine.DexForgeEngine;
 import dexforge.engine.DexForgeOpenProjectRequest;
 import dexforge.engine.DexForgeProjectSession;
+import dexforge.engine.DexForgeDecompilationSettings;
+import dexforge.engine.CodeCacheMode;
+import dexforge.engine.UsageCacheMode;
 
 import jadx.api.ICodeInfo;
 import jadx.api.JadxArgs;
@@ -32,18 +35,10 @@ import jadx.api.JavaClass;
 import jadx.api.JavaNode;
 import jadx.api.JavaPackage;
 import jadx.api.ResourceFile;
-import jadx.api.impl.InMemoryCodeCache;
 import jadx.api.metadata.ICodeNodeRef;
-import jadx.api.usage.impl.EmptyUsageInfoCache;
-import jadx.api.usage.impl.InMemoryUsageInfoCache;
 import jadx.core.dex.nodes.RootNode;
 import jadx.core.plugins.AppContext;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-import jadx.gui.cache.code.CodeCacheMode;
-import jadx.gui.cache.code.CodeStringCache;
-import jadx.gui.cache.code.disk.BufferCodeCache;
-import jadx.gui.cache.code.disk.DiskCodeCache;
-import jadx.gui.cache.usage.UsageInfoCache;
 import jadx.gui.plugins.context.CommonGuiPluginsContext;
 import jadx.gui.settings.JadxProject;
 import jadx.gui.settings.JadxSettings;
@@ -82,14 +77,18 @@ public class JadxWrapper {
 				project.fillJadxArgs(jadxArgs);
 				DexforgeAppCommon.applyEnvVars(jadxArgs);
 
+				DexForgeDecompilationSettings decompSettings = DexForgeDecompilationSettings.create()
+						.codeCacheMode(getSettings().getCodeCacheMode())
+						.usageCacheMode(getSettings().getUsageCacheMode())
+						.cacheDir(getProject().getCacheDir());
+
 				DexForgeEngine engine = JadxBackedDexForgeEngine.create(jadxArgs);
 				DexForgeOpenProjectRequest openRequest = DexForgeOpenProjectRequest.builder(inputPath)
 						.deobfuscationOn(getSettings().isDeobfuscationOn())
+						.settings(decompSettings)
 						.decompilerConfigurator(obj -> {
 							JadxDecompiler dec = (JadxDecompiler) obj;
 							this.guiPluginsContext = initGuiPluginsContext(dec, mainWindow);
-							initUsageCache(jadxArgs);
-							registerCodeCache(dec);
 							dec.setEventsImpl(mainWindow.events());
 						})
 						.build();
@@ -128,56 +127,6 @@ public class JadxWrapper {
 		}
 	}
 
-	/**
-	 * Disk cache require loaded classes to operate, but cache should be set before 'after load' event
-	 * to allow plugins decompile classes with cache enabled.
-	 * To resolve this, register last 'prepare' pass for cache initialization.
-	 */
-	private void registerCodeCache(JadxDecompiler jadxDecompiler) {
-		CodeCacheMode codeCacheMode = getSettings().getCodeCacheMode();
-		if (codeCacheMode == CodeCacheMode.MEMORY) {
-			jadxDecompiler.getArgs().setCodeCache(new InMemoryCodeCache());
-			return;
-		}
-		jadxDecompiler.addCustomPass(new JadxPreparePass() {
-			@Override
-			public JadxPassInfo getInfo() {
-				return new SimpleJadxPassInfo("CacheInit");
-			}
-
-			@Override
-			public void init(RootNode root) {
-				switch (getSettings().getCodeCacheMode()) {
-					case DISK_WITH_CACHE:
-						root.getArgs().setCodeCache(new CodeStringCache(buildBufferedDiskCache(root)));
-						break;
-					case DISK:
-						root.getArgs().setCodeCache(buildBufferedDiskCache(root));
-						break;
-				}
-			}
-		});
-	}
-
-	private BufferCodeCache buildBufferedDiskCache(RootNode root) {
-		DiskCodeCache diskCache = new DiskCodeCache(root, getProject().getCacheDir());
-		return new BufferCodeCache(diskCache);
-	}
-
-	private void initUsageCache(JadxArgs jadxArgs) {
-		switch (getSettings().getUsageCacheMode()) {
-			case NONE:
-				jadxArgs.setUsageInfoCache(new EmptyUsageInfoCache());
-				break;
-			case MEMORY:
-				jadxArgs.setUsageInfoCache(new InMemoryUsageInfoCache());
-				break;
-			case DISK:
-				jadxArgs.setUsageInfoCache(new UsageInfoCache(getProject().getCacheDir(), jadxArgs.getInputFiles()));
-				break;
-		}
-	}
-
 	public static CommonGuiPluginsContext initGuiPluginsContext(JadxDecompiler decompiler, MainWindow mainWindow) {
 		CommonGuiPluginsContext guiPluginsContext = new CommonGuiPluginsContext(mainWindow);
 		decompiler.getPluginManager().registerAddPluginListener(pluginContext -> {
@@ -200,6 +149,15 @@ public class JadxWrapper {
 	public void reloadPasses() {
 		resetGuiPluginsContext();
 		getDecompiler().reloadPasses();
+	}
+
+	public int getClassesCount() {
+		synchronized (DECOMPILER_UPDATE_SYNC) {
+			if (projectSession == null) {
+				return 0;
+			}
+			return projectSession.getClassesCount();
+		}
 	}
 
 	/**

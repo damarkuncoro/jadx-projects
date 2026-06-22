@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import dexforge.domain.model.project.Project;
 import dexforge.domain.model.project.ProjectModule;
+import dexforge.engine.CodeCacheMode;
+import dexforge.engine.UsageCacheMode;
 import dexforge.engine.DexForgeClassDecompileResult;
 import dexforge.engine.DexForgeClassInfo;
 import dexforge.engine.DexForgeDefinitionInfo;
@@ -23,6 +25,13 @@ import dexforge.engine.DexForgeSourceLocation;
 import dexforge.engine.DexForgeSourcePosition;
 import dexforge.engine.DexForgeSourceRange;
 import dexforge.engine.DexForgeWorkspaceSymbol;
+import dexforge.core.infrastructure.jadx.cache.code.CodeStringCache;
+import dexforge.core.infrastructure.jadx.cache.code.disk.BufferCodeCache;
+import dexforge.core.infrastructure.jadx.cache.code.disk.DiskCodeCache;
+import dexforge.core.infrastructure.jadx.cache.usage.UsageInfoCache;
+import dexforge.api.plugins.pass.JadxPassInfo;
+import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
+import dexforge.api.plugins.pass.types.JadxPreparePass;
 
 import jadx.api.CommentsLevel;
 import jadx.api.DecompilationMode;
@@ -77,6 +86,9 @@ final class JadxProjectSession implements DexForgeProjectSession {
 		}
 
 		JadxDecompiler decompiler = new JadxDecompiler(args);
+		if (settings != null) {
+			setupCache(decompiler, args, settings);
+		}
 		if (request.getDecompilerConfigurator() != null) {
 			request.getDecompilerConfigurator().accept(decompiler);
 		}
@@ -493,6 +505,65 @@ final class JadxProjectSession implements DexForgeProjectSession {
 		private NodeAtPosition(JavaNode node, String code) {
 			this.node = node;
 			this.code = code;
+		}
+	}
+
+	private static void setupCache(JadxDecompiler decompiler, JadxArgs args, DexForgeDecompilationSettings settings) {
+		// 1. Setup Usage Info Cache
+		if (settings.getUsageCacheMode() != null && settings.getCacheDir() != null) {
+			switch (settings.getUsageCacheMode()) {
+				case NONE:
+					args.setUsageInfoCache(new jadx.api.usage.impl.EmptyUsageInfoCache());
+					break;
+				case MEMORY:
+					args.setUsageInfoCache(new jadx.api.usage.impl.InMemoryUsageInfoCache());
+					break;
+				case DISK:
+					args.setUsageInfoCache(new dexforge.core.infrastructure.jadx.cache.usage.UsageInfoCache(
+							settings.getCacheDir(), args.getInputFiles()));
+					break;
+			}
+		}
+
+		// 2. Setup Code Cache
+		if (settings.getCodeCacheMode() != null) {
+			switch (settings.getCodeCacheMode()) {
+				case MEMORY:
+					args.setCodeCache(new jadx.api.impl.InMemoryCodeCache());
+					break;
+				case DISK_WITH_CACHE:
+					decompiler.addCustomPass(new JadxPreparePass() {
+						@Override
+						public JadxPassInfo getInfo() {
+							return new SimpleJadxPassInfo("CacheInit");
+						}
+
+						@Override
+						public void init(jadx.core.dex.nodes.RootNode root) {
+							root.getArgs().setCodeCache(new CodeStringCache(
+									new BufferCodeCache(
+											new DiskCodeCache(root, settings.getCacheDir())
+									)
+							));
+						}
+					});
+					break;
+				case DISK:
+					decompiler.addCustomPass(new JadxPreparePass() {
+						@Override
+						public JadxPassInfo getInfo() {
+							return new SimpleJadxPassInfo("CacheInit");
+						}
+
+						@Override
+						public void init(jadx.core.dex.nodes.RootNode root) {
+							root.getArgs().setCodeCache(new BufferCodeCache(
+									new DiskCodeCache(root, settings.getCacheDir())
+							));
+						}
+					});
+					break;
+			}
 		}
 	}
 }

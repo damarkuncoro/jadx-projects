@@ -26,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 import dexforge.api.plugins.gui.ISettingsGroup;
 
-import jadx.gui.cache.code.CodeCacheMode;
-import jadx.gui.cache.usage.UsageCacheMode;
+import dexforge.engine.CodeCacheMode;
+import dexforge.engine.UsageCacheMode;
 import jadx.gui.settings.JadxSettings;
 import jadx.gui.settings.ui.JadxSettingsWindow;
 import jadx.gui.settings.ui.SettingsGroup;
@@ -177,11 +177,45 @@ public class CacheSettingsGroup implements ISettingsGroup {
 		}
 	}
 
+	private String getCodeCacheModeLocalizedName(CodeCacheMode mode) {
+		switch (mode) {
+			case MEMORY: return NLS.str("preferences.codeCacheMode.memory");
+			case DISK_WITH_CACHE: return NLS.str("preferences.codeCacheMode.diskWithCache");
+			case DISK: return NLS.str("preferences.codeCacheMode.disk");
+		}
+		return mode.name();
+	}
+
+	private String getCodeCacheModeDesc(CodeCacheMode mode) {
+		switch (mode) {
+			case MEMORY: return NLS.str("preferences.codeCacheMode.memory.desc");
+			case DISK_WITH_CACHE: return NLS.str("preferences.codeCacheMode.diskWithCache.desc");
+			case DISK: return NLS.str("preferences.codeCacheMode.disk.desc");
+		}
+		return "";
+	}
+
+	private String buildCodeCacheToolTip() {
+		return java.util.stream.Stream.of(CodeCacheMode.values())
+				.map(v -> getCodeCacheModeLocalizedName(v) + " - " + getCodeCacheModeDesc(v))
+				.collect(java.util.stream.Collectors.joining("\n"));
+	}
+
 	private JComponent buildBaseOptions() {
 		JadxSettings settings = settingsWindow.getMainWindow().getSettings();
 
 		JComboBox<CodeCacheMode> codeCacheModeComboBox = new JComboBox<>(CodeCacheMode.values());
 		codeCacheModeComboBox.setSelectedItem(settings.getCodeCacheMode());
+		codeCacheModeComboBox.setRenderer(new javax.swing.DefaultListCellRenderer() {
+			@Override
+			public java.awt.Component getListCellRendererComponent(javax.swing.JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+				if (value instanceof CodeCacheMode) {
+					setText(getCodeCacheModeLocalizedName((CodeCacheMode) value));
+				}
+				return this;
+			}
+		});
 		codeCacheModeComboBox.addActionListener(e -> {
 			settings.setCodeCacheMode((CodeCacheMode) codeCacheModeComboBox.getSelectedItem());
 			settingsWindow.needReload();
@@ -195,7 +229,7 @@ public class CacheSettingsGroup implements ISettingsGroup {
 		});
 
 		SettingsGroup group = new SettingsGroup(title);
-		group.addRow(NLS.str("preferences.codeCacheMode"), CodeCacheMode.buildToolTip(), codeCacheModeComboBox);
+		group.addRow(NLS.str("preferences.codeCacheMode"), buildCodeCacheToolTip(), codeCacheModeComboBox);
 		group.addRow(NLS.str("preferences.usageCacheMode"), usageCacheModeComboBox);
 		return group.buildComponent();
 	}

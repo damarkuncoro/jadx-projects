@@ -15,8 +15,8 @@ import com.google.gson.annotations.SerializedName;
 
 import dexforge.cli.LogHelper;
 
-import jadx.gui.cache.code.CodeCacheMode;
-import jadx.gui.cache.usage.UsageCacheMode;
+import dexforge.engine.CodeCacheMode;
+import dexforge.engine.UsageCacheMode;
 import jadx.gui.frida.CustomFridaSnippet;
 import jadx.gui.settings.data.SaveOptionEnum;
 import jadx.gui.tree.TreePreset;
