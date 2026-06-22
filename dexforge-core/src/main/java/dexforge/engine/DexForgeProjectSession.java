@@ -1,6 +1,7 @@
 package dexforge.engine;
 
 import java.util.List;
+import java.util.Map;
 
 import dexforge.domain.model.project.Project;
 
@@ -28,6 +29,10 @@ public interface DexForgeProjectSession extends AutoCloseable {
 	void decompileProject(java.nio.file.Path outputPath, DexForgeProgressReporter progressReporter);
 
 	List<DexForgeDiagnostic> getDiagnostics();
+
+	default Map<DexForgeDiagnosticCategory, Integer> getErrorCountsByCategory() {
+		return Map.of();
+	}
 
 	default void unloadClasses() {
 	}

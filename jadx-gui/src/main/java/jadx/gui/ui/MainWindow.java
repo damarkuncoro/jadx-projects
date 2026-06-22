@@ -1455,6 +1455,9 @@ public class MainWindow extends JFrame {
 		view.add(syncAction);
 		view.add(alwaysSelectOpened);
 		view.addSeparator();
+		view.add(showLogAction);
+		view.add(showDiagnosticsAction);
+		view.addSeparator();
 		view.add(dockLog);
 		view.add(fridaPanelMenuItem);
 		view.add(heapUsageBarMenuItem);

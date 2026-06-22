@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import dexforge.cli.DexforgeAppCommon;
 import dexforge.cli.plugins.DexforgeFilesGetter;
 import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
 import dexforge.engine.DexForgeDiagnostic;
+import dexforge.engine.DexForgeDiagnosticCategory;
 import dexforge.engine.DexForgeEngine;
 import dexforge.engine.DexForgeOpenProjectRequest;
 import dexforge.engine.DexForgeProjectSession;
@@ -298,6 +300,15 @@ public class JadxWrapper {
 				return List.of();
 			}
 			return projectSession.getDiagnostics();
+		}
+	}
+
+	public Map<DexForgeDiagnosticCategory, Integer> getErrorCountsByCategory() {
+		synchronized (DECOMPILER_UPDATE_SYNC) {
+			if (projectSession == null) {
+				return Map.of();
+			}
+			return projectSession.getErrorCountsByCategory();
 		}
 	}
 
