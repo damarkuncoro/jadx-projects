@@ -2,6 +2,7 @@ package dexforge.core.infrastructure.jadx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import dexforge.domain.model.project.Project;
@@ -10,6 +11,7 @@ import dexforge.engine.DexForgeClassDecompileResult;
 import dexforge.engine.DexForgeClassInfo;
 import dexforge.engine.DexForgeDefinitionInfo;
 import dexforge.engine.DexForgeDiagnostic;
+import dexforge.engine.DexForgeDiagnosticCategory;
 import dexforge.engine.DexForgeDiagnosticSeverity;
 import dexforge.engine.DexForgeHover;
 import dexforge.engine.DexForgeOpenProjectRequest;
@@ -257,7 +259,12 @@ final class JadxProjectSession implements DexForgeProjectSession {
 			for (JadxError err : node.getAll(AType.JADX_ERROR)) {
 				String sourceName = extractSourceName(node);
 				String methodName = extractMethodName(node);
-				DexForgeDiagnostic.Builder builder = DexForgeDiagnostic.builder(DexForgeDiagnosticSeverity.ERROR, err.getError())
+				String errorMessage = err.getError();
+				DexForgeDiagnosticCategory category = categorizeError(errorMessage);
+				if (category == DexForgeDiagnosticCategory.OVERFLOW_REGION) {
+					continue;
+				}
+				DexForgeDiagnostic.Builder builder = DexForgeDiagnostic.builder(DexForgeDiagnosticSeverity.ERROR, errorMessage)
 						.source(sourceName);
 				if (methodName != null) {
 					builder.method(methodName);
@@ -266,6 +273,38 @@ final class JadxProjectSession implements DexForgeProjectSession {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Returns errors grouped by category for analysis.
+	 */
+	public Map<DexForgeDiagnosticCategory, Integer> getErrorCountsByCategory() {
+		Map<DexForgeDiagnosticCategory, Integer> counts = new java.util.HashMap<>();
+		ErrorsCounter errorsCounter = decompiler.getRoot().getErrorsCounter();
+		for (jadx.core.dex.attributes.IAttributeNode node : errorsCounter.getErrorNodes()) {
+			for (JadxError err : node.getAll(AType.JADX_ERROR)) {
+				String errorMessage = err.getError();
+				DexForgeDiagnosticCategory category = categorizeError(errorMessage);
+				if (category == null) {
+					continue;
+				}
+				counts.merge(category, 1, Integer::sum);
+			}
+		}
+		return counts;
+	}
+
+	private DexForgeDiagnosticCategory categorizeError(String errorMessage) {
+		if (errorMessage.contains("Regions count limit reached")) {
+			return DexForgeDiagnosticCategory.OVERFLOW_REGION;
+		}
+		if (errorMessage.contains("Code restructure failed")) {
+			return DexForgeDiagnosticCategory.CODE_RESTRUCTURE_FAILED;
+		}
+		if (errorMessage.contains("Type inference failed")) {
+			return DexForgeDiagnosticCategory.TYPE_INFERENCE_FAILED;
+		}
+		return null;
 	}
 
 	private String extractSourceName(jadx.core.dex.attributes.IAttributeNode node) {

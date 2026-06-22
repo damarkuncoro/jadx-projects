@@ -152,6 +152,7 @@ import jadx.gui.ui.dialog.ADBDialog;
 import jadx.gui.ui.dialog.AboutDialog;
 import jadx.gui.ui.dialog.BookmarkManagerDialog;
 import jadx.gui.ui.dialog.CharsetDialog;
+import jadx.gui.ui.dialog.DiagnosticsDialog;
 import jadx.gui.ui.dialog.GotoAddressDialog;
 import jadx.gui.ui.dialog.LogViewerDialog;
 import jadx.gui.ui.dialog.SearchDialog;
@@ -1407,6 +1408,8 @@ public class MainWindow extends JFrame {
 
 		JadxGuiAction showLogAction = new JadxGuiAction(ActionModel.SHOW_LOG,
 				() -> showLogViewer(LogOptions.current()));
+		JadxGuiAction showDiagnosticsAction = new JadxGuiAction(ActionModel.SHOW_DIAGNOSTICS,
+				() -> new DiagnosticsDialog(MainWindow.this, MainWindow.this).setVisible(true));
 		JadxGuiAction aboutAction = new JadxGuiAction(ActionModel.ABOUT, () -> new AboutDialog().setVisible(true));
 		JadxGuiAction backAction = new JadxGuiAction(ActionModel.BACK, navController::navBack);
 		JadxGuiAction backVariantAction = new JadxGuiAction(ActionModel.BACK_V, navController::navBack);

@@ -71,6 +71,8 @@ public enum ActionModel {
 			Shortcut.keyboard(KeyEvent.VK_D, UiUtils.ctrlButton() | KeyEvent.ALT_DOWN_MASK)),
 	SHOW_LOG(MENU_TOOLBAR, "menu.log", "menu.log", "ui/logVerbose",
 			Shortcut.keyboard(KeyEvent.VK_L, UiUtils.ctrlButton() | KeyEvent.SHIFT_DOWN_MASK)),
+	SHOW_DIAGNOSTICS(MENU_TOOLBAR, "menu.diagnostics", "menu.diagnostics", "ui/error",
+			Shortcut.none()),
 	CREATE_DESKTOP_ENTRY(MENU_TOOLBAR, "menu.create_desktop_entry", "menu.create_desktop_entry", null, Shortcut.none()),
 	BACK(MENU_TOOLBAR, "nav.back", "nav.back", "ui/left",
 			Shortcut.keyboard(KeyEvent.VK_ESCAPE)),
