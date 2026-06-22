@@ -18,6 +18,7 @@ import dexforge.api.plugins.pass.types.JadxPreparePass;
 import dexforge.cli.DexforgeAppCommon;
 import dexforge.cli.plugins.DexforgeFilesGetter;
 import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
+import dexforge.engine.DexForgeDiagnostic;
 import dexforge.engine.DexForgeEngine;
 import dexforge.engine.DexForgeOpenProjectRequest;
 import dexforge.engine.DexForgeProjectSession;
@@ -288,6 +289,15 @@ public class JadxWrapper {
 	public Optional<DexForgeProjectSession> getProjectSession() {
 		synchronized (DECOMPILER_UPDATE_SYNC) {
 			return Optional.ofNullable(projectSession);
+		}
+	}
+
+	public List<DexForgeDiagnostic> getDiagnostics() {
+		synchronized (DECOMPILER_UPDATE_SYNC) {
+			if (projectSession == null) {
+				return List.of();
+			}
+			return projectSession.getDiagnostics();
 		}
 	}
 

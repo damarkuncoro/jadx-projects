@@ -1,14 +1,22 @@
 package dexforge.engine;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Objects;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Public diagnostic entry for DexForge API and JSON consumers.
  */
 public final class DexForgeDiagnostic {
+	private static final Gson GSON = new GsonBuilder().create();
+
 	private final DexForgeDiagnosticSeverity severity;
 	private final String message;
 	private final String source;
+	private final String method;
 	private final int line;
 	private final int column;
 
@@ -16,6 +24,7 @@ public final class DexForgeDiagnostic {
 		this.severity = Objects.requireNonNull(builder.severity, "Severity cannot be null");
 		this.message = Objects.requireNonNull(builder.message, "Message cannot be null");
 		this.source = builder.source;
+		this.method = builder.method;
 		this.line = builder.line;
 		this.column = builder.column;
 	}
@@ -32,12 +41,35 @@ public final class DexForgeDiagnostic {
 		return source;
 	}
 
+	public String getMethod() {
+		return method;
+	}
+
 	public int getLine() {
 		return line;
 	}
 
 	public int getColumn() {
 		return column;
+	}
+
+	public String toJson() {
+		Map<String, Object> map = new LinkedHashMap<>();
+		map.put("severity", severity.name().toLowerCase());
+		map.put("message", message);
+		if (source != null) {
+			map.put("source", source);
+		}
+		if (method != null) {
+			map.put("method", method);
+		}
+		if (line >= 0) {
+			map.put("line", line);
+		}
+		if (column >= 0) {
+			map.put("column", column);
+		}
+		return GSON.toJson(map);
 	}
 
 	public static Builder builder(DexForgeDiagnosticSeverity severity, String message) {
@@ -48,6 +80,7 @@ public final class DexForgeDiagnostic {
 		private final DexForgeDiagnosticSeverity severity;
 		private final String message;
 		private String source;
+		private String method;
 		private int line = -1;
 		private int column = -1;
 
@@ -58,6 +91,11 @@ public final class DexForgeDiagnostic {
 
 		public Builder source(String source) {
 			this.source = source;
+			return this;
+		}
+
+		public Builder method(String method) {
+			this.method = method;
 			return this;
 		}
 

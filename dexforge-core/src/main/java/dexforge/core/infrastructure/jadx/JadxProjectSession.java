@@ -255,12 +255,36 @@ final class JadxProjectSession implements DexForgeProjectSession {
 		ErrorsCounter errorsCounter = decompiler.getRoot().getErrorsCounter();
 		for (jadx.core.dex.attributes.IAttributeNode node : errorsCounter.getErrorNodes()) {
 			for (JadxError err : node.getAll(AType.JADX_ERROR)) {
-				list.add(DexForgeDiagnostic.builder(DexForgeDiagnosticSeverity.ERROR, err.getError())
-						.source(node.toString())
-						.build());
+				String sourceName = extractSourceName(node);
+				String methodName = extractMethodName(node);
+				DexForgeDiagnostic.Builder builder = DexForgeDiagnostic.builder(DexForgeDiagnosticSeverity.ERROR, err.getError())
+						.source(sourceName);
+				if (methodName != null) {
+					builder.method(methodName);
+				}
+				list.add(builder.build());
 			}
 		}
 		return list;
+	}
+
+	private String extractSourceName(jadx.core.dex.attributes.IAttributeNode node) {
+		if (node instanceof ClassNode) {
+			return ((ClassNode) node).getClassInfo().getFullName();
+		}
+		if (node instanceof jadx.core.dex.nodes.MethodNode) {
+			jadx.core.dex.nodes.MethodNode mth = (jadx.core.dex.nodes.MethodNode) node;
+			return mth.getParentClass().getClassInfo().getFullName();
+		}
+		return node.toString();
+	}
+
+	private String extractMethodName(jadx.core.dex.attributes.IAttributeNode node) {
+		if (node instanceof jadx.core.dex.nodes.MethodNode) {
+			jadx.core.dex.nodes.MethodNode mth = (jadx.core.dex.nodes.MethodNode) node;
+			return mth.getMethodInfo().getName();
+		}
+		return null;
 	}
 
 	@Override

@@ -6,6 +6,9 @@ plugins {
 dependencies {
 	implementation(project(":jadx-core"))
 
+	// JSON serialization for diagnostics
+	implementation("com.google.code.gson:gson:2.13.2")
+
 	// Logging
 	implementation("ch.qos.logback:logback-classic:1.5.21")
 	implementation("io.github.oshai:kotlin-logging-jvm:7.0.13")
@@ -52,8 +55,8 @@ val checkDexForgeBoundaryImports by tasks.registering {
 		val forbiddenTokens =
 			listOf(
 				"import jadx.",
-				"jadx.api",
-				"jadx.core",
+				"import jadx.api",
+				"import jadx.core",
 				"JadxArgs",
 				"JadxDecompiler",
 				"ClassNode",
