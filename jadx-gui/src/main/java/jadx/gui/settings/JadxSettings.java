@@ -432,6 +432,14 @@ public class JadxSettings {
 		sync();
 	}
 
+	public boolean isUseDexForgeApi() {
+		return settingsData.isUseDexForgeApi();
+	}
+
+	public void setUseDexForgeApi(boolean useDexForgeApi) {
+		settingsData.setUseDexForgeApi(useDexForgeApi);
+	}
+
 	public void saveKeepCommonDialogOpen(boolean keepCommonDialogOpen) {
 		settingsData.setKeepCommonDialogOpen(keepCommonDialogOpen);
 		sync();

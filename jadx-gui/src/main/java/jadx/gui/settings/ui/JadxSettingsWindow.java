@@ -501,6 +501,13 @@ public class JadxSettingsWindow extends JDialog {
 			needReload();
 		});
 
+		JCheckBox useDexForgeApi = new JCheckBox();
+		useDexForgeApi.setSelected(settings.isUseDexForgeApi());
+		useDexForgeApi.addItemListener(e -> {
+			settings.setUseDexForgeApi(e.getStateChange() == ItemEvent.SELECTED);
+			needReload();
+		});
+
 		JComboBox<DecompilationMode> decompilationModeComboBox = new JComboBox<>(DecompilationMode.values());
 		decompilationModeComboBox.setSelectedItem(settings.getDecompilationMode());
 		decompilationModeComboBox.addActionListener(e -> {
@@ -686,6 +693,7 @@ public class JadxSettingsWindow extends JDialog {
 		other.addRow(NLS.str("preferences.extractFinally"), extractFinally);
 		other.addRow(NLS.str("preferences.restoreSwitchOverString"), restoreSwitchOverString);
 		other.addRow(NLS.str("preferences.fsCaseSensitive"), fsCaseSensitive);
+		other.addRow(NLS.str("preferences.useDexForgeApi"), useDexForgeApi);
 		other.addRow(NLS.str("preferences.useDx"), useDx);
 		other.addRow(NLS.str("preferences.skipResourcesDecode"), resourceDecode);
 		other.addRow(NLS.str("preferences.useKotlinMethodsForVarNames"), kotlinRenameVars);

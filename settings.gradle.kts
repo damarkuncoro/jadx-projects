@@ -9,6 +9,7 @@ if (!JavaVersion.current().isJava11Compatible) {
 rootProject.name = "jadx"
 
 include("jadx-core")
+include("dexforge-api")
 include("dexforge-core")
 include("dexforge-cli")
 include("jadx-gui")

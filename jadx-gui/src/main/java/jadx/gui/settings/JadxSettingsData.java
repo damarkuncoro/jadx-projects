@@ -35,7 +35,7 @@ import jadx.gui.utils.shortcut.Shortcut;
  * fields from copy/export.
  */
 public class JadxSettingsData extends JadxGUIArgs {
-	public static final int CURRENT_SETTINGS_VERSION = 23;
+	public static final int CURRENT_SETTINGS_VERSION = 24;
 
 	private static final Path USER_HOME = Paths.get(System.getProperty("user.home"));
 
@@ -82,6 +82,7 @@ public class JadxSettingsData extends JadxGUIArgs {
 	private boolean codeAreaLineWrap = false;
 	private int searchResultsPerPage = 50;
 	private boolean useAutoSearch = true;
+	private boolean useDexForgeApi = false;
 	private boolean keepCommonDialogOpen = false;
 	private LineNumbersMode lineNumbersMode = LineNumbersMode.AUTO;
 
@@ -478,6 +479,14 @@ public class JadxSettingsData extends JadxGUIArgs {
 
 	public void setUseAutoSearch(boolean useAutoSearch) {
 		this.useAutoSearch = useAutoSearch;
+	}
+
+	public boolean isUseDexForgeApi() {
+		return useDexForgeApi;
+	}
+
+	public void setUseDexForgeApi(boolean useDexForgeApi) {
+		this.useDexForgeApi = useDexForgeApi;
 	}
 
 	public Map<String, WindowLocation> getWindowPos() {
