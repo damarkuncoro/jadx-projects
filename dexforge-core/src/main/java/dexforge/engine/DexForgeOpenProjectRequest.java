@@ -13,6 +13,7 @@ public final class DexForgeOpenProjectRequest {
 	private final String decompilationMode;
 	private final java.util.function.Consumer<Object> decompilerConfigurator;
 	private final DexForgeProgressReporter progressReporter;
+	private final DexForgeDecompilationSettings settings;
 
 	private DexForgeOpenProjectRequest(Builder builder) {
 		this.inputPath = Objects.requireNonNull(builder.inputPath, "Input path cannot be null");
@@ -21,6 +22,7 @@ public final class DexForgeOpenProjectRequest {
 		this.decompilationMode = builder.decompilationMode;
 		this.decompilerConfigurator = builder.decompilerConfigurator;
 		this.progressReporter = builder.progressReporter;
+		this.settings = builder.settings;
 	}
 
 	public Path getInputPath() {
@@ -47,6 +49,10 @@ public final class DexForgeOpenProjectRequest {
 		return progressReporter;
 	}
 
+	public DexForgeDecompilationSettings getSettings() {
+		return settings;
+	}
+
 	public static Builder builder(Path inputPath) {
 		return new Builder(inputPath);
 	}
@@ -58,6 +64,7 @@ public final class DexForgeOpenProjectRequest {
 		private String decompilationMode;
 		private java.util.function.Consumer<Object> decompilerConfigurator;
 		private DexForgeProgressReporter progressReporter;
+		private DexForgeDecompilationSettings settings;
 
 		private Builder(Path inputPath) {
 			this.inputPath = inputPath;
@@ -85,6 +92,11 @@ public final class DexForgeOpenProjectRequest {
 
 		public Builder progressReporter(DexForgeProgressReporter progressReporter) {
 			this.progressReporter = progressReporter;
+			return this;
+		}
+
+		public Builder settings(DexForgeDecompilationSettings settings) {
+			this.settings = settings;
 			return this;
 		}
 

@@ -10,6 +10,7 @@ import dexforge.domain.model.project.ProjectModule;
 import dexforge.engine.DexForgeClassDecompileResult;
 import dexforge.engine.DexForgeClassInfo;
 import dexforge.engine.DexForgeDefinitionInfo;
+import dexforge.engine.DexForgeDecompilationSettings;
 import dexforge.engine.DexForgeDiagnostic;
 import dexforge.engine.DexForgeDiagnosticCategory;
 import dexforge.engine.DexForgeDiagnosticSeverity;
@@ -65,6 +66,14 @@ final class JadxProjectSession implements DexForgeProjectSession {
 		}
 		if (request.getDecompilationMode() != null) {
 			args.setDecompilationMode(DecompilationMode.valueOf(request.getDecompilationMode().toUpperCase()));
+		}
+
+		DexForgeDecompilationSettings settings = request.getSettings();
+		if (settings != null) {
+			args.setThreadsCount(settings.getThreadsCount());
+			args.setTypeUpdatesLimitCount(settings.getTypeUpdatesLimit());
+		} else {
+			args.setThreadsCount(Math.max(1, Runtime.getRuntime().availableProcessors() / 2));
 		}
 
 		JadxDecompiler decompiler = new JadxDecompiler(args);

@@ -20,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import jadx.gui.ui.MainWindow;
+import dexforge.core.analysis.ErrorDensityAnalyzer;
+import dexforge.core.analysis.ErrorDensityAnalyzer.AnalysisResult;
 import dexforge.engine.DexForgeDiagnostic;
 import dexforge.engine.DexForgeDiagnosticCategory;
 import dexforge.engine.DexForgeDiagnosticSeverity;
@@ -29,7 +31,7 @@ public class DiagnosticsDialog extends JDialog {
 
 	public DiagnosticsDialog(JFrame parent, MainWindow mainWindow) {
 		super(parent, "DexForge Diagnostics", true);
-		setSize(new Dimension(800, 600));
+		setSize(new Dimension(900, 700));
 		setLocationRelativeTo(parent);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
@@ -41,8 +43,10 @@ public class DiagnosticsDialog extends JDialog {
 
 		StringBuilder sb = new StringBuilder();
 		List<DexForgeDiagnostic> diagnostics = mainWindow.getWrapper().getDiagnostics();
+		int totalClasses = mainWindow.getWrapper().getDecompiler().getClasses().size();
 
 		sb.append("=== DexForge Diagnostics Summary ===\n\n");
+		sb.append("Total classes: ").append(totalClasses).append("\n");
 		sb.append("Total diagnostics: ").append(diagnostics.size()).append("\n");
 
 		long errorCount = diagnostics.stream().filter(d -> d.getSeverity() == DexForgeDiagnosticSeverity.ERROR).count();
@@ -50,10 +54,19 @@ public class DiagnosticsDialog extends JDialog {
 		sb.append("Errors: ").append(errorCount).append("\n");
 		sb.append("Warnings: ").append(warningCount).append("\n\n");
 
-		sb.append("=== Decompiler Errors by Category ===\n");
-		Map<DexForgeDiagnosticCategory, Integer> categoryCounts = mainWindow.getWrapper().getErrorCountsByCategory();
-		for (Map.Entry<DexForgeDiagnosticCategory, Integer> entry : categoryCounts.entrySet()) {
-			sb.append(String.format("  %s: %d%n", entry.getKey(), entry.getValue()));
+		AnalysisResult analysis = ErrorDensityAnalyzer.analyze(diagnostics, totalClasses);
+		sb.append("=== Decompiler Error Analysis ===\n");
+		sb.append(String.format("Error density: %.2f%% (%d errors)\n", analysis.getErrorDensity() * 100, analysis.getTotalErrors()));
+
+		if (analysis.isHighErrorDensity()) {
+			sb.append("\n⚠️ HIGH ERROR DENSITY DETECTED!\n");
+			sb.append("Recommended action: Increase decompiler limits\n");
+			sb.append("Suggested type updates limit: ").append(analysis.getRecommendedTypeUpdatesLimit()).append("\n\n");
+		}
+
+		sb.append("=== Errors by Category ===\n");
+		for (Map.Entry<DexForgeDiagnosticCategory, Long> entry : analysis.getCategoryCounts().entrySet()) {
+			sb.append(String.format("  %-30s: %d%n", entry.getKey(), entry.getValue()));
 		}
 
 		sb.append("\n=== All Diagnostics ===\n\n");
