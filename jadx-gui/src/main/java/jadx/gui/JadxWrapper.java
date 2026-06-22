@@ -295,6 +295,12 @@ public class JadxWrapper {
 		}
 	}
 
+	public Optional<DexForgeProjectSession> getProjectSession() {
+		synchronized (DECOMPILER_UPDATE_SYNC) {
+			return Optional.ofNullable(projectSession);
+		}
+	}
+
 	/**
 	 * TODO: make method private
 	 * Do not store JadxDecompiler in fields to not leak old instances

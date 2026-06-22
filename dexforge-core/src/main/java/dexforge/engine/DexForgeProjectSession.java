@@ -29,6 +29,14 @@ public interface DexForgeProjectSession extends AutoCloseable {
 
 	List<DexForgeDiagnostic> getDiagnostics();
 
+	default boolean isIndexingComplete() {
+		return true;
+	}
+
+	default int getIndexedSymbolsCount() {
+		return 0;
+	}
+
 	default <T> T unwrap(Class<T> type) {
 		throw new IllegalArgumentException("Cannot unwrap session to: " + type.getName());
 	}

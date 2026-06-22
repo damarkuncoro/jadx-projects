@@ -14,6 +14,7 @@ import dexforge.engine.DexForgeDiagnosticSeverity;
 import dexforge.engine.DexForgeHover;
 import dexforge.engine.DexForgeOpenProjectRequest;
 import dexforge.engine.DexForgeProgressReporter;
+import dexforge.engine.DexForgeProjectIndex;
 import dexforge.engine.DexForgeProjectSession;
 import dexforge.engine.DexForgeSourceLocation;
 import dexforge.engine.DexForgeSourcePosition;
@@ -29,6 +30,7 @@ import jadx.api.JavaClass;
 import jadx.api.JavaField;
 import jadx.api.JavaMethod;
 import jadx.api.JavaNode;
+import jadx.api.ResourceFile;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.JadxError;
 import jadx.core.utils.ErrorsCounter;
@@ -36,6 +38,8 @@ import jadx.core.utils.ErrorsCounter;
 final class JadxProjectSession implements DexForgeProjectSession {
 	private final JadxDecompiler decompiler;
 	private final Project project;
+	private final DexForgeProjectIndex index = new DexForgeProjectIndex();
+	private volatile boolean indexingComplete = false;
 
 	private JadxProjectSession(JadxDecompiler decompiler, Project project) {
 		this.decompiler = decompiler;
@@ -84,7 +88,9 @@ final class JadxProjectSession implements DexForgeProjectSession {
 		long size = request.getInputPath().toFile().length();
 		project.addModule(new ProjectModule(name, ext, pathStr, size));
 
-		return new JadxProjectSession(decompiler, project);
+		JadxProjectSession session = new JadxProjectSession(decompiler, project);
+		session.startIndexing();
+		return session;
 	}
 
 	@Override
@@ -189,35 +195,44 @@ final class JadxProjectSession implements DexForgeProjectSession {
 
 	@Override
 	public List<DexForgeWorkspaceSymbol> findWorkspaceSymbols(String query, int limit) {
-		String normalizedQuery = query == null ? "" : query.toLowerCase();
-		List<DexForgeWorkspaceSymbol> results = new ArrayList<>();
-		for (JavaClass cls : decompiler.getClasses()) {
-			if (results.size() >= limit) {
-				break;
-			}
-			if (cls.getName().toLowerCase().contains(normalizedQuery)) {
-				results.add(createSymbol(cls.getName(), 5, cls, cls.getPackage()));
-			}
+		return index.search(query, limit);
+	}
 
-			for (JavaMethod mth : cls.getMethods()) {
-				if (results.size() >= limit) {
-					break;
-				}
-				if (mth.getName().toLowerCase().contains(normalizedQuery)) {
-					results.add(createSymbol(mth.getName(), 6, mth, cls.getFullName()));
-				}
-			}
+	@Override
+	public boolean isIndexingComplete() {
+		return indexingComplete;
+	}
 
-			for (JavaField fld : cls.getFields()) {
-				if (results.size() >= limit) {
-					break;
+	@Override
+	public int getIndexedSymbolsCount() {
+		return index.size();
+	}
+
+	private void startIndexing() {
+		java.util.concurrent.ForkJoinPool.commonPool().execute(() -> {
+			try {
+				for (JavaClass cls : decompiler.getClasses()) {
+					index.addSymbol(createSymbol(cls.getName(), 5, cls, cls.getPackage()));
+					for (JavaMethod mth : cls.getMethods()) {
+						index.addSymbol(createSymbol(mth.getName(), 6, mth, cls.getFullName()));
+					}
+					for (JavaField fld : cls.getFields()) {
+						index.addSymbol(createSymbol(fld.getName(), 8, fld, cls.getFullName()));
+					}
 				}
-				if (fld.getName().toLowerCase().contains(normalizedQuery)) {
-					results.add(createSymbol(fld.getName(), 8, fld, cls.getFullName()));
+				for (ResourceFile res : decompiler.getResources()) {
+					index.addSymbol(new DexForgeWorkspaceSymbol(
+							res.getOriginalName(),
+							14, // Kind 14 is File/Resource in LSP
+							new DexForgeSourceLocation("file:///resources/" + res.getOriginalName(),
+									new DexForgeSourceRange(new DexForgeSourcePosition(0, 0), new DexForgeSourcePosition(0, 0))),
+							"resources"));
 				}
+				indexingComplete = true;
+			} catch (Exception e) {
+				// ignore
 			}
-		}
-		return results;
+		});
 	}
 
 	@Override

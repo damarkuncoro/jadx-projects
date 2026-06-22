@@ -35,6 +35,20 @@ class JadxProjectSessionTest {
 			assertThat(project.getModules().get(0).getName()).isEqualTo("test.dex");
 			assertThat(project.getModules().get(0).getType()).isEqualTo("DEX");
 
+			// Wait for indexing to complete asynchronously
+			long start = System.currentTimeMillis();
+			while (!session.isIndexingComplete() && (System.currentTimeMillis() - start) < 5000) {
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					break;
+				}
+			}
+			assertThat(session.isIndexingComplete()).isTrue();
+			assertThat(session.getIndexedSymbolsCount()).isGreaterThanOrEqualTo(0);
+			assertThat(session.findWorkspaceSymbols("dummy", 10)).isEmpty();
+
 			// Close the session inside block, but explicitly verify status beforehand
 			session.close();
 			assertThat(project.getStatus()).isEqualTo(ProjectStatus.CLOSED);

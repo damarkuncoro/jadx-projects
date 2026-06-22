@@ -221,6 +221,16 @@ class LspJsonContractTest {
 		}
 
 		@Override
+		public boolean isIndexingComplete() {
+			return true;
+		}
+
+		@Override
+		public int getIndexedSymbolsCount() {
+			return 1;
+		}
+
+		@Override
 		public void close() {
 			// no-op
 		}
