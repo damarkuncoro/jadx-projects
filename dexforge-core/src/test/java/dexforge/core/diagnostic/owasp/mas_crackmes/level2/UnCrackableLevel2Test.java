@@ -42,6 +42,20 @@ class UnCrackableLevel2Test {
 
         assertThat(instructions).isNotNull().isNotEmpty();
 
+        System.out.println("--- DUMPING INSTRUCTIONS FOR Lsg/vantagepoint/uncrackable2/CodeCheck;->a(Ljava/lang/String;)Z ---");
+        for (DexInstruction insn : instructions) {
+            System.out.printf("Offset: %d, Opcode: 0x%02X, Length: %d, Index: %d%n",
+                insn.getOffset(),
+                insn.getOpcode() & 0xFF,
+                insn.getLength(),
+                insn.getIndex());
+            if (insn.getRegisters() != null) {
+                System.out.print("  Registers: ");
+                for (int r : insn.getRegisters()) System.out.print("v" + r + " ");
+                System.out.println();
+            }
+        }
+
         // 1. Test with the correct password
         {
             SmaliEmulator emulator = new SmaliEmulator();

@@ -35,6 +35,15 @@ public final class InstructionSet {
 		};
 		for (int op = 0x01; op <= 0x0D; op++) executors.put(op, moveExec);
 
+		// --- MOVE RESULT FAMILY ---
+		InstructionExecutor moveResultExec = (insn, regs) -> {
+			int[] r = insn.getRegisters();
+			if (r != null && r.length >= 1) regs.put(r[0], state.getLastResult());
+		};
+		executors.put(0x0A, moveResultExec);
+		executors.put(0x0B, moveResultExec);
+		executors.put(0x0C, moveResultExec);
+
 		// --- CONST FAMILY ---
 		executors.put(0x12, (insn, regs) -> {
 			int[] r = insn.getRegisters();
@@ -88,6 +97,7 @@ public final class InstructionSet {
 		executors.put(0x90, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a + b));
 		executors.put(0x91, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a - b));
 		executors.put(0x92, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a * b));
+		executors.put(0x93, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> b == 0 ? 0 : a / b));
 		executors.put(0x94, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a % b));
 		executors.put(0x95, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a & b));
 		executors.put(0x96, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a | b));
@@ -113,15 +123,17 @@ public final class InstructionSet {
 
 		// --- ARRAY INSTRUCTIONS ---
 		executors.put(0x21, (insn, regs) -> { // array-length
-			int regA = (insn.getOpcode() >> 8) & 0x0F;
-			int regB = (insn.getOpcode() >> 12) & 0x0F;
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
 			Object array = regs.get(regB);
 			regs.put(regA, (array != null && array.getClass().isArray()) ? java.lang.reflect.Array.getLength(array) : 0);
 		});
 
 		executors.put(0x23, (insn, regs) -> { // new-array
-			int regA = (insn.getOpcode() >> 8) & 0x0F;
-			int regB = (insn.getOpcode() >> 12) & 0x0F;
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
 			int size = safeInt(regs, regB);
 			regs.put(regA, createNewArray(insn.getIndex(), size));
 		});
@@ -139,7 +151,20 @@ public final class InstructionSet {
 			Object array = regs.get(r[1]);
 			int index = safeInt(regs, r[2]);
 			if (array != null && array.getClass().isArray()) {
-				java.lang.reflect.Array.set(array, index, regs.get(r[0]));
+				Object val = regs.get(r[0]);
+				Class<?> componentType = array.getClass().getComponentType();
+				if (componentType.isPrimitive() && val instanceof Number) {
+					Number num = (Number) val;
+					if (componentType == byte.class) val = num.byteValue();
+					else if (componentType == short.class) val = num.shortValue();
+					else if (componentType == int.class) val = num.intValue();
+					else if (componentType == long.class) val = num.longValue();
+					else if (componentType == float.class) val = num.floatValue();
+					else if (componentType == double.class) val = num.doubleValue();
+					else if (componentType == char.class) val = (char) num.intValue();
+					else if (componentType == boolean.class) val = num.intValue() != 0;
+				}
+				java.lang.reflect.Array.set(array, index, val);
 			}
 		};
 		for (int op = 0x4B; op <= 0x51; op++) executors.put(op, aputExec);
@@ -155,8 +180,9 @@ public final class InstructionSet {
 		executors.put(0x8D, (insn, regs) -> handleIntCast(insn, regs, n -> (int) n.byteValue()));
 		executors.put(0x8E, (insn, regs) -> handleIntCast(insn, regs, n -> (int) n.shortValue()));
 		executors.put(0x8F, (insn, regs) -> {
-			int regA = (insn.getOpcode() >> 8) & 0x0F;
-			int regB = (insn.getOpcode() >> 12) & 0x0F;
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
 			Object val = regs.get(regB);
 			if (val instanceof Number) regs.put(regA, (int) ((Number) val).shortValue()); // charValue not in Number, use short
 		});
@@ -218,43 +244,58 @@ public final class InstructionSet {
 	}
 
 	private void applyArithmetic2addr(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Integer, Integer, Integer> op) {
-		int regA = (insn.getOpcode() >> 8) & 0x0F;
-		int regB = (insn.getOpcode() >> 12) & 0x0F;
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
 		int v1 = safeInt(regs, regA);
 		int v2 = safeInt(regs, regB);
 		regs.put(regA, op.apply(v1, v2));
 	}
 
 	private void applyArithmeticLit8(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Integer, Integer, Integer> op) {
-		short[] units = insn.getUnits();
-		int regA = (units[0] >> 8) & 0xFF;
-		int regB = units[1] & 0xFF;
-		int litC = (units[1] >> 8) & 0xFF;
-		if ((litC & 0x80) != 0) litC |= 0xFFFFFF00; // Sign extend
+		int regA, regB, litC;
+		int[] r = insn.getRegisters();
+		if (r != null && r.length >= 2) {
+			regA = r[0];
+			regB = r[1];
+			litC = (int) insn.getLiteral();
+		} else {
+			short[] units = insn.getUnits();
+			regA = (units[0] >> 8) & 0x0F;
+			regB = (units[0] >> 12) & 0x0F;
+			litC = units[1] & 0xFF;
+			if ((litC & 0x80) != 0) litC |= 0xFFFFFF00;
+		}
 
 		int v1 = safeInt(regs, regB);
 		regs.put(regA, op.apply(v1, litC));
 	}
 
 	private void handleIget(DexInstruction insn, Map<Integer, Object> regs) {
-		int[] r = getRegs23x(insn);
-		Object instance = regs.get(r[1]);
-		regs.put(r[0], state.getInstanceField(instance, getFieldSig(insn.getIndex())));
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
+		Object instance = regs.get(regB);
+		regs.put(regA, state.getInstanceField(instance, getFieldSig(insn.getIndex())));
 	}
 
 	private void handleIput(DexInstruction insn, Map<Integer, Object> regs) {
-		int[] r = getRegs23x(insn);
-		Object instance = regs.get(r[1]);
-		state.setInstanceField(instance, getFieldSig(insn.getIndex()), regs.get(r[0]));
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
+		Object instance = regs.get(regB);
+		state.setInstanceField(instance, getFieldSig(insn.getIndex()), regs.get(regA));
 	}
 
 	private void handleSget(DexInstruction insn, Map<Integer, Object> regs) {
-		int regA = (insn.getOpcode() >> 8) & 0xFF;
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0xFF;
 		regs.put(regA, state.getStaticField(getFieldSig(insn.getIndex())));
 	}
 
 	private void handleSput(DexInstruction insn, Map<Integer, Object> regs) {
-		int regA = (insn.getOpcode() >> 8) & 0xFF;
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0xFF;
 		state.setStaticField(getFieldSig(insn.getIndex()), regs.get(regA));
 	}
 
@@ -264,8 +305,9 @@ public final class InstructionSet {
 	}
 
 	private void handleIntCast(DexInstruction insn, Map<Integer, Object> regs, Function<Number, Integer> cast) {
-		int regA = (insn.getOpcode() >> 8) & 0x0F;
-		int regB = (insn.getOpcode() >> 12) & 0x0F;
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
 		Object val = regs.get(regB);
 		if (val instanceof Number) regs.put(regA, cast.apply((Number) val));
 	}

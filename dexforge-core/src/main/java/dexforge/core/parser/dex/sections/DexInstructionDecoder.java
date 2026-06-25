@@ -40,6 +40,8 @@ public final class DexInstructionDecoder {
                 index = rawOpcode >> 8;
             } else if (opcode >= 0x32 && opcode <= 0x3D) { // IF-*
                 if (i + 1 < insns.length) index = insns[i + 1];
+            } else if (opcode == 0x1F || opcode == 0x20 || opcode == 0x22 || opcode == 0x23) {
+                if (i + 1 < insns.length) index = insns[i + 1] & 0xFFFF;
             }
 
             short[] units = null;
@@ -117,6 +119,12 @@ public final class DexInstructionDecoder {
         // Format 12x: B|A|op (move, binop/2addr)
         if ((opcode >= 0x01 && opcode <= 0x09) || (opcode >= 0xB0 && opcode <= 0xCF)) {
             insn.setRegisters(new int[]{(insns[i] >> 8) & 0x0F, (insns[i] >> 12) & 0x0F});
+            return;
+        }
+
+        // Format 11x: AA|op
+        if ((opcode >= 0x0A && opcode <= 0x11) || opcode == 0x1F || opcode == 0x27) {
+            insn.setRegisters(new int[]{(insns[i] >> 8) & 0xFF});
             return;
         }
 

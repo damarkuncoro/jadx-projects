@@ -27,8 +27,13 @@ public class DaemonService {
 	}
 
 	public dexforge.engine.DexForgeProjectSession getProjectSession() {
-		// Bridge between API and Engine if needed.
-		// For now, return null as the LspService is not fully migrated to DexForgeProject API.
+		if (project == null) {
+			return null;
+		}
+		dexforge.api.engine.DexForgeEngine apiEngine = project.getEngine();
+		if (apiEngine instanceof dexforge.engine.jadx.JadxEngine) {
+			return ((dexforge.engine.jadx.JadxEngine) apiEngine).getProjectSession();
+		}
 		return null;
 	}
 
@@ -37,12 +42,24 @@ public class DaemonService {
 		try {
 			File inputFile = new File(path);
 			DexForgeDecompiler decompiler = DexForgeDecompiler.builder()
+					.engine("jadx")
 					.inputFile(inputFile);
 
 			// Apply settings from params
 			DexForgeSettings.Builder settingsBuilder = DexForgeSettings.builder();
 			if (params.containsKey("threadsCount")) {
 				settingsBuilder.threadsCount(((Double) params.get("threadsCount")).intValue());
+			}
+			if (params.containsKey("commentsLevel")) {
+				settingsBuilder.commentsLevel(dexforge.api.core.DexForgeCommentsLevel.valueOf(
+						((String) params.get("commentsLevel")).toUpperCase()));
+			}
+			if (params.containsKey("decompilationMode")) {
+				settingsBuilder.decompilationMode(dexforge.api.core.DexForgeDecompilationMode.valueOf(
+						((String) params.get("decompilationMode")).toUpperCase()));
+			}
+			if (params.containsKey("deobfuscationOn")) {
+				settingsBuilder.deobfuscationOn((Boolean) params.get("deobfuscationOn"));
 			}
 			decompiler.settings(settingsBuilder.build());
 
@@ -54,6 +71,7 @@ public class DaemonService {
 			result.put("resourcesCount", project.getResources().size());
 			return DaemonResponse.success(requestId, result);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return DaemonResponse.error(requestId, "Load failed: " + e.getMessage());
 		}
 	}
@@ -83,6 +101,7 @@ public class DaemonService {
 
 		Map<String, Object> result = new HashMap<>();
 		result.put("code", cls.getCode());
+		result.put("diagnostics", java.util.Collections.emptyList());
 		// result.put("lineMapping", cls.getCodeInfo().getLineMapping()); // TODO: add lineMapping to API if needed
 
 		return DaemonResponse.success(requestId, result);

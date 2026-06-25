@@ -90,6 +90,7 @@ class DecompilerDaemonTest {
 		DexforgeCLI.execute(new String[] { "decompiler-daemon" });
 
 		String output = testOut.toString(StandardCharsets.UTF_8);
+		System.err.println("TEST DAEMON OUTPUT:\n" + output);
 		java.util.List<String> lines = getJsonLines(output);
 
 		assertThat(lines).hasSize(3);

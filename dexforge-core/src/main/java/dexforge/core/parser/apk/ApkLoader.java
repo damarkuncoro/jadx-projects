@@ -46,6 +46,23 @@ public final class ApkLoader {
 	public DexProject load(File apkFile) throws Exception {
 		DexProject project = new DexProject();
 
+		if (apkFile.getName().endsWith(".dex")) {
+			byte[] data = java.nio.file.Files.readAllBytes(apkFile.toPath());
+			project.addDex(data);
+
+			DexFastIndexer indexer = new DexFastIndexer(data, resourceResolver);
+			indexers.add(indexer);
+
+			CallGraphAnalyzer cga = new CallGraphAnalyzer(indexer);
+			globalCallGraph.putAll(cga.build());
+
+			StringPatternAnalyzer spa = new StringPatternAnalyzer(indexer);
+			spa.analyze().forEach((label, matches) ->
+					discoveredPatterns.computeIfAbsent(label, k -> new java.util.ArrayList<>()).addAll(matches)
+			);
+			return project;
+		}
+
 		try (ZipFile zip = new ZipFile(apkFile)) {
 			Enumeration<? extends ZipEntry> entries = zip.entries();
 

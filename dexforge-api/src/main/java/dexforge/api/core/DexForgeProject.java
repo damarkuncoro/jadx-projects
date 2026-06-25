@@ -171,6 +171,10 @@ public final class DexForgeProject implements Closeable {
 		// In the future, we can load bookmarks, comments, etc.
 	}
 
+	public DexForgeEngine getEngine() {
+		return engine;
+	}
+
 	@Override
 	public void close() {
 		engine.close();

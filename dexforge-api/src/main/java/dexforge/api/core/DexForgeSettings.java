@@ -19,6 +19,7 @@ public final class DexForgeSettings {
 	private final boolean showInconsistentCode;
 	private final DexForgeCommentsLevel commentsLevel;
 	private final DexForgeDecompilationMode decompilationMode;
+	private final boolean deobfuscationOn;
 
 	private DexForgeSettings(Builder builder) {
 		this.threadsCount = builder.threadsCount;
@@ -29,6 +30,7 @@ public final class DexForgeSettings {
 		this.showInconsistentCode = builder.showInconsistentCode;
 		this.commentsLevel = builder.commentsLevel;
 		this.decompilationMode = builder.decompilationMode;
+		this.deobfuscationOn = builder.deobfuscationOn;
 	}
 
 	public static Builder builder() {
@@ -45,10 +47,12 @@ public final class DexForgeSettings {
 		map.put("showInconsistentCode", showInconsistentCode);
 		map.put("commentsLevel", commentsLevel.name());
 		map.put("decompilationMode", decompilationMode.name());
+		map.put("deobfuscationOn", deobfuscationOn);
 		return map;
 	}
 
 	public int getThreadsCount() { return threadsCount; }
+	public boolean isDeobfuscationOn() { return deobfuscationOn; }
 
 	public static final class Builder {
 		private int threadsCount = DEFAULT_THREADS_COUNT;
@@ -59,6 +63,7 @@ public final class DexForgeSettings {
 		private boolean showInconsistentCode = true;
 		private DexForgeCommentsLevel commentsLevel = DexForgeCommentsLevel.INFO;
 		private DexForgeDecompilationMode decompilationMode = DexForgeDecompilationMode.AUTO;
+		private boolean deobfuscationOn = false;
 
 		private Builder() {}
 
@@ -99,6 +104,11 @@ public final class DexForgeSettings {
 
 		public Builder decompilationMode(DexForgeDecompilationMode decompilationMode) {
 			this.decompilationMode = Objects.requireNonNull(decompilationMode);
+			return this;
+		}
+
+		public Builder deobfuscationOn(boolean deobfuscationOn) {
+			this.deobfuscationOn = deobfuscationOn;
 			return this;
 		}
 

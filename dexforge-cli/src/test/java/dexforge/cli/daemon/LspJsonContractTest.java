@@ -231,6 +231,11 @@ class LspJsonContractTest {
 		}
 
 		@Override
+		public Map<String, String> calculateFingerprint() {
+			return Map.of();
+		}
+
+		@Override
 		public void close() {
 			// no-op
 		}

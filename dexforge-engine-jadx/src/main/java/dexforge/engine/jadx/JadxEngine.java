@@ -81,6 +81,15 @@ public final class JadxEngine implements DexForgeEngine, IDexForgePlugin {
 		if (settings.containsKey("threadsCount")) {
 			args.setThreadsCount((Integer) settings.get("threadsCount"));
 		}
+		if (settings.containsKey("commentsLevel")) {
+			args.setCommentsLevel(jadx.api.CommentsLevel.valueOf(((String) settings.get("commentsLevel")).toUpperCase()));
+		}
+		if (settings.containsKey("decompilationMode")) {
+			args.setDecompilationMode(jadx.api.DecompilationMode.valueOf(((String) settings.get("decompilationMode")).toUpperCase()));
+		}
+		if (settings.containsKey("deobfuscationOn")) {
+			args.setDeobfuscationOn((Boolean) settings.get("deobfuscationOn"));
+		}
 
 		this.decompiler = new JadxDecompiler(args);
 
@@ -451,5 +460,17 @@ public final class JadxEngine implements DexForgeEngine, IDexForgePlugin {
 		if (decompiler != null) {
 			decompiler.close();
 		}
+	}
+
+	public dexforge.engine.DexForgeProjectSession getProjectSession() {
+		if (decompiler == null) {
+			return null;
+		}
+		dexforge.domain.model.project.Project proj = dexforge.domain.model.project.Project.create(
+				dexforge.domain.model.project.ProjectId.generate(),
+				dexforge.domain.model.project.ProjectConfig.create("JADX Project", ""),
+				args.getInputFiles().get(0).toPath()
+		);
+		return new dexforge.engine.jadx.session.JadxProjectSession(decompiler, proj);
 	}
 }

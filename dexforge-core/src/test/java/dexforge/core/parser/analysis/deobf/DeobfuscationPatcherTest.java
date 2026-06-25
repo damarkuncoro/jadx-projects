@@ -68,7 +68,7 @@ class DeobfuscationPatcherTest {
 		when(indexer.getClasses()).thenReturn(Collections.singletonList(clazz));
 
 		// 6. Run Patcher
-		DeobfuscationPatcher patcher = new DeobfuscationPatcher(indexer, null);
+		DeobfuscationPatcher patcher = new DeobfuscationPatcher(indexer, Collections.singletonList(indexer), null);
 		Map<String, String> patchedClasses = patcher.patchAll();
 
 		// 7. Verify Results

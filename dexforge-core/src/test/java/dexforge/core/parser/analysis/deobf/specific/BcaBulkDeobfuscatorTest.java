@@ -59,7 +59,7 @@ class BcaBulkDeobfuscatorTest {
 
 		// Run using the new Scalable Engine
 		DeobfuscationEngine engine = new DeobfuscationEngine(indexer);
-		BcaBulkDeobfuscator bcaModule = new BcaBulkDeobfuscator(indexer, null);
+		BcaBulkDeobfuscator bcaModule = new BcaBulkDeobfuscator(Collections.singletonList(indexer), null);
 		engine.registerModule(bcaModule);
 		engine.run();
 
@@ -108,7 +108,7 @@ class BcaBulkDeobfuscatorTest {
 		when(methodPool.getMethodName(anyInt())).thenReturn("testMethod");
 
 		DeobfuscationEngine engine = new DeobfuscationEngine(indexer);
-		BcaBulkDeobfuscator bcaModule = new BcaBulkDeobfuscator(indexer);
+		BcaBulkDeobfuscator bcaModule = new BcaBulkDeobfuscator(Collections.singletonList(indexer), null);
 		engine.registerModule(bcaModule);
 		engine.run();
 
