@@ -99,6 +99,9 @@ public final class SmaliEmulator {
 
             if (executor != null) {
                 executor.execute(insn, state.getRegisters());
+                if (op >= 0x0E && op <= 0x11) {
+                    return state.getLastResult();
+                }
                 Integer nextOffset = state.getNextOffset();
                 if (nextOffset != null) {
                     Integer targetIdx = offsetToInsnIndex.get(nextOffset);

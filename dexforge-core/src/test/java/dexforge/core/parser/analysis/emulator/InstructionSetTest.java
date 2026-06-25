@@ -552,11 +552,11 @@ class InstructionSetTest {
             return insn(opcode, units, null, 0, -1);
         }
 
-        @Test @DisplayName("int-to-byte (0x81) — masking 0xFF")
+        @Test @DisplayName("int-to-byte (0x8D) — masking 0xFF")
         void intToByte() {
-            regs.put(1, 0x1FF); // 511 → 0xFF setelah masking = 255
-            execute(0x81, castInsn(0x81, 0, 1));
-            assertEquals(0xFF, regs.get(0));
+            regs.put(1, 0x1FF); // 511 → -1 setelah cast byte
+            execute(0x8D, castInsn(0x8D, 0, 1));
+            assertEquals(-1, regs.get(0));
         }
 
         @Test @DisplayName("int-to-byte (0x8D) — sign extend byte")
@@ -566,10 +566,10 @@ class InstructionSetTest {
             assertEquals(-128, regs.get(0));
         }
 
-        @Test @DisplayName("int-to-short (0x8E)")
+        @Test @DisplayName("int-to-short (0x8F)")
         void intToShort() {
             regs.put(1, 0x8000); // 32768 → -32768 sebagai signed short
-            execute(0x8E, castInsn(0x8E, 0, 1));
+            execute(0x8F, castInsn(0x8F, 0, 1));
             assertEquals(-32768, regs.get(0));
         }
     }
@@ -632,39 +632,39 @@ class InstructionSetTest {
         }
 
         @Test
-        @DisplayName("cmp-long (0x2D) compares two longs")
+        @DisplayName("cmp-long (0x31) compares two longs")
         void cmpLong() {
             regs.put(1, 100L);
             regs.put(2, 50L);
-            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
+            execute(0x31, cmpInsn(0x31, 0, 1, 2));
             assertEquals(1, regs.get(0));
 
             regs.put(1, 50L);
             regs.put(2, 100L);
-            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
+            execute(0x31, cmpInsn(0x31, 0, 1, 2));
             assertEquals(-1, regs.get(0));
 
             regs.put(1, 100L);
             regs.put(2, 100L);
-            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
+            execute(0x31, cmpInsn(0x31, 0, 1, 2));
             assertEquals(0, regs.get(0));
         }
 
         @Test
-        @DisplayName("cmpl-float (0x2E) handles NaN with -1")
+        @DisplayName("cmpl-float (0x2D) handles NaN with -1")
         void cmplFloatNaN() {
             regs.put(1, Float.NaN);
             regs.put(2, 1.0f);
-            execute(0x2E, cmpInsn(0x2E, 0, 1, 2));
+            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
             assertEquals(-1, regs.get(0));
         }
 
         @Test
-        @DisplayName("cmpg-float (0x2F) handles NaN with 1")
+        @DisplayName("cmpg-float (0x2E) handles NaN with 1")
         void cmpgFloatNaN() {
             regs.put(1, Float.NaN);
             regs.put(2, 1.0f);
-            execute(0x2F, cmpInsn(0x2F, 0, 1, 2));
+            execute(0x2E, cmpInsn(0x2E, 0, 1, 2));
             assertEquals(1, regs.get(0));
         }
     }

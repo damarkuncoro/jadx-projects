@@ -17,7 +17,7 @@ public final class InstructionSet {
 	private final EmulatorState state;
 	private final DexFastIndexer indexer;
 	private final ControlFlowHandler cfHandler;
-	private final MethodInvokeHandler invokeHandler;
+	private MethodInvokeHandler invokeHandler;
 
 	public InstructionSet(EmulatorState state, DexFastIndexer indexer) {
 		this(state, indexer, null);
@@ -33,6 +33,21 @@ public final class InstructionSet {
 
 	public InstructionExecutor getExecutor(int opcode) {
 		return executors.get(opcode);
+	}
+
+	public void setInvokeHandler(MethodInvokeHandler invokeHandler) {
+		this.invokeHandler = invokeHandler;
+	}
+
+	private void setWideRegister(Map<Integer, Object> regs, int reg, long val) {
+		regs.put(reg, val);
+		regs.put(reg + 1, (int) (val >> 32));
+	}
+
+	private void setDoubleRegister(Map<Integer, Object> regs, int reg, double val) {
+		regs.put(reg, val);
+		long bits = Double.doubleToRawLongBits(val);
+		regs.put(reg + 1, (int) (bits >> 32));
 	}
 
 	private void initExecutors() {
@@ -70,20 +85,18 @@ public final class InstructionSet {
 			if (r != null) regs.put(r[0], (int) insn.getLiteral());
 		});
 
-		executors.put(0x1A, (insn, regs) -> {
+		InstructionExecutor constStringExec = (insn, regs) -> {
 			int[] r = insn.getRegisters();
 			if (r != null && r.length > 0 && indexer != null) {
 				String val = null;
 				if (insn.getIndex() >= 0 && insn.getIndex() < indexer.getStringPool().getSize()) {
 					val = indexer.getStringPool().getString(insn.getIndex());
 				}
-				// Cross-DEX string lookup fallback
-				if (val == null && state != null) {
-					// Logic to search in other indexers can be added here
-				}
 				regs.put(r[0], val);
 			}
-		});
+		};
+		executors.put(0x1A, constStringExec);
+		executors.put(0x1B, constStringExec);
 
 		executors.put(0x1C, (insn, regs) -> {
 			int[] r = insn.getRegisters();
@@ -106,7 +119,7 @@ public final class InstructionSet {
 		executors.put(0x91, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a - b));
 		executors.put(0x92, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a * b));
 		executors.put(0x93, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> b == 0 ? 0 : a / b));
-		executors.put(0x94, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a % b));
+		executors.put(0x94, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> b == 0 ? 0 : a % b));
 		executors.put(0x95, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a & b));
 		executors.put(0x96, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a | b));
 		executors.put(0x97, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a ^ b));
@@ -115,14 +128,21 @@ public final class InstructionSet {
 		executors.put(0xB0, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a + b));
 		executors.put(0xB1, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a - b));
 		executors.put(0xB2, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a * b));
+		executors.put(0xB3, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> b == 0 ? 0 : a / b));
+		executors.put(0xB4, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> b == 0 ? 0 : a % b));
 		executors.put(0xB5, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a & b));
 		executors.put(0xB6, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a | b));
 		executors.put(0xB7, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a ^ b));
+		executors.put(0xB8, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a << b));
+		executors.put(0xB9, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a >> b));
+		executors.put(0xBA, (insn, regs) -> applyArithmetic2addr(insn, regs, (a, b) -> a >>> b));
 
 		// lit8 variants
 		executors.put(0xD8, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> a + b));
 		executors.put(0xD9, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> b - a)); // rsub
 		executors.put(0xDA, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> a * b));
+		executors.put(0xDB, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> b == 0 ? 0 : a / b));
+		executors.put(0xDC, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> b == 0 ? 0 : a % b));
 		executors.put(0xDD, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> a & b));
 		executors.put(0xDE, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> a | b));
 		executors.put(0xDF, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> a ^ b));
@@ -184,15 +204,95 @@ public final class InstructionSet {
 		for (int op = 0x67; op <= 0x6D; op++) executors.put(op, (insn, regs) -> handleSput(insn, regs));
 
 		// --- CASTS ---
-		executors.put(0x81, (insn, regs) -> handleIntCast(insn, regs, n -> n.intValue() & 0xFF)); // int-to-byte (approx)
-		executors.put(0x8D, (insn, regs) -> handleIntCast(insn, regs, n -> (int) n.byteValue()));
-		executors.put(0x8E, (insn, regs) -> handleIntCast(insn, regs, n -> (int) n.shortValue()));
-		executors.put(0x8F, (insn, regs) -> {
+		executors.put(0x81, (insn, regs) -> { // int-to-long
 			short[] units = insn.getUnits();
 			int regA = (units[0] >> 8) & 0x0F;
 			int regB = (units[0] >> 12) & 0x0F;
-			Object val = regs.get(regB);
-			if (val instanceof Number) regs.put(regA, (int) ((Number) val).shortValue()); // charValue not in Number, use short
+			setWideRegister(regs, regA, (long) safeInt(regs, regB));
+		});
+		executors.put(0x82, (insn, regs) -> { // int-to-float
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (float) safeInt(regs, regB));
+		});
+		executors.put(0x83, (insn, regs) -> { // int-to-double
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setDoubleRegister(regs, regA, (double) safeInt(regs, regB));
+		});
+		executors.put(0x84, (insn, regs) -> { // long-to-int
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (int) safeLong(regs, regB));
+		});
+		executors.put(0x85, (insn, regs) -> { // long-to-float
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (float) safeLong(regs, regB));
+		});
+		executors.put(0x86, (insn, regs) -> { // long-to-double
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setDoubleRegister(regs, regA, (double) safeLong(regs, regB));
+		});
+		executors.put(0x87, (insn, regs) -> { // float-to-int
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (int) safeFloat(regs, regB));
+		});
+		executors.put(0x88, (insn, regs) -> { // float-to-long
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setWideRegister(regs, regA, (long) safeFloat(regs, regB));
+		});
+		executors.put(0x89, (insn, regs) -> { // float-to-double
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setDoubleRegister(regs, regA, (double) safeFloat(regs, regB));
+		});
+		executors.put(0x8A, (insn, regs) -> { // double-to-int
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (int) safeDouble(regs, regB));
+		});
+		executors.put(0x8B, (insn, regs) -> { // double-to-long
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setWideRegister(regs, regA, (long) safeDouble(regs, regB));
+		});
+		executors.put(0x8C, (insn, regs) -> { // double-to-float
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (float) safeDouble(regs, regB));
+		});
+		executors.put(0x8D, (insn, regs) -> { // int-to-byte
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (int) (byte) safeInt(regs, regB));
+		});
+		executors.put(0x8E, (insn, regs) -> { // int-to-char
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (int) (char) safeInt(regs, regB));
+		});
+		executors.put(0x8F, (insn, regs) -> { // int-to-short
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, (int) (short) safeInt(regs, regB));
 		});
 
 		// --- GOTO FAMILY ---
@@ -223,38 +323,230 @@ public final class InstructionSet {
 		for (int op = 0x6E; op <= 0x78; op++) executors.put(op, invokeExec);
 
 		// --- COMPARISONS ---
-		executors.put(0x2D, (insn, regs) -> { // cmp-long
+		executors.put(0x31, (insn, regs) -> { // cmp-long
 			int[] r = getRegs23x(insn);
 			long v1 = safeLong(regs, r[1]);
 			long v2 = safeLong(regs, r[2]);
 			regs.put(r[0], Long.compare(v1, v2));
 		});
-		InstructionExecutor cmpFloat = (insn, regs) -> { // cmpl/cmpg-float
+		executors.put(0x2D, (insn, regs) -> { // cmpl-float
 			int[] r = getRegs23x(insn);
 			float v1 = safeFloat(regs, r[1]);
 			float v2 = safeFloat(regs, r[2]);
-			boolean isG = (insn.getOpcode() & 0xFF) == 0x2F;
 			if (Float.isNaN(v1) || Float.isNaN(v2)) {
-				regs.put(r[0], isG ? 1 : -1);
+				regs.put(r[0], -1);
 			} else {
 				regs.put(r[0], Float.compare(v1, v2));
 			}
-		};
-		executors.put(0x2E, cmpFloat);
-		executors.put(0x2F, cmpFloat);
-		InstructionExecutor cmpDouble = (insn, regs) -> { // cmpl/cmpg-double
+		});
+		executors.put(0x2E, (insn, regs) -> { // cmpg-float
+			int[] r = getRegs23x(insn);
+			float v1 = safeFloat(regs, r[1]);
+			float v2 = safeFloat(regs, r[2]);
+			if (Float.isNaN(v1) || Float.isNaN(v2)) {
+				regs.put(r[0], 1);
+			} else {
+				regs.put(r[0], Float.compare(v1, v2));
+			}
+		});
+		executors.put(0x2F, (insn, regs) -> { // cmpl-double
 			int[] r = getRegs23x(insn);
 			double v1 = safeDouble(regs, r[1]);
 			double v2 = safeDouble(regs, r[2]);
-			boolean isG = (insn.getOpcode() & 0xFF) == 0x31;
 			if (Double.isNaN(v1) || Double.isNaN(v2)) {
-				regs.put(r[0], isG ? 1 : -1);
+				regs.put(r[0], -1);
 			} else {
 				regs.put(r[0], Double.compare(v1, v2));
 			}
+		});
+		executors.put(0x30, (insn, regs) -> { // cmpg-double
+			int[] r = getRegs23x(insn);
+			double v1 = safeDouble(regs, r[1]);
+			double v2 = safeDouble(regs, r[2]);
+			if (Double.isNaN(v1) || Double.isNaN(v2)) {
+				regs.put(r[0], 1);
+			} else {
+				regs.put(r[0], Double.compare(v1, v2));
+			}
+		});
+
+		// --- RETURN FAMILY ---
+		executors.put(0x0E, (insn, regs) -> state.setLastResult(null));
+		InstructionExecutor returnValExec = (insn, regs) -> {
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0xFF;
+			state.setLastResult(regs.get(regA));
 		};
-		executors.put(0x30, cmpDouble);
-		executors.put(0x31, cmpDouble);
+		executors.put(0x0F, returnValExec);
+		executors.put(0x10, returnValExec);
+		executors.put(0x11, returnValExec);
+
+		// --- MONITOR / THROW / SWITCH / CHECK-CAST / FILL-ARRAY-DATA ---
+		InstructionExecutor noOpExec = (insn, regs) -> {};
+		executors.put(0x1D, noOpExec); // monitor-enter
+		executors.put(0x1E, noOpExec); // monitor-exit
+		executors.put(0x1F, noOpExec); // check-cast
+		executors.put(0x26, noOpExec); // fill-array-data
+		executors.put(0x2B, noOpExec); // packed-switch
+		executors.put(0x2C, noOpExec); // sparse-switch
+
+		executors.put(0x27, (insn, regs) -> { // throw
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0xFF;
+			state.setLastResult(regs.get(regA));
+		});
+
+		executors.put(0x20, (insn, regs) -> { // instance-of
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			regs.put(regA, 1); // Mocked to always true (1)
+		});
+
+		// --- FILLED-NEW-ARRAY ---
+		executors.put(0x24, (insn, regs) -> { // filled-new-array
+			short[] units = insn.getUnits();
+			int regCount = (units[0] >> 12) & 0x0F;
+			int g = (units[0] >> 8) & 0x0F;
+			if (units.length >= 3) {
+				int c = units[2] & 0x0F;
+				int d = (units[2] >> 4) & 0x0F;
+				int e = (units[2] >> 8) & 0x0F;
+				int f = (units[2] >> 12) & 0x0F;
+				int[] argsRegs = {c, d, e, f, g};
+				Object[] arr = new Object[regCount];
+				for (int idx = 0; idx < Math.min(regCount, 5); idx++) {
+					arr[idx] = regs.get(argsRegs[idx]);
+				}
+				state.setLastResult(arr);
+			}
+		});
+
+		executors.put(0x25, (insn, regs) -> { // filled-new-array/range
+			short[] units = insn.getUnits();
+			int regCount = (units[0] >> 8) & 0xFF;
+			if (units.length >= 3) {
+				int startReg = units[2] & 0xFFFF;
+				Object[] arr = new Object[regCount];
+				for (int idx = 0; idx < regCount; idx++) {
+					arr[idx] = regs.get(startReg + idx);
+				}
+				state.setLastResult(arr);
+			}
+		});
+
+		// --- CONST-WIDE ---
+		InstructionExecutor constWideExec = (insn, regs) -> {
+			int regA = (insn.getRegisters() != null && insn.getRegisters().length > 0)
+					? insn.getRegisters()[0]
+					: ((insn.getUnits()[0] >> 8) & 0xFF);
+			setWideRegister(regs, regA, insn.getLiteral());
+		};
+		for (int op = 0x16; op <= 0x19; op++) executors.put(op, constWideExec);
+
+		// --- UNARY OPS ---
+		executors.put(0x7B, (insn, regs) -> { // neg-int
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, -safeInt(regs, regB));
+		});
+		executors.put(0x7C, (insn, regs) -> { // not-int
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, ~safeInt(regs, regB));
+		});
+		executors.put(0x7D, (insn, regs) -> { // neg-long
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setWideRegister(regs, regA, -safeLong(regs, regB));
+		});
+		executors.put(0x7E, (insn, regs) -> { // not-long
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setWideRegister(regs, regA, ~safeLong(regs, regB));
+		});
+		executors.put(0x7F, (insn, regs) -> { // neg-float
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			regs.put(regA, -safeFloat(regs, regB));
+		});
+		executors.put(0x80, (insn, regs) -> { // neg-double
+			short[] units = insn.getUnits();
+			int regA = (units[0] >> 8) & 0x0F;
+			int regB = (units[0] >> 12) & 0x0F;
+			setDoubleRegister(regs, regA, -safeDouble(regs, regB));
+		});
+
+		// --- SHL / USHR EXTENSIONS ---
+		executors.put(0x98, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a << b));
+		executors.put(0x99, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a >> b));
+		executors.put(0x9A, (insn, regs) -> applyArithmetic(insn, regs, (a, b) -> a >>> b));
+		executors.put(0xE2, (insn, regs) -> applyArithmeticLit8(insn, regs, (a, b) -> a >>> b));
+
+		// --- LIT16 ARITHMETIC ---
+		executors.put(0xD0, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> a + b));
+		executors.put(0xD1, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> b - a)); // rsub
+		executors.put(0xD2, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> a * b));
+		executors.put(0xD3, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> b == 0 ? 0 : a / b));
+		executors.put(0xD4, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> b == 0 ? 0 : a % b));
+		executors.put(0xD5, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> a & b));
+		executors.put(0xD6, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> a | b));
+		executors.put(0xD7, (insn, regs) -> applyArithmeticLit16(insn, regs, (a, b) -> a ^ b));
+
+		// --- LONG ARITHMETIC ---
+		executors.put(0x9B, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a + b));
+		executors.put(0x9C, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a - b));
+		executors.put(0x9D, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a * b));
+		executors.put(0x9E, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> b == 0 ? 0L : a / b));
+		executors.put(0x9F, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> b == 0 ? 0L : a % b));
+		executors.put(0xA0, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a & b));
+		executors.put(0xA1, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a | b));
+		executors.put(0xA2, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a ^ b));
+		executors.put(0xA3, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a << b));
+		executors.put(0xA4, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a >> b));
+		executors.put(0xA5, (insn, regs) -> applyLongArith(insn, regs, (a, b) -> a >>> b));
+
+		executors.put(0xBB, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a + b));
+		executors.put(0xBC, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a - b));
+		executors.put(0xBD, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a * b));
+		executors.put(0xBE, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> b == 0 ? 0L : a / b));
+		executors.put(0xBF, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> b == 0 ? 0L : a % b));
+		executors.put(0xC0, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a & b));
+		executors.put(0xC1, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a | b));
+		executors.put(0xC2, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a ^ b));
+		executors.put(0xC3, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a << b));
+		executors.put(0xC4, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a >> b));
+		executors.put(0xC5, (insn, regs) -> applyLongArith2addr(insn, regs, (a, b) -> a >>> b));
+
+		// --- FLOAT ARITHMETIC ---
+		executors.put(0xA6, (insn, regs) -> applyFloatArith(insn, regs, (a, b) -> a + b));
+		executors.put(0xA7, (insn, regs) -> applyFloatArith(insn, regs, (a, b) -> a - b));
+		executors.put(0xA8, (insn, regs) -> applyFloatArith(insn, regs, (a, b) -> a * b));
+		executors.put(0xA9, (insn, regs) -> applyFloatArith(insn, regs, (a, b) -> b == 0.0f ? Float.NaN : a / b));
+		executors.put(0xAA, (insn, regs) -> applyFloatArith(insn, regs, (a, b) -> a % b));
+
+		executors.put(0xC6, (insn, regs) -> applyFloatArith2addr(insn, regs, (a, b) -> a + b));
+		executors.put(0xC7, (insn, regs) -> applyFloatArith2addr(insn, regs, (a, b) -> a - b));
+		executors.put(0xC8, (insn, regs) -> applyFloatArith2addr(insn, regs, (a, b) -> a * b));
+		executors.put(0xC9, (insn, regs) -> applyFloatArith2addr(insn, regs, (a, b) -> b == 0.0f ? Float.NaN : a / b));
+		executors.put(0xCA, (insn, regs) -> applyFloatArith2addr(insn, regs, (a, b) -> a % b));
+
+		// --- DOUBLE ARITHMETIC ---
+		executors.put(0xAB, (insn, regs) -> applyDoubleArith(insn, regs, (a, b) -> a + b));
+		executors.put(0xAC, (insn, regs) -> applyDoubleArith(insn, regs, (a, b) -> a - b));
+		executors.put(0xAD, (insn, regs) -> applyDoubleArith(insn, regs, (a, b) -> a * b));
+		executors.put(0xAE, (insn, regs) -> applyDoubleArith(insn, regs, (a, b) -> b == 0.0d ? Double.NaN : a / b));
+		executors.put(0xAF, (insn, regs) -> applyDoubleArith(insn, regs, (a, b) -> a % b));
+
+		executors.put(0xCB, (insn, regs) -> applyDoubleArith2addr(insn, regs, (a, b) -> a + b));
+		executors.put(0xCC, (insn, regs) -> applyDoubleArith2addr(insn, regs, (a, b) -> a - b));
+		executors.put(0xCD, (insn, regs) -> applyDoubleArith2addr(insn, regs, (a, b) -> a * b));
+		executors.put(0xCE, (insn, regs) -> applyDoubleArith2addr(insn, regs, (a, b) -> b == 0.0d ? Double.NaN : a / b));
+		executors.put(0xCF, (insn, regs) -> applyDoubleArith2addr(insn, regs, (a, b) -> a % b));
 	}
 
 	private int safeInt(Map<Integer, Object> regs, int reg) {
@@ -407,5 +699,62 @@ public final class InstructionSet {
 		int b = units[1] & 0xFF;
 		int c = (units[1] >> 8) & 0xFF;
 		return new int[]{a, b, c};
+	}
+
+	private void applyArithmeticLit16(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Integer, Short, Integer> op) {
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
+		short litC = units[1];
+		int v1 = safeInt(regs, regB);
+		regs.put(regA, op.apply(v1, litC));
+	}
+
+	private void applyLongArith(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Long, Long, Long> op) {
+		int[] r = getRegs23x(insn);
+		long v1 = safeLong(regs, r[1]);
+		long v2 = safeLong(regs, r[2]);
+		setWideRegister(regs, r[0], op.apply(v1, v2));
+	}
+
+	private void applyLongArith2addr(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Long, Long, Long> op) {
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
+		long v1 = safeLong(regs, regA);
+		long v2 = safeLong(regs, regB);
+		setWideRegister(regs, regA, op.apply(v1, v2));
+	}
+
+	private void applyFloatArith(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Float, Float, Float> op) {
+		int[] r = getRegs23x(insn);
+		float v1 = safeFloat(regs, r[1]);
+		float v2 = safeFloat(regs, r[2]);
+		regs.put(r[0], op.apply(v1, v2));
+	}
+
+	private void applyFloatArith2addr(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Float, Float, Float> op) {
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
+		float v1 = safeFloat(regs, regA);
+		float v2 = safeFloat(regs, regB);
+		regs.put(regA, op.apply(v1, v2));
+	}
+
+	private void applyDoubleArith(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Double, Double, Double> op) {
+		int[] r = getRegs23x(insn);
+		double v1 = safeDouble(regs, r[1]);
+		double v2 = safeDouble(regs, r[2]);
+		setDoubleRegister(regs, r[0], op.apply(v1, v2));
+	}
+
+	private void applyDoubleArith2addr(DexInstruction insn, Map<Integer, Object> regs, BiFunction<Double, Double, Double> op) {
+		short[] units = insn.getUnits();
+		int regA = (units[0] >> 8) & 0x0F;
+		int regB = (units[0] >> 12) & 0x0F;
+		double v1 = safeDouble(regs, regA);
+		double v2 = safeDouble(regs, regB);
+		setDoubleRegister(regs, regA, op.apply(v1, v2));
 	}
 }
