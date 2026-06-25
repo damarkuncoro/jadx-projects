@@ -7,6 +7,7 @@ import com.beust.jcommander.JCommander;
 
 import dexforge.cli.commands.CommandDeobfuscate;
 import dexforge.cli.commands.CommandPlugins;
+import dexforge.cli.commands.CommandScan;
 import dexforge.cli.commands.ICommand;
 
 import jadx.core.utils.exceptions.JadxArgsValidateException;
@@ -17,6 +18,7 @@ public class DexforgeCLICommands {
 	static {
 		DexforgeCLICommands.register(new CommandPlugins());
 		DexforgeCLICommands.register(new CommandDeobfuscate());
+		DexforgeCLICommands.register(new CommandScan());
 	}
 
 	public static void register(ICommand command) {
