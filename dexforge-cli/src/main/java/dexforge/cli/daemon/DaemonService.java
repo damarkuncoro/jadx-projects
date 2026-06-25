@@ -1,46 +1,57 @@
 package dexforge.cli.daemon;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import dexforge.api.core.DexForgeDecompiler;
+import dexforge.api.core.DexForgeProject;
+import dexforge.api.core.DexForgeSettings;
+import dexforge.api.model.DexForgeClass;
+import dexforge.api.model.DexForgeNode;
+import dexforge.api.persistence.DexForgeProjectState;
+import dexforge.api.persistence.DexForgeProjectStore;
 import dexforge.cli.dto.ClassDto;
 import dexforge.cli.dto.DaemonResponse;
-import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
-import dexforge.engine.DexForgeClassDecompileResult;
-import dexforge.engine.DexForgeClassInfo;
-import dexforge.engine.DexForgeDefinitionInfo;
-import dexforge.engine.DexForgeOpenProjectRequest;
-import dexforge.engine.DexForgeProjectSession;
+import dexforge.core.infrastructure.persistence.JsonProjectStore;
 
 public class DaemonService {
-	private volatile DexForgeProjectSession projectSession;
+	private volatile DexForgeProject project;
 
-	public DexForgeProjectSession getProjectSession() {
-		return projectSession;
+	public DexForgeProject getProject() {
+		return project;
+	}
+
+	public dexforge.engine.DexForgeProjectSession getProjectSession() {
+		// Bridge between API and Engine if needed.
+		// For now, return null as the LspService is not fully migrated to DexForgeProject API.
+		return null;
 	}
 
 	public synchronized DaemonResponse load(int requestId, String path, Map<String, Object> params) {
 		close();
 		try {
-			DexForgeOpenProjectRequest.Builder requestBuilder = DexForgeOpenProjectRequest.builder(Path.of(path));
-			if (params.containsKey("deobfuscationOn")) {
-				requestBuilder.deobfuscationOn((Boolean) params.get("deobfuscationOn"));
-			}
-			if (params.containsKey("commentsLevel")) {
-				requestBuilder.commentsLevel((String) params.get("commentsLevel"));
-			}
-			if (params.containsKey("decompilationMode")) {
-				requestBuilder.decompilationMode((String) params.get("decompilationMode"));
-			}
+			File inputFile = new File(path);
+			DexForgeDecompiler decompiler = DexForgeDecompiler.builder()
+					.inputFile(inputFile);
 
-			projectSession = JadxBackedDexForgeEngine.create().openProject(requestBuilder.build());
+			// Apply settings from params
+			DexForgeSettings.Builder settingsBuilder = DexForgeSettings.builder();
+			if (params.containsKey("threadsCount")) {
+				settingsBuilder.threadsCount(((Double) params.get("threadsCount")).intValue());
+			}
+			decompiler.settings(settingsBuilder.build());
+
+			project = decompiler.build();
+			project.load();
 
 			Map<String, Object> result = new HashMap<>();
-			result.put("classesCount", projectSession.getClassesCount());
-			result.put("resourcesCount", projectSession.getResourcesCount());
+			result.put("classesCount", project.getClasses().size());
+			result.put("resourcesCount", project.getResources().size());
 			return DaemonResponse.success(requestId, result);
 		} catch (Exception e) {
 			return DaemonResponse.error(requestId, "Load failed: " + e.getMessage());
@@ -48,68 +59,109 @@ public class DaemonService {
 	}
 
 	public DaemonResponse listClasses(int requestId) {
-		if (projectSession == null) {
+		if (project == null) {
 			return DaemonResponse.error(requestId, "No active decompiler. Call 'load' first.");
 		}
-		List<ClassDto> list = new ArrayList<>();
-		for (DexForgeClassInfo cls : projectSession.listClasses()) {
-			list.add(new ClassDto(
-					cls.getFullName(),
-					cls.getShortName(),
-					cls.getAlias(),
-					cls.getPackageName()));
-		}
+		List<ClassDto> list = project.getClasses().stream()
+				.map(cls -> new ClassDto(
+						cls.getFullName(),
+						cls.getName(),
+						cls.getName(), // Alias
+						cls.getPackageName()))
+				.collect(Collectors.toList());
 		return DaemonResponse.success(requestId, list);
 	}
 
 	public DaemonResponse decompile(int requestId, String className) {
-		if (projectSession == null) {
+		if (project == null) {
 			return DaemonResponse.error(requestId, "No active decompiler. Call 'load' first.");
 		}
-		DexForgeClassDecompileResult decompileResult;
-		try {
-			decompileResult = projectSession.decompileClass(className);
-		} catch (IllegalArgumentException e) {
+		DexForgeClass cls = project.searchClassByAlias(className);
+		if (cls == null) {
 			return DaemonResponse.error(requestId, "Class not found: " + className);
 		}
 
 		Map<String, Object> result = new HashMap<>();
-		result.put("code", decompileResult.getCode());
-		result.put("lineMapping", decompileResult.getLineMapping());
-
-		// Collect and append diagnostics (warnings/errors)
-		result.put("diagnostics", DaemonDiagnosticJsonMapper.toJsonDiagnostics(decompileResult.getDiagnostics()));
+		result.put("code", cls.getCode());
+		// result.put("lineMapping", cls.getCodeInfo().getLineMapping()); // TODO: add lineMapping to API if needed
 
 		return DaemonResponse.success(requestId, result);
 	}
 
 	public DaemonResponse getDefinition(int requestId, String className, int pos) {
-		if (projectSession == null) {
+		if (project == null) {
 			return DaemonResponse.error(requestId, "No active decompiler. Call 'load' first.");
 		}
-		DexForgeDefinitionInfo definitionInfo;
-		try {
-			definitionInfo = projectSession.getDefinition(className, pos);
-		} catch (IllegalArgumentException e) {
-			return DaemonResponse.error(requestId, e.getMessage());
+		DexForgeClass cls = project.searchClassByAlias(className);
+		if (cls == null) {
+			return DaemonResponse.error(requestId, "Class not found: " + className);
+		}
+
+		DexForgeNode node = cls.getNodeAt(pos);
+		if (node == null) {
+			return DaemonResponse.error(requestId, "No symbol found at position " + pos);
 		}
 
 		Map<String, Object> result = new HashMap<>();
-		result.put("name", definitionInfo.getName());
-		result.put("fullName", definitionInfo.getFullName());
-		result.put("declaringClass", definitionInfo.getDeclaringClass());
-		result.put("defPos", definitionInfo.getDefinitionPosition());
+		result.put("name", node.getName());
+		result.put("fullName", node.getFullName());
+		result.put("declaringClass", node.getDeclaringClass() != null ? node.getDeclaringClass().getFullName() : null);
+		result.put("defPos", node.getDefinitionPosition());
 		return DaemonResponse.success(requestId, result);
 	}
 
+	public DaemonResponse saveProject(int requestId, String path) {
+		if (project == null) {
+			return DaemonResponse.error(requestId, "No active session to save");
+		}
+		try {
+			JsonProjectStore store = new JsonProjectStore();
+			project.save(new File(path), store);
+			return DaemonResponse.success(requestId, "Project saved to " + path);
+		} catch (Exception e) {
+			return DaemonResponse.error(requestId, "Save failed: " + e.getMessage());
+		}
+	}
+
+	public DaemonResponse loadProject(int requestId, String path) {
+		try {
+			JsonProjectStore store = new JsonProjectStore();
+			DexForgeProjectState state = store.load(new File(path));
+
+			if (state.getInputFiles().isEmpty()) {
+				return DaemonResponse.error(requestId, "Stored project has no input files");
+			}
+
+			Map<String, Object> params = new HashMap<>();
+			DaemonResponse response = load(requestId, state.getInputFiles().get(0), params);
+
+			if (project != null && response.getStatus().equals("SUCCESS")) {
+				// Verify integrity
+				dexforge.api.core.DexForgeIntegrityStatus integrity = project.verifyIntegrity(state);
+
+				if (!integrity.isValid()) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> result = (Map<String, Object>) response.getResult();
+					result.put("integrityWarning", "Input files have changed since last save: " + integrity.getModifiedFiles());
+				}
+
+				// Recover renames
+				project.loadState(state);
+			}
+			return response;
+		} catch (Exception e) {
+			return DaemonResponse.error(requestId, "Load project failed: " + e.getMessage());
+		}
+	}
+
 	public synchronized void close() {
-		if (projectSession != null) {
+		if (project != null) {
 			try {
-				projectSession.close();
+				project.close();
 			} catch (Exception e) {
 				// ignore
 			}
-			projectSession = null;
+			project = null;
 		}
 	}
 }

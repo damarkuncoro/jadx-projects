@@ -336,15 +336,16 @@ public class DexforgeCLIArgs implements IDexforgeConfig {
 	protected String config = "";
 
 	@DexforgeConfigExclude
-	@Parameter(
-			names = { "--save-config" },
-			defaultValueDescription = "<config-ref>",
-			description = "save current options into configuration file and exit, <config-ref> can be:"
-					+ "\n empty - for default config"
-					+ "\n path to '.json' file"
-					+ "\n short name - file will be saved in config directory"
-	)
+	@Parameter(names = { "--save-config" }, defaultValueDescription = "<config-ref>", description = "save current options into configuration file and exit, <config-ref> can be:\n empty - for default config\n path to '.json' file\n short name - file will be saved in config directory")
 	protected String saveConfig = null;
+
+	@DexforgeConfigExclude
+	@Parameter(names = { "--project-save" }, description = "save project state to a file after decompilation (.dfp)")
+	protected String projectSave = null;
+
+	@DexforgeConfigExclude
+	@Parameter(names = { "--project-load" }, description = "load project state from a file (.dfp)")
+	protected String projectLoad = null;
 
 	@DexforgeConfigExclude
 	@Parameter(names = { "--print-files" }, description = "print files and directories used by jadx (config, cache, temp)")
@@ -956,6 +957,14 @@ public class DexforgeCLIArgs implements IDexforgeConfig {
 
 	public String getConfig() {
 		return config;
+	}
+
+	public String getProjectSave() {
+		return projectSave;
+	}
+
+	public String getProjectLoad() {
+		return projectLoad;
 	}
 
 	static class RenameConverter implements IStringConverter<Set<RenameEnum>> {

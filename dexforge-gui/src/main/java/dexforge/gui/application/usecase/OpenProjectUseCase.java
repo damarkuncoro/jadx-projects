@@ -17,9 +17,9 @@ public final class OpenProjectUseCase {
 		this.decompilerPort = Objects.requireNonNull(decompilerPort);
 	}
 
-	public GuiProject execute(File inputFile) {
+	public GuiProject execute(File inputFile, String engineId) {
 		GuiProject project = new GuiProject(inputFile);
-		decompilerPort.open(project);
+		decompilerPort.open(project, engineId);
 		return project;
 	}
 }

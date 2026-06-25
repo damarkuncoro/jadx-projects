@@ -11,6 +11,9 @@ public class CliCommandParser {
 		if (isDecompilerDaemonCommand(args)) {
 			return new ParsedCommand(CliCommandType.DECOMPILER_DAEMON, args, null);
 		}
+		if (isDeobfCommand(args)) {
+			return new ParsedCommand(CliCommandType.DEOBF, args, null);
+		}
 		DexforgeCLIArgs cliArgs = DexforgeCLIArgs.processArgs(args,
 				new DexforgeCLIArgs(),
 				new DexforgeConfigAdapter<>(DexforgeCLIArgs.class, "cli"));
@@ -26,5 +29,9 @@ public class CliCommandParser {
 
 	private boolean isDecompilerDaemonCommand(String[] args) {
 		return args.length > 0 && ("decompiler-daemon".equals(args[0]) || "lsp".equals(args[0]));
+	}
+
+	private boolean isDeobfCommand(String[] args) {
+		return args.length > 0 && "deobf".equals(args[0]);
 	}
 }

@@ -6,9 +6,11 @@ plugins {
 
 dependencies {
 	implementation(project(":dexforge-api"))
+	implementation(project(":dexforge-core"))
+	implementation(project(":dexforge-engine-jadx"))
 	implementation(project(":dexforge-commons:dexforge-app-commons"))
 
-	// UI Framework (Assuming Swing for consistency, or FlatLaf for modern look)
+	// UI Framework: Swing + FlatLaf (Modern Look)
 	implementation("com.formdev:flatlaf:3.5.4")
 	implementation("com.formdev:flatlaf-extras:3.5.4")
 	implementation("com.fifesoft:rsyntaxtextarea:3.5.2")

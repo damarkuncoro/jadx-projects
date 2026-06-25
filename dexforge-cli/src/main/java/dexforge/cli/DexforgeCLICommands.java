@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.beust.jcommander.JCommander;
 
+import dexforge.cli.commands.CommandDeobfuscate;
 import dexforge.cli.commands.CommandPlugins;
 import dexforge.cli.commands.ICommand;
 
@@ -15,6 +16,7 @@ public class DexforgeCLICommands {
 
 	static {
 		DexforgeCLICommands.register(new CommandPlugins());
+		DexforgeCLICommands.register(new CommandDeobfuscate());
 	}
 
 	public static void register(ICommand command) {

@@ -1,24 +1,38 @@
 package dexforge.gui.presentation.view;
 
 import java.awt.BorderLayout;
-import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
+import dexforge.gui.presentation.view.action.OpenProjectAction;
+import dexforge.gui.presentation.view.action.RunAnalysisAction;
+import dexforge.gui.presentation.view.bottom.*;
+import dexforge.gui.presentation.view.editor.ManifestPanel;
+import dexforge.gui.presentation.view.editor.SmaliPanel;
+import dexforge.gui.presentation.view.editor.hex.HexEditorPanel;
+import dexforge.gui.presentation.view.editor.ui.VisualUiEditorPanel;
+import dexforge.gui.presentation.view.left.ProjectTreePanel;
+import dexforge.gui.presentation.view.left.ResourcesPanel;
+import dexforge.gui.presentation.view.plugin.PluginManagerPanel;
+import dexforge.gui.presentation.view.right.ApkInfoPanel;
+import dexforge.gui.presentation.view.inspector.MethodInfoPanel;
+import dexforge.gui.presentation.view.inspector.XrefPanel;
+import dexforge.gui.presentation.view.component.SideBar;
+import dexforge.gui.presentation.view.component.MainStatusBar;
+import dexforge.gui.presentation.view.manager.EditorManager;
+import dexforge.gui.presentation.view.manager.ToolWindowDescriptor;
+import dexforge.gui.presentation.view.manager.ToolWindowManager;
 import dexforge.gui.presentation.viewmodel.MainViewModel;
 
 /**
- * Main GUI Window.
- * SRP: Only handles UI layout and user interaction events.
+ * REUSEABLE: Main Window for DexForge IDE.
+ * Implements a 4-pane docking layout: Explorer, Editor, Inspector, Dashboard.
  */
 public final class MainWindow extends JFrame {
 	private final MainViewModel viewModel;
+	private MainStatusBar statusBar;
+	private JSplitPane mainSplit;
+	private ToolWindowManager toolWindowManager;
+	private EditorManager editorManager;
 
 	public MainWindow(MainViewModel viewModel) {
 		this.viewModel = viewModel;
@@ -27,47 +41,96 @@ public final class MainWindow extends JFrame {
 	}
 
 	private void initComponents() {
-		setTitle("DexForge GUI");
-		setSize(1200, 800);
+		setTitle("DexForge IDE");
+		setSize(1400, 900);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 
+		JPanel rootPanel = new JPanel(new BorderLayout());
+		setContentPane(rootPanel);
+
+		SideBar leftBar = new SideBar(true);
+		SideBar rightBar = new SideBar(false);
+		rootPanel.add(leftBar, BorderLayout.WEST);
+		rootPanel.add(rightBar, BorderLayout.EAST);
+
+		JTabbedPane leftToolWindow = new JTabbedPane(JTabbedPane.BOTTOM);
+		JTabbedPane rightToolWindow = new JTabbedPane(JTabbedPane.BOTTOM);
+		JTabbedPane bottomToolWindow = new JTabbedPane();
+		JTabbedPane editorTabs = new JTabbedPane();
+
+		// --- 1. EDITOR AREA (Center) ---
+		editorTabs.addTab("Java", new CodeAreaPanel(viewModel));
+		editorTabs.addTab("Smali", new SmaliPanel(viewModel));
+		editorTabs.addTab("XML", new ManifestPanel(viewModel));
+		editorTabs.addTab("Hex", new HexEditorPanel());
+		editorTabs.addTab("Visual Editor", new VisualUiEditorPanel(viewModel));
+
+		toolWindowManager = new ToolWindowManager(leftToolWindow, rightToolWindow, bottomToolWindow, leftBar, rightBar);
+		editorManager = new EditorManager(editorTabs, viewModel);
+		registerToolWindows(leftToolWindow, bottomToolWindow, rightToolWindow);
+
+		// --- 2. LAYOUT MERGING (Docking) ---
+		JSplitPane editorBottomSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, editorTabs, bottomToolWindow);
+		editorBottomSplit.setDividerLocation(600);
+		editorBottomSplit.setResizeWeight(0.8);
+
+		JSplitPane centerRightSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editorBottomSplit, rightToolWindow);
+		centerRightSplit.setDividerLocation(1050);
+		centerRightSplit.setResizeWeight(0.7);
+
+		mainSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftToolWindow, centerRightSplit);
+		mainSplit.setDividerLocation(250);
+
+		rootPanel.add(mainSplit, BorderLayout.CENTER);
+
+		statusBar = new MainStatusBar();
+		rootPanel.add(statusBar, BorderLayout.SOUTH);
 		setJMenuBar(createMenuBar());
+	}
 
-		ClassTreePanel classTree = new ClassTreePanel(viewModel);
-		CodeAreaPanel codeArea = new CodeAreaPanel(viewModel);
+	private void registerToolWindows(JTabbedPane left, JTabbedPane bottom, JTabbedPane right) {
+		// Explorer (Left)
+		toolWindowManager.register(new ToolWindowDescriptor("project", "Project", new ProjectTreePanel(viewModel), ToolWindowDescriptor.Anchor.LEFT));
+		toolWindowManager.register(new ToolWindowDescriptor("resources", "Resources", new ResourcesPanel(viewModel), ToolWindowDescriptor.Anchor.LEFT));
+		toolWindowManager.register(new ToolWindowDescriptor("plugins", "Plugins", new PluginManagerPanel(viewModel), ToolWindowDescriptor.Anchor.LEFT));
 
-		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, classTree, codeArea);
-		splitPane.setDividerLocation(300);
+		// Dashboard (Bottom)
+		toolWindowManager.register(new ToolWindowDescriptor("output", "Log", new OutputPanel(viewModel), ToolWindowDescriptor.Anchor.BOTTOM));
+		toolWindowManager.register(new ToolWindowDescriptor("problems", "Problems", new ProblemsPanel(viewModel), ToolWindowDescriptor.Anchor.BOTTOM));
+		toolWindowManager.register(new ToolWindowDescriptor("search", "Search", new SearchPanel(viewModel), ToolWindowDescriptor.Anchor.BOTTOM));
+		toolWindowManager.register(new ToolWindowDescriptor("terminal", "Terminal", new JPanel(), ToolWindowDescriptor.Anchor.BOTTOM));
 
-		getContentPane().add(splitPane, BorderLayout.CENTER);
+		// Inspector (Right)
+		toolWindowManager.register(new ToolWindowDescriptor("xref", "XREF", new XrefPanel(viewModel), ToolWindowDescriptor.Anchor.RIGHT));
+		toolWindowManager.register(new ToolWindowDescriptor("method-info", "Method Info", new MethodInfoPanel(viewModel), ToolWindowDescriptor.Anchor.RIGHT));
+		toolWindowManager.register(new ToolWindowDescriptor("apk-info", "APK Info", new ApkInfoPanel(viewModel), ToolWindowDescriptor.Anchor.RIGHT));
+		toolWindowManager.register(new ToolWindowDescriptor("insights", "Project Insights", new ProjectInsightPanel(viewModel), ToolWindowDescriptor.Anchor.RIGHT));
 	}
 
 	private void bindViewModel() {
 		viewModel.onProjectChanged(project -> {
-			setTitle("DexForge GUI - " + project.getName());
+			SwingUtilities.invokeLater(() -> setTitle("DexForge IDE - " + project.getName()));
 		});
-
+		viewModel.onLoadingStatusChanged(loading -> {
+			SwingUtilities.invokeLater(() -> statusBar.setLoading(loading));
+		});
 		viewModel.onError(message -> {
-			JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+			SwingUtilities.invokeLater(() ->
+				JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE)
+			);
 		});
 	}
 
 	private JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu fileMenu = new JMenu("File");
-		JMenuItem openItem = new JMenuItem("Open File...");
-		openItem.addActionListener(e -> onOpenClicked());
-		fileMenu.add(openItem);
+		fileMenu.add(new JMenuItem(new OpenProjectAction(viewModel, this)));
 		menuBar.add(fileMenu);
+		JMenu analysisMenu = new JMenu("Analysis");
+		analysisMenu.add(new JMenuItem(new RunAnalysisAction(viewModel)));
+		menuBar.add(analysisMenu);
 		return menuBar;
-	}
-
-	private void onOpenClicked() {
-		JFileChooser chooser = new JFileChooser();
-		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			viewModel.openFile(chooser.getSelectedFile());
-		}
 	}
 
 	public static void start(MainViewModel viewModel) {

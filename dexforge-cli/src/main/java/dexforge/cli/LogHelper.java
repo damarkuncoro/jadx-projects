@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import dexforge.core.infrastructure.jadx.JadxSingleClassDecompileAction;
+import dexforge.engine.jadx.infrastructure.JadxSingleClassDecompileAction;
 
 import jadx.api.JadxDecompiler;
 

@@ -18,7 +18,7 @@ import dexforge.api.plugins.pass.impl.SimpleJadxPassInfo;
 import dexforge.api.plugins.pass.types.JadxPreparePass;
 import dexforge.cli.DexforgeAppCommon;
 import dexforge.cli.plugins.DexforgeFilesGetter;
-import dexforge.core.infrastructure.jadx.JadxBackedDexForgeEngine;
+import dexforge.engine.jadx.infrastructure.JadxBackedDexForgeEngine;
 import dexforge.engine.DexForgeDiagnostic;
 import dexforge.engine.DexForgeDiagnosticCategory;
 import dexforge.engine.DexForgeEngine;
@@ -292,6 +292,21 @@ public class JadxWrapper {
 
 	public void reloadCodeData() {
 		getDecompiler().reloadCodeData();
+	}
+
+	public void saveProject(java.io.File file) {
+		synchronized (DECOMPILER_UPDATE_SYNC) {
+			if (projectSession == null) {
+				return;
+			}
+			try {
+				// For now, use the JadxProject data but we could also use DexForgeProject persistence
+				// if we bridge them better.
+				getProject().saveAs(file.toPath());
+			} catch (Exception e) {
+				LOG.error("Failed to save project", e);
+			}
+		}
 	}
 
 	public JavaNode getJavaNodeByRef(ICodeNodeRef nodeRef) {

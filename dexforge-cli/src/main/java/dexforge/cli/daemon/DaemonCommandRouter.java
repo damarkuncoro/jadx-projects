@@ -27,6 +27,18 @@ public class DaemonCommandRouter {
 			case "initialize":
 				return lspService.initialize(id);
 
+			case "project/save":
+				if (params == null || !params.containsKey("path")) {
+					return DaemonResponse.error(id, "Missing parameter 'path'");
+				}
+				return daemonService.saveProject(id, (String) params.get("path"));
+
+			case "project/load":
+				if (params == null || !params.containsKey("path")) {
+					return DaemonResponse.error(id, "Missing parameter 'path'");
+				}
+				return daemonService.loadProject(id, (String) params.get("path"));
+
 			case "textDocument/definition":
 				return lspService.definition(id, params);
 
