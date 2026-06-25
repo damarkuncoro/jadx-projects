@@ -117,6 +117,15 @@
 
 		<!-- sizes -->
 		<module name="OuterTypeNumber"/>
+		<module name="NestedIfDepth">
+			<property name="max" value="2"/>
+		</module>
+		<module name="NestedTryDepth">
+			<property name="max" value="1"/>
+		</module>
+		<module name="NestedForDepth">
+			<property name="max" value="1"/>
+		</module>
 
 		<module name="SuppressWarningsHolder"/>
 

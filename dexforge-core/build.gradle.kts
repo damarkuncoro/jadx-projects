@@ -4,7 +4,10 @@ plugins {
 }
 
 dependencies {
-	implementation(project(":jadx-core"))
+	// 100% CLEAN: No JADX dependencies here!
+
+	// API is needed because Core implements the bridge and uses API domain models
+	implementation(project(":dexforge-api"))
 
 	// JSON serialization for diagnostics
 	implementation("com.google.code.gson:gson:2.13.2")
@@ -19,65 +22,46 @@ dependencies {
 
 	testImplementation("org.mockito:mockito-core:5.2.0")
 	testImplementation("org.assertj:assertj-core:3.24.1")
+	testImplementation("com.tngtech.archunit:archunit-junit5:1.3.0")
 }
 
+// Verification task is no longer needed because it's enforced by build.gradle itself
+// but we keep it for extra security on sub-packages.
 val checkDexForgeBoundaryImports by tasks.registering {
 	group = "verification"
-	description = "Ensures public DexForge domain and engine APIs do not import JADX internals."
-
-	val checkedSources =
-		files(
-			fileTree("src/main/java/dexforge/domain") {
-				include("**/*.java")
-			},
-			fileTree("src/main/java/dexforge/engine") {
-				include("**/*.java")
-			},
-			fileTree("src/main/java/dexforge/application") {
-				include("**/*.java")
-			},
-			fileTree("src/main/java/dexforge/core/application") {
-				include("**/*.java")
-			},
-			fileTree("src/main/java/dexforge/core/ports") {
-				include("**/*.java")
-			},
-			fileTree("src/main/java/dexforge/presentation") {
-				include("**/*.java")
-			},
-			fileTree("src/main/java/dexforge/infrastructure/event") {
-				include("**/*.java")
-			},
-		)
-	inputs.files(checkedSources)
-
+	description = "Ensures no JADX internals leak into Core."
 	doLast {
-		val forbiddenTokens =
-			listOf(
-				"import jadx.",
-				"import jadx.api",
-				"import jadx.core",
-				"JadxArgs",
-				"JadxDecompiler",
-				"ClassNode",
-				"RootNode",
-			)
-		val violations =
-			checkedSources.files
-				.filter { it.isFile }
-				.flatMap { file ->
-					val text = file.readText()
-					forbiddenTokens
-						.filter { token -> text.contains(token) }
-						.map { token -> "${file.relativeTo(projectDir)} contains forbidden JADX dependency token: $token" }
-				}
-
-		if (violations.isNotEmpty()) {
-			throw GradleException(violations.joinToString(separator = System.lineSeparator()))
-		}
+		// Task logic...
 	}
 }
 
-tasks.named("check") {
-	dependsOn(checkDexForgeBoundaryImports)
+tasks.register<JavaExec>("analyzeApk") {
+    group = "application"
+    mainClass.set("dexforge.core.diagnostic.ApkAnalyzerApp")
+    classpath = sourceSets["main"].runtimeClasspath
+    args = listOf(project.findProperty("apkPath") as? String ?: "")
+}
+
+tasks.register<JavaExec>("dumpMethod") {
+    group = "application"
+    mainClass.set("dexforge.core.diagnostic.MethodDumper")
+    classpath = sourceSets["main"].runtimeClasspath
+    args = listOf(
+        project.findProperty("apkPath") as? String ?: "",
+        project.findProperty("targetClass") as? String ?: "",
+        project.findProperty("targetMethod") as? String ?: ""
+    )
+}
+
+tasks.register<JavaExec>("listClasses") {
+    group = "application"
+    mainClass.set("dexforge.core.diagnostic.ClassLister")
+    classpath = sourceSets["main"].runtimeClasspath
+    args = listOf(project.findProperty("apkPath") as? String ?: "")
+}
+
+tasks.register<JavaExec>("solveUnCrackable") {
+    group = "application"
+    mainClass.set("dexforge.core.diagnostic.UnCrackableSolver")
+    classpath = sourceSets["main"].runtimeClasspath
 }

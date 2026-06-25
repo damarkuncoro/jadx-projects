@@ -23,6 +23,14 @@ public final class DexForgeDecompileResult {
 		return new DexForgeDecompileResult(result.getExitCode(), result.getErrorsCount(), Collections.emptyList());
 	}
 
+	public static DexForgeDecompileResult success() {
+		return new DexForgeDecompileResult(0, 0, Collections.emptyList());
+	}
+
+	public static DexForgeDecompileResult failed(int exitCode) {
+		return new DexForgeDecompileResult(exitCode, 0, Collections.emptyList());
+	}
+
 	public int getExitCode() {
 		return exitCode;
 	}

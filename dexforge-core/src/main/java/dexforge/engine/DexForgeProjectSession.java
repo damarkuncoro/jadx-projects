@@ -30,6 +30,8 @@ public interface DexForgeProjectSession extends AutoCloseable {
 
 	List<DexForgeDiagnostic> getDiagnostics();
 
+	Map<String, String> calculateFingerprint();
+
 	default Map<DexForgeDiagnosticCategory, Integer> getErrorCountsByCategory() {
 		return Map.of();
 	}

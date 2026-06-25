@@ -23,4 +23,8 @@ public final class ProjectId extends EntityId<String> {
 		}
 		return new ProjectId(id);
 	}
+
+	public static ProjectId generate() {
+		return new ProjectId(java.util.UUID.randomUUID().toString());
+	}
 }
