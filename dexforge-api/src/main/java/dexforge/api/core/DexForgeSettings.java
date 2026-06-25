@@ -1,12 +1,11 @@
 package dexforge.api.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-
-import dexforge.core.infrastructure.jadx.JadxDecompilerHelper;
 
 /**
  * Immutable settings for DexForge decompiler.
- * Use {@link Builder} to create instances.
  */
 public final class DexForgeSettings {
 	public static final int DEFAULT_THREADS_COUNT = 4;
@@ -36,52 +35,20 @@ public final class DexForgeSettings {
 		return new Builder();
 	}
 
-	public int getThreadsCount() {
-		return threadsCount;
+	public Map<String, Object> asMap() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("threadsCount", threadsCount);
+		map.put("typeUpdatesLimit", typeUpdatesLimit);
+		map.put("useDexForgeApi", useDexForgeApi);
+		map.put("skipSources", skipSources);
+		map.put("skipResources", skipResources);
+		map.put("showInconsistentCode", showInconsistentCode);
+		map.put("commentsLevel", commentsLevel.name());
+		map.put("decompilationMode", decompilationMode.name());
+		return map;
 	}
 
-	public int getTypeUpdatesLimit() {
-		return typeUpdatesLimit;
-	}
-
-	public boolean isUseDexForgeApi() {
-		return useDexForgeApi;
-	}
-
-	public boolean isSkipSources() {
-		return skipSources;
-	}
-
-	public boolean isSkipResources() {
-		return skipResources;
-	}
-
-	public boolean isShowInconsistentCode() {
-		return showInconsistentCode;
-	}
-
-	public DexForgeCommentsLevel getCommentsLevel() {
-		return commentsLevel;
-	}
-
-	public DexForgeDecompilationMode getDecompilationMode() {
-		return decompilationMode;
-	}
-
-	/**
-	 * Internal bridge to apply settings to JADX args.
-	 */
-	@Deprecated(forRemoval = false)
-	public void applyTo(Object args) {
-		Objects.requireNonNull(args);
-		JadxDecompilerHelper.setThreadsCount(args, threadsCount);
-		JadxDecompilerHelper.setTypeUpdatesLimit(args, typeUpdatesLimit);
-		JadxDecompilerHelper.setSkipSources(args, skipSources);
-		JadxDecompilerHelper.setSkipResources(args, skipResources);
-		JadxDecompilerHelper.setShowInconsistentCode(args, showInconsistentCode);
-		JadxDecompilerHelper.setCommentsLevel(args, commentsLevel.name());
-		JadxDecompilerHelper.setDecompilationMode(args, decompilationMode.name());
-	}
+	public int getThreadsCount() { return threadsCount; }
 
 	public static final class Builder {
 		private int threadsCount = DEFAULT_THREADS_COUNT;
@@ -93,8 +60,7 @@ public final class DexForgeSettings {
 		private DexForgeCommentsLevel commentsLevel = DexForgeCommentsLevel.INFO;
 		private DexForgeDecompilationMode decompilationMode = DexForgeDecompilationMode.AUTO;
 
-		private Builder() {
-		}
+		private Builder() {}
 
 		public Builder threadsCount(int threadsCount) {
 			this.threadsCount = Math.max(1, threadsCount);

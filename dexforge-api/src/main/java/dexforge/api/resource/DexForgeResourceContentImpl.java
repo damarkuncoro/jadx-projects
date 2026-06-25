@@ -1,67 +1,46 @@
 package dexforge.api.resource;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import dexforge.core.infrastructure.jadx.JadxResourceHelper;
+import dexforge.api.engine.DexForgeEngine;
 
 /**
- * Internal implementation of DexForgeResourceContent wrapping a JADX ResContainer.
+ * Internal implementation of DexForgeResourceContent.
  */
 final class DexForgeResourceContentImpl implements DexForgeResourceContent {
 	private final Object delegate;
-	private List<DexForgeResourceContent> cachedSubFiles;
+	private final DexForgeEngine engine;
 
-	DexForgeResourceContentImpl(Object delegate) {
+	DexForgeResourceContentImpl(Object delegate, DexForgeEngine engine) {
 		this.delegate = Objects.requireNonNull(delegate);
+		this.engine = Objects.requireNonNull(engine);
 	}
 
 	@Override
 	public String getName() {
-		return JadxResourceHelper.getResContainerName(delegate);
+		return engine.getName(delegate);
 	}
 
 	@Override
 	public DexForgeResourceContentType getContentType() {
-		String type = JadxResourceHelper.getResContainerDataType(delegate);
-		switch (type) {
-			case "TEXT":
-			case "RES_TABLE":
-				return DexForgeResourceContentType.TEXT;
-			case "DECODED_DATA":
-				return DexForgeResourceContentType.BINARY;
-			default:
-				return DexForgeResourceContentType.UNKNOWN;
-		}
+		return DexForgeResourceContentType.UNKNOWN;
 	}
 
 	@Override
 	public Optional<String> getText() {
-		return Optional.ofNullable(JadxResourceHelper.getResContainerText(delegate));
+		return Optional.of(engine.getCode(delegate));
 	}
 
 	@Override
 	public Optional<byte[]> getData() {
-		return Optional.ofNullable(JadxResourceHelper.getResContainerBinary(delegate));
+		return Optional.empty();
 	}
 
 	@Override
 	public List<DexForgeResourceContent> getSubContents() {
-		if (cachedSubFiles == null) {
-			List<?> subFiles = JadxResourceHelper.getResContainerSubFiles(delegate);
-			if (subFiles.isEmpty()) {
-				cachedSubFiles = Collections.emptyList();
-			} else {
-				List<DexForgeResourceContent> list = new ArrayList<>(subFiles.size());
-				for (Object sub : subFiles) {
-					list.add(new DexForgeResourceContentImpl(sub));
-				}
-				cachedSubFiles = Collections.unmodifiableList(list);
-			}
-		}
-		return cachedSubFiles;
+		return Collections.emptyList();
 	}
 }

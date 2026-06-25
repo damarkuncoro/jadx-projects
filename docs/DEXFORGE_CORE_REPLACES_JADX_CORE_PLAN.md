@@ -212,6 +212,7 @@ Expand adapter coverage for:
 - Search code.
 - Export decompiled project.
 - Decompile single class.
+- Manage project/session lifecycle and state persistence.
 - Report diagnostics and decompile errors.
 - Expose progress lifecycle.
 - Support plugin loading.
@@ -334,7 +335,7 @@ Begin replacing selected `jadx-core` responsibilities with DexForge-owned intern
 
 Start with isolated areas:
 
-1. Project/session lifecycle.
+1. Project/session lifecycle and persistence.
 2. Progress and diagnostic reporting.
 3. Source/resource indexing.
 4. Search model.

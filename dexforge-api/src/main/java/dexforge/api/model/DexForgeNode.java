@@ -23,6 +23,11 @@ public interface DexForgeNode {
 	void removeAlias();
 
 	/**
+	 * Get the type of this node.
+	 */
+	DexForgeNodeType getNodeType();
+
+	/**
 	 * Unique identifier for this node within the project.
 	 */
 	String getId();

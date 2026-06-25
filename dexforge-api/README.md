@@ -35,4 +35,6 @@ The first implementation is an adapter over the existing JADX runtime. This keep
 - `DexForgePlugin`
 - `DexForgePluginLoader`
 - `DexForgePluginRegistry`
+- `DexForgeProjectStore` - Project persistence interface
+- `DexForgeProjectState` - Data object for project serialization
 - DexForge-owned enums for comments, decompilation mode, and resources

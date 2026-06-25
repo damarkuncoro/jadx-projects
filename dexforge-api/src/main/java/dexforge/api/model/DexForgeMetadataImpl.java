@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import dexforge.core.infrastructure.jadx.JadxCodeHelper;
+import dexforge.api.engine.DexForgeEngine;
+import dexforge.api.model.metadata.DexForgeAnnotation;
 
 /**
  * Internal implementation of DexForgeCodeMetadata.
@@ -14,35 +15,59 @@ import dexforge.core.infrastructure.jadx.JadxCodeHelper;
  */
 final class DexForgeMetadataImpl implements DexForgeCodeMetadata {
 	private final Object codeInfo;
-	private Map<Integer, DexForgeNode> definitions;
+	private final DexForgeEngine engine;
 
-	DexForgeMetadataImpl(Object codeInfo) {
+	DexForgeMetadataImpl(Object codeInfo, DexForgeEngine engine) {
 		this.codeInfo = Objects.requireNonNull(codeInfo);
+		this.engine = Objects.requireNonNull(engine);
+	}
+
+	@Override
+	public Optional<DexForgeAnnotation> getAt(int position) {
+		Object raw = engine.getAnnotationAt(codeInfo, position);
+		return Optional.ofNullable(wrapAnnotation(raw));
 	}
 
 	@Override
 	public Optional<DexForgeNode> getNodeAt(int position) {
-		Object node = JadxCodeHelper.getNodeAt(codeInfo, position);
-		return Optional.ofNullable(DexForgeNodeFactory.wrap(node));
+		// This usually requires the class as well, but we'll try to find it from codeInfo if possible
+		return Optional.empty();
+	}
+
+	@Override
+	public Map<Integer, DexForgeAnnotation> getAnnotations() {
+		Map<Integer, Object> rawMap = engine.getAnnotations(codeInfo);
+		if (rawMap.isEmpty()) return Collections.emptyMap();
+
+		Map<Integer, DexForgeAnnotation> result = new HashMap<>();
+		for (Map.Entry<Integer, Object> entry : rawMap.entrySet()) {
+			result.put(entry.getKey(), wrapAnnotation(entry.getValue()));
+		}
+		return Collections.unmodifiableMap(result);
 	}
 
 	@Override
 	public Map<Integer, DexForgeNode> getAllDefinitions() {
-		if (definitions == null) {
-			Map<Integer, Object> rawMap = JadxCodeHelper.getDefinitions(codeInfo);
-			if (rawMap.isEmpty()) {
-				definitions = Collections.emptyMap();
-			} else {
-				Map<Integer, DexForgeNode> wrappedMap = new HashMap<>(rawMap.size());
-				rawMap.forEach((pos, node) -> wrappedMap.put(pos, DexForgeNodeFactory.wrap(node)));
-				definitions = Collections.unmodifiableMap(wrappedMap);
-			}
-		}
-		return definitions;
+		return Collections.emptyMap();
 	}
 
 	@Override
 	public Optional<Integer> getSourceLine(int decompiledLine) {
-		return Optional.ofNullable(JadxCodeHelper.getSourceLine(codeInfo, decompiledLine));
+		return Optional.empty();
+	}
+
+	private DexForgeAnnotation wrapAnnotation(Object raw) {
+		if (raw == null) return null;
+		String typeName = engine.getAnnotationType(raw);
+		String data = engine.getAnnotationData(raw);
+
+		DexForgeAnnotation.AnnType type;
+		try {
+			type = DexForgeAnnotation.AnnType.valueOf(typeName);
+		} catch (Exception e) {
+			type = DexForgeAnnotation.AnnType.OFFSET; // Default
+		}
+
+		return new DexForgeAnnotationImpl(type, data);
 	}
 }

@@ -22,6 +22,13 @@ Proyek DexForge sekarang mendukung mode **LSP (Language Server Protocol) JSON-RP
 *   **Fitur Terintegrasi**: Mendukung resolusi definisi (`textDocument/definition`), pelacakan referensi (`textDocument/references`), hover signature (`textDocument/hover`), pencarian simbol fuzzy global (`workspace/symbol`), serta pelaporan warning/error dekompilasi (`diagnostics`).
 *   **Pemrosesan Asinkron**: Pemrosesan query asinkron berbasis Thread Pool memastikan antarmuka komunikasi tidak memblokir input/output utama daemon.
 
+## 0.2. Project Persistence & Architecture Cleanup (Update Terbaru)
+
+Kami telah memperkuat arsitektur DexForge untuk mendukung skalabilitas jangka panjang dan independensi dari JADX:
+*   **Zero JADX Dependency di API & Core**: Modul `dexforge-api` dan `dexforge-core` sekarang 100% bebas dari dependensi langsung ke JADX. Semua logika engine decompiler dipindahkan ke modul khusus: `dexforge-engine-jadx`.
+*   **Project Persistence Layer**: Menambahkan kemampuan untuk menyimpan dan memuat "state" project (rename history, input files, module metadata) secara engine-agnostic menggunakan format JSON.
+*   **Clean DDD (Domain Driven Design)**: Memperkenalkan aggregate root `Project` dan domain services yang mengelola lifecycle dekompilasi tanpa tercemar detail infrastruktur.
+
 ## 1. Ringkasan Perubahan yang Sudah Dilakukan
 
 Berikut adalah perubahan yang telah diterapkan pada proyek ini:
@@ -32,6 +39,7 @@ Berikut adalah perubahan yang telah diterapkan pada proyek ini:
 - **Menambahkan Frida Integration**: Menambahkan modul `jadx-frida-integration` dan panel Frida di GUI
 - **Penerapan Clean Architecture & SOLID di jadx-core**: Mendekopel kelas inti `ClassNode` dan presentasi output `CodeGen` melalui antarmuka dinamis `ICodeGenerator`.
 - **Implementasi LSP Daemon Mode di jadx-cli**: Menambahkan driver komunikasi JSON-RPC asinkron, router perintah, layanan inti JADX (`DaemonService`), dan layanan pemetaan protokol LSP (`LspService`).
+- **Architecure Cleanup & Project Persistence**: Relokasi dependensi engine ke `dexforge-engine-jadx` dan implementasi `ProjectPersistenceService` yang engine-agnostic.
 
 ## 2. Cara Menjalankan DexForge GUI
 

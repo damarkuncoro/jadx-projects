@@ -18,6 +18,8 @@ import dexforge.api.core.DexForgeSettings;
 import dexforge.api.diagnostic.DexForgeDiagnostic;
 import dexforge.api.diagnostic.DexForgeDiagnosticManager;
 import dexforge.api.diagnostic.DexForgeDiagnosticSeverity;
+import dexforge.api.engine.DexForgeEngine;
+import dexforge.api.engine.EngineRegistry;
 import dexforge.api.event.DexForgeEvent;
 import dexforge.api.event.DexForgeEventBus;
 import dexforge.api.event.DexForgeProjectEvent;
@@ -59,6 +61,8 @@ class DexForgeApiArchitectureTest {
 			DexForgeDiagnostic.class,
 			DexForgeDiagnosticManager.class,
 			DexForgeDiagnosticSeverity.class,
+			DexForgeEngine.class,
+			EngineRegistry.class,
 			DexForgeEvent.class,
 			DexForgeEventBus.class,
 			DexForgeProjectEvent.class,
@@ -66,9 +70,9 @@ class DexForgeApiArchitectureTest {
 			DexForgeException.class,
 			DexForgeField.class,
 			DexForgeMethod.class,
-			DexForgeNode.class,
 			DexForgeInstruction.class,
 			DexForgeOpcode.class,
+			DexForgeNode.class,
 			DexForgePackage.class,
 			DexForgePlugin.class,
 			DexForgePluginContext.class,

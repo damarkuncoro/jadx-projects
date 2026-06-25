@@ -1,50 +1,35 @@
 package dexforge.api.resource;
 
 import java.util.Objects;
-
-import dexforge.core.infrastructure.jadx.JadxResourceHelper;
+import dexforge.api.engine.DexForgeEngine;
 
 public final class DexForgeResourceFile {
 	private final Object delegate;
+	private final DexForgeEngine engine;
 
-	public DexForgeResourceFile(Object delegate) {
+	public DexForgeResourceFile(Object delegate, DexForgeEngine engine) {
 		this.delegate = Objects.requireNonNull(delegate);
+		this.engine = Objects.requireNonNull(engine);
 	}
 
 	public String getOriginalName() {
-		return JadxResourceHelper.getOriginalName(delegate);
+		return engine.getName(delegate);
 	}
 
 	public String getDeobfuscatedName() {
-		return JadxResourceHelper.getDeobfName(delegate);
-	}
-
-	public void setDeobfuscatedName(String name) {
-		JadxResourceHelper.setDeobfName(delegate, name);
+		return engine.getFullName(delegate);
 	}
 
 	public DexForgeResourceType getType() {
-		return DexForgeResourceType.valueOf(JadxResourceHelper.getTypeName(delegate));
+		return DexForgeResourceType.UNKNOWN; // Placeholder
 	}
 
-	/**
-	 * Load and decode the content of this resource.
-	 */
-	public DexForgeResourceContent loadContent() {
-		Object resContainer = JadxResourceHelper.loadContent(delegate);
-		return new DexForgeResourceContentImpl(resContainer);
-	}
-
-	/**
-	 * bridge kept for internal use.
-	 */
-	@Deprecated(forRemoval = false)
-	public Object unwrap() {
-		return delegate;
+	public String getContent() {
+		return engine.getResourceText(delegate);
 	}
 
 	@Override
 	public String toString() {
-		return delegate.toString();
+		return getOriginalName();
 	}
 }

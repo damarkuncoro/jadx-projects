@@ -3,9 +3,14 @@ package dexforge.api.core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 import dexforge.api.model.DexForgeNode;
+import dexforge.api.model.DexForgeNodeType;
 import dexforge.api.rename.DexForgeRenameAction;
 import dexforge.api.rename.DexForgeRenameManager;
 
@@ -31,7 +36,7 @@ final class DexForgeRenameManagerImpl implements DexForgeRenameManager {
 
 		applyRename(node, newName);
 
-		DexForgeRenameAction action = new DexForgeRenameAction(node.getId(), oldName, newName);
+		DexForgeRenameAction action = new DexForgeRenameAction(node, oldName, newName);
 		undoStack.push(action);
 		history.add(action);
 		redoStack.clear();
@@ -45,9 +50,7 @@ final class DexForgeRenameManagerImpl implements DexForgeRenameManager {
 		DexForgeRenameAction action = undoStack.pop();
 		redoStack.push(action);
 
-		// Find node and revert
-		project.search().classes().named(action.getNodeId()).findFirst() // Simplified search
-				.ifPresent(node -> applyRename(node, action.getOldName()));
+		findNode(action).ifPresent(node -> applyRename(node, action.getOldName()));
 
 		return true;
 	}
@@ -60,8 +63,7 @@ final class DexForgeRenameManagerImpl implements DexForgeRenameManager {
 		DexForgeRenameAction action = redoStack.pop();
 		undoStack.push(action);
 
-		project.search().classes().named(action.getNodeId()).findFirst()
-				.ifPresent(node -> applyRename(node, action.getNewName()));
+		findNode(action).ifPresent(node -> applyRename(node, action.getNewName()));
 
 		return true;
 	}
@@ -72,10 +74,49 @@ final class DexForgeRenameManagerImpl implements DexForgeRenameManager {
 	}
 
 	@Override
+	public void loadHistory(List<DexForgeRenameAction> history) {
+		this.history.clear();
+		this.history.addAll(history);
+		this.undoStack.clear();
+		this.redoStack.clear();
+
+		// Re-apply renames to the engine
+		for (DexForgeRenameAction action : history) {
+			findNode(action).ifPresent(node -> applyRename(node, action.getNewName()));
+		}
+	}
+
+	@Override
 	public void resetHistory() {
 		history.clear();
 		undoStack.clear();
 		redoStack.clear();
+	}
+
+	private Optional<? extends DexForgeNode> findNode(DexForgeRenameAction action) {
+		String id = action.getNodeId();
+		DexForgeNodeType type = action.getNodeType();
+
+		if (type == null) {
+			// Fallback for older saved projects
+			return project.search().classes().named(id).findFirst();
+		}
+
+		// Remove prefixes if they exist (e.g., "cls:", "mth:")
+		String rawId = id.contains(":") ? id.substring(id.indexOf(":") + 1) : id;
+
+		switch (type) {
+			case CLASS:
+				return project.search().classes().named(rawId).findFirst();
+			case METHOD:
+				return project.search().methods().filter(m -> m.getFullName().equals(rawId) || m.getId().equals(id)).findFirst();
+			case FIELD:
+				return project.search().fields().filter(f -> f.getFullName().equals(rawId) || f.getId().equals(id)).findFirst();
+			case PACKAGE:
+				return project.getPackages().stream().filter(p -> p.getFullName().equals(rawId) || p.getId().equals(id)).findFirst();
+			default:
+				return Optional.empty();
+		}
 	}
 
 	private void applyRename(DexForgeNode node, String name) {

@@ -4,90 +4,76 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import dexforge.core.infrastructure.jadx.JadxNodeHelper;
+import dexforge.api.engine.DexForgeEngine;
 
 /**
  * DexForge implementation of a field node, wrapping an internal delegate.
  */
 public final class DexForgeField implements DexForgeNode {
 	private final Object delegate;
+	private final DexForgeEngine engine;
 
-	public DexForgeField(Object delegate) {
+	public DexForgeField(Object delegate, DexForgeEngine engine) {
 		this.delegate = Objects.requireNonNull(delegate);
+		this.engine = Objects.requireNonNull(engine);
 	}
 
 	@Override
 	public String getName() {
-		return JadxNodeHelper.getFieldAlias(delegate);
+		return engine.getName(delegate);
 	}
 
 	@Override
 	public String getFullName() {
-		return JadxNodeHelper.getFieldFullName(delegate);
-	}
-
-	public String getRawName() {
-		return JadxNodeHelper.getFieldRawName(delegate);
+		return engine.getFullName(delegate);
 	}
 
 	public String getType() {
-		return JadxNodeHelper.getFieldType(delegate);
+		return engine.getFieldType(delegate);
 	}
 
 	@Override
 	public DexForgeClass getDeclaringClass() {
-		return DexForgeNodeFactory.wrapClass(JadxNodeHelper.getParentClass(delegate));
+		return null;
 	}
 
 	@Override
 	public DexForgeClass getTopParentClass() {
-		return DexForgeNodeFactory.wrapClass(JadxNodeHelper.getTopParentClass(delegate));
+		return null;
 	}
 
 	@Override
 	public int getDefinitionPosition() {
-		return JadxNodeHelper.getDefPos(delegate);
+		return engine.getDefinitionPosition(delegate);
 	}
 
 	@Override
 	public List<DexForgeNode> getUseIn() {
-		return DexForgeNodeFactory.wrapNodes(JadxNodeHelper.getFieldUseIn(delegate));
+		return DexForgeNodeFactory.wrapNodes(engine.getUseIn(delegate), engine);
 	}
 
 	@Override
 	public boolean isDecompiled() {
-		return true; // Fields don't have separate decompilation state usually
-	}
-
-	@Override
-	public void removeAlias() {
-		JadxNodeHelper.removeAlias(delegate);
+		return true;
 	}
 
 	@Override
 	public void rename(String newName) {
-		JadxNodeHelper.rename(delegate, newName);
+		engine.rename(delegate, newName);
+	}
+
+	@Override
+	public void removeAlias() {
+		engine.removeAlias(delegate);
+	}
+
+	@Override
+	public DexForgeNodeType getNodeType() {
+		return DexForgeNodeType.FIELD;
 	}
 
 	@Override
 	public String getId() {
 		return "fld:" + getFullName();
-	}
-
-	/**
-	 * JADX bridge kept for compatibility during migration.
-	 */
-	@Deprecated(forRemoval = false)
-	public Object unwrap() {
-		return JadxNodeHelper.getJavaNode(delegate);
-	}
-
-	public Object delegate() {
-		return delegate;
-	}
-
-	@Override
-	public String toString() {
-		return delegate.toString();
 	}
 }

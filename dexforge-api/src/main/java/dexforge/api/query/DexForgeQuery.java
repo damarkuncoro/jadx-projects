@@ -58,4 +58,8 @@ public interface DexForgeQuery<T extends DexForgeNode> {
 	interface FieldQuery extends DexForgeQuery<DexForgeField> {
 		FieldQuery ofType(String typeName);
 	}
+
+	interface GlobalQuery extends DexForgeQuery<DexForgeNode> {
+		GlobalQuery containing(String text);
+	}
 }

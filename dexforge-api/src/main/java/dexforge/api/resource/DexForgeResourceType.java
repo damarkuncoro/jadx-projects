@@ -1,7 +1,5 @@
 package dexforge.api.resource;
 
-import dexforge.core.infrastructure.jadx.JadxResourceHelper;
-
 public enum DexForgeResourceType {
 	CODE(DexForgeResourceContentType.BINARY),
 	XML(DexForgeResourceContentType.TEXT),
@@ -28,9 +26,5 @@ public enum DexForgeResourceType {
 
 	public DexForgeResourceContentType getContentType() {
 		return contentType;
-	}
-
-	public static DexForgeResourceType getFileType(String fileName) {
-		return DexForgeResourceType.valueOf(JadxResourceHelper.getFileType(fileName));
 	}
 }

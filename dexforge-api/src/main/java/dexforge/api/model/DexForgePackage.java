@@ -1,69 +1,36 @@
 package dexforge.api.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import dexforge.core.infrastructure.jadx.JadxPackageHelper;
+import dexforge.api.engine.DexForgeEngine;
 
 public final class DexForgePackage implements DexForgeNode, Comparable<DexForgePackage> {
 	private final Object delegate;
+	private final DexForgeEngine engine;
 
-	public DexForgePackage(Object delegate) {
+	public DexForgePackage(Object delegate, DexForgeEngine engine) {
 		this.delegate = Objects.requireNonNull(delegate);
+		this.engine = Objects.requireNonNull(engine);
 	}
 
 	@Override
 	public String getName() {
-		return JadxPackageHelper.getName(delegate);
+		return engine.getName(delegate);
 	}
 
 	@Override
 	public String getFullName() {
-		return JadxPackageHelper.getFullName(delegate);
-	}
-
-	public String getRawName() {
-		return JadxPackageHelper.getRawName(delegate);
-	}
-
-	public String getRawFullName() {
-		return JadxPackageHelper.getRawFullName(delegate);
+		return engine.getFullName(delegate);
 	}
 
 	public List<DexForgePackage> getSubPackages() {
-		return DexForgeNodeFactory.wrapPackages(JadxPackageHelper.getSubPackages(delegate));
+		return DexForgeNodeFactory.wrapPackages(engine.getSubPackages(delegate), engine);
 	}
 
 	public List<DexForgeClass> getClasses() {
-		return DexForgeNodeFactory.wrapClasses(JadxPackageHelper.getClasses(delegate));
-	}
-
-	public List<DexForgeClass> getClassesNoDup() {
-		return DexForgeNodeFactory.wrapClasses(JadxPackageHelper.getClassesNoDup(delegate));
-	}
-
-	public boolean isRoot() {
-		return JadxPackageHelper.isRoot(delegate);
-	}
-
-	public boolean isLeaf() {
-		return JadxPackageHelper.isLeaf(delegate);
-	}
-
-	public boolean isDefault() {
-		return JadxPackageHelper.isDefault(delegate);
-	}
-
-	public void rename(String newName) {
-		JadxPackageHelper.rename(delegate, newName);
-	}
-
-	public boolean isParentRenamed() {
-		return JadxPackageHelper.isParentRenamed(delegate);
-	}
-
-	public boolean isDescendantOf(DexForgePackage ancestor) {
-		return JadxPackageHelper.isDescendantOf(delegate, ancestor.delegate);
+		return DexForgeNodeFactory.wrapClasses(engine.getClassesInPackage(delegate), engine);
 	}
 
 	@Override
@@ -78,22 +45,32 @@ public final class DexForgePackage implements DexForgeNode, Comparable<DexForgeP
 
 	@Override
 	public int getDefinitionPosition() {
-		return JadxPackageHelper.getDefPos(delegate);
+		return 0;
 	}
 
 	@Override
 	public List<DexForgeNode> getUseIn() {
-		return DexForgeNodeFactory.wrapNodes(JadxPackageHelper.getUseIn(delegate));
+		return DexForgeNodeFactory.wrapNodes(engine.getUseIn(delegate), engine);
 	}
 
 	@Override
 	public boolean isDecompiled() {
-		return true; // Packages are just structural
+		return true;
+	}
+
+	@Override
+	public void rename(String newName) {
+		engine.rename(delegate, newName);
 	}
 
 	@Override
 	public void removeAlias() {
-		JadxPackageHelper.removeAlias(delegate);
+		engine.removeAlias(delegate);
+	}
+
+	@Override
+	public DexForgeNodeType getNodeType() {
+		return DexForgeNodeType.PACKAGE;
 	}
 
 	@Override
@@ -101,21 +78,13 @@ public final class DexForgePackage implements DexForgeNode, Comparable<DexForgeP
 		return "pkg:" + getFullName();
 	}
 
-	/**
-	 * bridge kept for internal use.
-	 */
-	@Deprecated(forRemoval = false)
-	public Object unwrap() {
-		return delegate;
+	@Override
+	public String toString() {
+		return getName();
 	}
 
 	@Override
 	public int compareTo(DexForgePackage other) {
-		return JadxPackageHelper.compare(delegate, other.delegate);
-	}
-
-	@Override
-	public String toString() {
-		return delegate.toString();
+		return getFullName().compareTo(other.getFullName());
 	}
 }

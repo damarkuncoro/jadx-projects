@@ -11,6 +11,7 @@ rootProject.name = "jadx"
 include("jadx-core")
 include("dexforge-api")
 include("dexforge-core")
+include("dexforge-engine-jadx")
 include("dexforge-cli")
 include("dexforge-gui")
 include("jadx-gui")

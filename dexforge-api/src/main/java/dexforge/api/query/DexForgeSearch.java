@@ -38,6 +38,10 @@ public final class DexForgeSearch {
 				.flatMap(cls -> cls.getFields().stream()));
 	}
 
+	public DexForgeQuery.GlobalQuery global() {
+		return new GlobalQueryImpl(project.getClasses().stream().map(c -> (DexForgeNode) c));
+	}
+
 	private abstract static class BaseQuery<T extends DexForgeNode, Q extends DexForgeQuery<T>> implements DexForgeQuery<T> {
 		protected Stream<T> stream;
 
@@ -46,6 +50,7 @@ public final class DexForgeSearch {
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public Q named(String pattern) {
 			Pattern p = Pattern.compile(pattern);
 			this.stream = stream.filter(node -> p.matcher(node.getName()).find() || p.matcher(node.getFullName()).find());
@@ -53,12 +58,14 @@ public final class DexForgeSearch {
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public Q filter(Predicate<T> predicate) {
 			this.stream = stream.filter(predicate);
 			return (Q) this;
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public Q limit(int count) {
 			this.stream = stream.limit(count);
 			return (Q) this;
@@ -86,12 +93,13 @@ public final class DexForgeSearch {
 
 		@Override
 		public ClassQuery extending(String superClassName) {
-			// Basic implementation, could be enhanced with hierarchy check
+			this.stream = stream.filter(cls -> cls.getSuperClass().contains(superClassName));
 			return this;
 		}
 
 		@Override
 		public ClassQuery implementing(String interfaceName) {
+			this.stream = stream.filter(cls -> cls.getInterfaces().stream().anyMatch(itf -> itf.contains(interfaceName)));
 			return this;
 		}
 	}
@@ -107,6 +115,14 @@ public final class DexForgeSearch {
 
 		@Override
 		public MethodQuery withArguments(String... argTypes) {
+			this.stream = stream.filter(mth -> {
+				List<String> mthArgs = mth.getArgumentTypes();
+				if (mthArgs.size() != argTypes.length) return false;
+				for (int i = 0; i < argTypes.length; i++) {
+					if (!mthArgs.get(i).contains(argTypes[i])) return false;
+				}
+				return true;
+			});
 			return this;
 		}
 
@@ -123,6 +139,21 @@ public final class DexForgeSearch {
 		@Override
 		public FieldQuery ofType(String typeName) {
 			this.stream = stream.filter(fld -> fld.getType().contains(typeName));
+			return this;
+		}
+	}
+
+	private static final class GlobalQueryImpl extends BaseQuery<DexForgeNode, DexForgeQuery.GlobalQuery> implements DexForgeQuery.GlobalQuery {
+		GlobalQueryImpl(Stream<DexForgeNode> stream) { super(stream); }
+
+		@Override
+		public GlobalQuery containing(String text) {
+			this.stream = stream.filter(node -> {
+				if (node instanceof DexForgeClass) {
+					return ((DexForgeClass) node).getCode().contains(text);
+				}
+				return false;
+			});
 			return this;
 		}
 	}

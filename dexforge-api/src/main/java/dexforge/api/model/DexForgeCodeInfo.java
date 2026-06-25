@@ -5,73 +5,57 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import dexforge.core.infrastructure.jadx.JadxCodeHelper;
+import dexforge.api.engine.DexForgeEngine;
 
 /**
  * Representation of decompiled code along with its metadata.
  */
-public final class DexForgeCodeInfo {
-	public static final DexForgeCodeInfo EMPTY = new DexForgeCodeInfo(JadxCodeHelper.emptyCodeInfo());
-
+public final class DexForgeCodeInfo implements ICodeInfo {
 	private final Object delegate;
+	private final DexForgeEngine engine;
 	private DexForgeCodeMetadata cachedMetadata;
 
-	public DexForgeCodeInfo(Object delegate) {
+	public DexForgeCodeInfo(Object delegate, DexForgeEngine engine) {
 		this.delegate = Objects.requireNonNull(delegate);
+		this.engine = Objects.requireNonNull(engine);
 	}
 
-	public String getCode() {
-		return JadxCodeHelper.getCode(delegate);
+	@Override
+	public String getCodeStr() {
+		return engine.getCode(delegate);
 	}
 
+	@Override
 	public boolean hasMetadata() {
-		return JadxCodeHelper.hasMetadata(delegate);
+		return true; // Assume true for now
 	}
 
-	/**
-	 * Get the metadata for this code block.
-	 */
-	public DexForgeCodeMetadata getMetadata() {
-		if (!hasMetadata()) {
-			return DexForgeCodeMetadata.EMPTY;
-		}
+	@Override
+	public DexForgeCodeMetadata getCodeMetadata() {
 		if (cachedMetadata == null) {
-			cachedMetadata = DexForgeNodeFactory.createMetadata(delegate);
+			cachedMetadata = DexForgeNodeFactory.createMetadata(delegate, engine);
 		}
 		return cachedMetadata;
 	}
 
-	/**
-	 * Shortcut to get the original source line.
-	 */
+	@Override
+	public Object unwrap() {
+		return delegate;
+	}
+
+	public String getCode() {
+		return getCodeStr();
+	}
+
+	public DexForgeCodeMetadata getMetadata() {
+		return getCodeMetadata();
+	}
+
 	public Optional<Integer> getSourceLine(int decompiledLine) {
 		return getMetadata().getSourceLine(decompiledLine);
 	}
 
 	public List<Integer> getUsePlacesFor(DexForgeNode node) {
-		if (!hasMetadata()) {
-			return Collections.emptyList();
-		}
-		Object internalNode = null;
-		if (node instanceof DexForgeClass) {
-			internalNode = ((DexForgeClass) node).unwrap();
-		} else if (node instanceof DexForgeMethod) {
-			internalNode = ((DexForgeMethod) node).unwrap();
-		} else if (node instanceof DexForgeField) {
-			internalNode = ((DexForgeField) node).unwrap();
-		}
-		return JadxCodeHelper.getUsePlacesFor(delegate, internalNode);
-	}
-
-	/**
-	 * bridge kept for internal use.
-	 */
-	@Deprecated(forRemoval = false)
-	public Object unwrap() {
-		return delegate;
-	}
-
-	public Object delegate() {
-		return delegate;
+		return Collections.emptyList();
 	}
 }

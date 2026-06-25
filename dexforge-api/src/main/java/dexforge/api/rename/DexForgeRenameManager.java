@@ -29,6 +29,11 @@ public interface DexForgeRenameManager {
 	List<DexForgeRenameAction> getHistory();
 
 	/**
+	 * Load a rename history into the manager.
+	 */
+	void loadHistory(List<DexForgeRenameAction> history);
+
+	/**
 	 * Clear all history and persist current aliases as "original".
 	 */
 	void resetHistory();

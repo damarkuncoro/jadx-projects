@@ -3,10 +3,8 @@ plugins {
 }
 
 dependencies {
-	// Public API must not leak JADX types
-	implementation(project(":dexforge-core"))
-
-	testImplementation(project(":jadx-core"))
+	// API is the base module, it doesn't depend on Core or Engines.
+	// Implementation details are injected via SPI or Registry.
 }
 
 tasks.named("check") {

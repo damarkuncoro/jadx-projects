@@ -7,143 +7,87 @@ import java.util.Objects;
 import java.util.Optional;
 
 import dexforge.api.diagnostic.DexForgeDiagnostic;
+import dexforge.api.engine.DexForgeEngine;
 import dexforge.api.exception.DexForgeException;
-import dexforge.core.infrastructure.jadx.JadxDiagnosticMapper;
-import dexforge.core.infrastructure.jadx.JadxNodeHelper;
 
 /**
  * DexForge implementation of a class node, wrapping an internal delegate.
  */
 public final class DexForgeClass implements DexForgeNode {
 	private final Object delegate;
+	private final DexForgeEngine engine;
 
-	public DexForgeClass(Object delegate) {
+	public DexForgeClass(Object delegate, DexForgeEngine engine) {
 		this.delegate = Objects.requireNonNull(delegate);
+		this.engine = Objects.requireNonNull(engine);
 	}
 
 	@Override
 	public String getName() {
-		return JadxNodeHelper.getClassName(delegate);
+		return engine.getName(delegate);
 	}
 
 	@Override
 	public String getFullName() {
-		return JadxNodeHelper.getClassFullName(delegate);
+		return engine.getFullName(delegate);
 	}
 
 	public String getPackageName() {
-		return JadxNodeHelper.getClassPackage(delegate);
+		String fullName = getFullName();
+		int lastDot = fullName.lastIndexOf('.');
+		return lastDot == -1 ? "" : fullName.substring(0, lastDot);
 	}
 
 	public String getCode() {
-		return getCodeInfo().getCode();
+		return engine.getCode(delegate);
 	}
 
 	public DexForgeCodeInfo getCodeInfo() {
-		try {
-			return new DexForgeCodeInfo(JadxNodeHelper.decompile(delegate));
-		} catch (RuntimeException e) {
-			throw new DexForgeException("CLASS_DECOMPILE_FAILED", "Failed to decompile class: " + getFullName(), e);
-		}
-	}
-
-	public DexForgeCodeInfo reload() {
-		return new DexForgeCodeInfo(JadxNodeHelper.reloadCode(delegate));
-	}
-
-	public void unload() {
-		JadxNodeHelper.unloadCode(delegate);
-	}
-
-	public boolean isNoCode() {
-		return JadxNodeHelper.isClassNoCode(delegate);
-	}
-
-	public boolean isInner() {
-		return JadxNodeHelper.isClassInner(delegate);
+		return new DexForgeCodeInfo(delegate, engine);
 	}
 
 	public String getSmali() {
-		return JadxNodeHelper.getClassSmali(delegate);
-	}
-
-	public String getRawName() {
-		return JadxNodeHelper.getClassRawName(delegate);
-	}
-
-	public List<DexForgeClass> getInnerClasses() {
-		return DexForgeNodeFactory.wrapClasses(JadxNodeHelper.getInnerClasses(delegate));
-	}
-
-	public List<DexForgeClass> getInlinedClasses() {
-		return DexForgeNodeFactory.wrapClasses(JadxNodeHelper.getInlinedClasses(delegate));
-	}
-
-	public List<DexForgeField> getFields() {
-		return DexForgeNodeFactory.wrapFields(JadxNodeHelper.getFields(delegate));
-	}
-
-	public List<DexForgeMethod> getMethods() {
-		return DexForgeNodeFactory.wrapMethods(JadxNodeHelper.getMethods(delegate));
-	}
-
-	public DexForgeMethod searchMethodByShortId(String shortId) {
-		return DexForgeNodeFactory.wrapMethod(JadxNodeHelper.searchMethodByShortId(delegate, shortId));
-	}
-
-	public List<DexForgeClass> getDependencies() {
-		return DexForgeNodeFactory.wrapClasses(JadxNodeHelper.getDependencies(delegate));
-	}
-
-	public int getTotalDependenciesCount() {
-		return JadxNodeHelper.getTotalDepsCount(delegate);
-	}
-
-	public Optional<Integer> getSourceLine(int decompiledLine) {
-		return getCodeInfo().getSourceLine(decompiledLine);
+		return engine.getSmali(delegate);
 	}
 
 	@Override
 	public DexForgeClass getDeclaringClass() {
-		return DexForgeNodeFactory.wrapClass(JadxNodeHelper.getParentClass(delegate));
+		return null;
 	}
 
 	@Override
 	public DexForgeClass getTopParentClass() {
-		return DexForgeNodeFactory.wrapClass(JadxNodeHelper.getTopParentClass(delegate));
-	}
-
-	public DexForgeClass getOriginalTopParentClass() {
-		return getTopParentClass();
-	}
-
-	public DexForgeClass getCodeParent() {
-		return DexForgeNodeFactory.wrapClass(JadxNodeHelper.getParentClass(delegate));
+		return this;
 	}
 
 	@Override
 	public int getDefinitionPosition() {
-		return JadxNodeHelper.getDefPos(delegate);
+		return engine.getDefinitionPosition(delegate);
 	}
 
 	@Override
 	public List<DexForgeNode> getUseIn() {
-		return DexForgeNodeFactory.wrapNodes(JadxNodeHelper.getClassUseIn(delegate));
+		return DexForgeNodeFactory.wrapNodes(engine.getUseIn(delegate), engine);
 	}
 
 	@Override
 	public boolean isDecompiled() {
-		return JadxNodeHelper.isClassDecompiled(delegate);
-	}
-
-	@Override
-	public void removeAlias() {
-		JadxNodeHelper.removeAlias(delegate);
+		return !getCode().isEmpty();
 	}
 
 	@Override
 	public void rename(String newName) {
-		JadxNodeHelper.rename(delegate, newName);
+		engine.rename(delegate, newName);
+	}
+
+	@Override
+	public void removeAlias() {
+		engine.removeAlias(delegate);
+	}
+
+	@Override
+	public DexForgeNodeType getNodeType() {
+		return DexForgeNodeType.CLASS;
 	}
 
 	@Override
@@ -151,43 +95,41 @@ public final class DexForgeClass implements DexForgeNode {
 		return "cls:" + getFullName();
 	}
 
-	public List<Integer> getUsePlacesFor(DexForgeCodeInfo codeInfo, DexForgeNode node) {
-		return codeInfo.getUsePlacesFor(node);
-	}
-
 	public List<DexForgeDiagnostic> getDiagnostics() {
-		List<dexforge.engine.DexForgeDiagnostic> coreDiagnostics = JadxDiagnosticMapper.collectDiagnostics(delegate, getCode());
-		if (coreDiagnostics.isEmpty()) {
-			return Collections.emptyList();
-		}
-		List<DexForgeDiagnostic> apiDiagnostics = new ArrayList<>(coreDiagnostics.size());
-		for (dexforge.engine.DexForgeDiagnostic diag : coreDiagnostics) {
-			apiDiagnostics.add(mapToApi(diag));
-		}
-		return Collections.unmodifiableList(apiDiagnostics);
+		return Collections.emptyList();
 	}
 
-	private static DexForgeDiagnostic mapToApi(dexforge.engine.DexForgeDiagnostic diag) {
-		switch (diag.getSeverity()) {
-			case INFO:
-				return DexForgeDiagnostic.info(diag.getMessage(), diag.getSource());
-			case WARNING:
-				return DexForgeDiagnostic.warning(diag.getMessage(), diag.getSource());
-			case ERROR:
-			default:
-				return DexForgeDiagnostic.error(diag.getMessage(), diag.getSource());
-		}
+	public List<DexForgeMethod> getMethods() {
+		return DexForgeNodeFactory.wrapMethods(engine.getMethods(delegate), engine);
 	}
 
-	/**
-	 * JADX bridge kept for compatibility during migration.
-	 */
-	@Deprecated(forRemoval = false)
-	public Object unwrap() {
-		return delegate;
+	public List<DexForgeField> getFields() {
+		return DexForgeNodeFactory.wrapFields(engine.getFields(delegate), engine);
+	}
+
+	public List<DexForgeClass> getInnerClasses() {
+		return DexForgeNodeFactory.wrapClasses(engine.getInnerClasses(delegate), engine);
+	}
+
+	public DexForgeNode getNodeAt(int position) {
+		Object rawNode = engine.getNodeAt(delegate, position);
+		return DexForgeNodeFactory.wrap(rawNode, engine);
+	}
+
+	public String getSuperClass() {
+		return engine.getSuperClass(delegate);
+	}
+
+	public List<String> getInterfaces() {
+		return engine.getInterfaces(delegate);
 	}
 
 	public Object delegate() {
 		return delegate;
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 }
