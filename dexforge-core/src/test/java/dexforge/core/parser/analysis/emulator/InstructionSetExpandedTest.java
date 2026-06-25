@@ -750,6 +750,37 @@ class InstructionSetExpandedTest {
         }
     }
 
+    @Nested @DisplayName("FILL-ARRAY-DATA (0x26)")
+    class FillArrayDataTest {
+
+        @Test @DisplayName("fill-array-data (0x26) mengisi array primitif dari payload")
+        void fillArrayData() {
+            byte[] byteArray = new byte[4];
+            regs.put(0, byteArray);
+
+            short[] unitsInsn = {(short) (0x26 | (0 << 8)), 10, 0};
+            DexInstruction fillInsn = insn(0x26, unitsInsn, new int[]{0}, 10, -1);
+            when(fillInsn.getOffset()).thenReturn(0);
+
+            short[] raw = new short[16];
+            raw[0] = (short) 0x26;
+            raw[1] = 10;
+            raw[2] = 0;
+            raw[10] = (short) 0x0300; // magic
+            raw[11] = 1; // element_width
+            raw[12] = 4; // size
+            raw[13] = 0;
+            raw[14] = (short) 0x4241; // 'A', 'B'
+            raw[15] = (short) 0x4443; // 'C', 'D'
+
+            when(state.getRawCodeUnits()).thenReturn(raw);
+            
+            exec(0x26, fillInsn);
+
+            assertArrayEquals(new byte[]{0x41, 0x42, 0x43, 0x44}, (byte[]) regs.get(0));
+        }
+    }
+
     // ══════════════════════════════════════════════════════════════════════════
     // INT ARITHMETIC COMPLETENESS — div/rem dengan div-by-zero
     // ══════════════════════════════════════════════════════════════════════════

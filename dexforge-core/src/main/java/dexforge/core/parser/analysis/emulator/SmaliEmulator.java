@@ -76,6 +76,7 @@ public final class SmaliEmulator {
 
     public Object execute(List<DexInstruction> instructions, Map<Integer, Object> initialRegisters) {
         state.clear();
+        state.setInstructions(instructions);
         state.getRegisters().putAll(initialRegisters);
 
         Map<Integer, Integer> offsetToInsnIndex = new HashMap<>();

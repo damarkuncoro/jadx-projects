@@ -386,9 +386,95 @@ public final class InstructionSet {
 		executors.put(0x1D, noOpExec); // monitor-enter
 		executors.put(0x1E, noOpExec); // monitor-exit
 		executors.put(0x1F, noOpExec); // check-cast
-		executors.put(0x26, noOpExec); // fill-array-data
 		executors.put(0x2B, noOpExec); // packed-switch
 		executors.put(0x2C, noOpExec); // sparse-switch
+
+		executors.put(0x26, (insn, regs) -> { // fill-array-data
+			int[] r = insn.getRegisters();
+			if (r == null || r.length == 0) return;
+			int regA = r[0];
+			Object array = regs.get(regA);
+			if (array == null || !array.getClass().isArray()) return;
+
+			int payloadOffset = insn.getOffset() + (int) insn.getLiteral();
+			short[] raw = state.getRawCodeUnits();
+			if (raw == null || payloadOffset < 0 || payloadOffset + 4 > raw.length) return;
+
+			int magic = raw[payloadOffset] & 0xFFFF;
+			if (magic != 0x0300) return; // FILL_ARRAY_DATA_PAYLOAD magic
+
+			int elementWidth = raw[payloadOffset + 1] & 0xFFFF;
+			long size = (raw[payloadOffset + 2] & 0xFFFFL) | ((raw[payloadOffset + 3] & 0xFFFFL) << 16);
+
+			if (array instanceof byte[]) {
+				byte[] arr = (byte[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + (i / 2);
+					if (wordIdx >= raw.length) break;
+					int byteShift = (i % 2) * 8;
+					arr[i] = (byte) ((raw[wordIdx] >> byteShift) & 0xFF);
+				}
+			} else if (array instanceof boolean[]) {
+				boolean[] arr = (boolean[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + (i / 2);
+					if (wordIdx >= raw.length) break;
+					int byteShift = (i % 2) * 8;
+					arr[i] = (((raw[wordIdx] >> byteShift) & 0xFF) != 0);
+				}
+			} else if (array instanceof short[]) {
+				short[] arr = (short[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + i;
+					if (wordIdx >= raw.length) break;
+					arr[i] = raw[wordIdx];
+				}
+			} else if (array instanceof char[]) {
+				char[] arr = (char[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + i;
+					if (wordIdx >= raw.length) break;
+					arr[i] = (char) raw[wordIdx];
+				}
+			} else if (array instanceof int[]) {
+				int[] arr = (int[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + i * 2;
+					if (wordIdx + 1 >= raw.length) break;
+					arr[i] = (raw[wordIdx] & 0xFFFF) | ((raw[wordIdx + 1] & 0xFFFF) << 16);
+				}
+			} else if (array instanceof float[]) {
+				float[] arr = (float[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + i * 2;
+					if (wordIdx + 1 >= raw.length) break;
+					int val = (raw[wordIdx] & 0xFFFF) | ((raw[wordIdx + 1] & 0xFFFF) << 16);
+					arr[i] = Float.intBitsToFloat(val);
+				}
+			} else if (array instanceof long[]) {
+				long[] arr = (long[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + i * 4;
+					if (wordIdx + 3 >= raw.length) break;
+					long val = (raw[wordIdx] & 0xFFFFL)
+							| ((raw[wordIdx + 1] & 0xFFFFL) << 16)
+							| ((raw[wordIdx + 2] & 0xFFFFL) << 32)
+							| ((raw[wordIdx + 3] & 0xFFFFL) << 48);
+					arr[i] = val;
+				}
+			} else if (array instanceof double[]) {
+				double[] arr = (double[]) array;
+				for (int i = 0; i < arr.length && i < size; i++) {
+					int wordIdx = payloadOffset + 4 + i * 4;
+					if (wordIdx + 3 >= raw.length) break;
+					long val = (raw[wordIdx] & 0xFFFFL)
+							| ((raw[wordIdx + 1] & 0xFFFFL) << 16)
+							| ((raw[wordIdx + 2] & 0xFFFFL) << 32)
+							| ((raw[wordIdx + 3] & 0xFFFFL) << 48);
+					arr[i] = Double.longBitsToDouble(val);
+				}
+			}
+		});
 
 		executors.put(0x27, (insn, regs) -> { // throw
 			short[] units = insn.getUnits();

@@ -77,6 +77,31 @@ public final class EmulatorState {
         if (sig != null) staticFields.put(sig, val);
     }
 
+    private java.util.List<DexInstruction> instructions;
+    private short[] rawCodeUnits;
+
+    public void setInstructions(java.util.List<DexInstruction> instructions) {
+        this.instructions = instructions;
+        this.rawCodeUnits = null;
+    }
+
+    public short[] getRawCodeUnits() {
+        if (rawCodeUnits == null && instructions != null) {
+            int maxOffset = 0;
+            for (DexInstruction insn : instructions) {
+                maxOffset = Math.max(maxOffset, insn.getOffset() + insn.getLength());
+            }
+            rawCodeUnits = new short[maxOffset];
+            for (DexInstruction insn : instructions) {
+                short[] units = insn.getUnits();
+                if (units != null) {
+                    System.arraycopy(units, 0, rawCodeUnits, insn.getOffset(), Math.min(units.length, rawCodeUnits.length - insn.getOffset()));
+                }
+            }
+        }
+        return rawCodeUnits;
+    }
+
     public Map<Integer, Object> getRegisters() { return registers; }
     public Object getLastResult() { return lastResult; }
     public void setLastResult(Object val) { this.lastResult = val; }

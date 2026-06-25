@@ -90,6 +90,15 @@ public final class DexInstructionDecoder {
             return;
         }
 
+        // Format 31t: AA|op BBBBBBBB (fill-array-data)
+        if (opcode == 0x26) {
+            if (i + 2 >= insns.length) return;
+            insn.setRegisters(new int[]{(insns[i] >> 8) & 0xFF});
+            int offset = (insns[i + 1] & 0xFFFF) | ((insns[i + 2] & 0xFFFF) << 16);
+            insn.setLiteral(offset);
+            return;
+        }
+
         // Format 22c/22t/22s: B|A|op CCCC (new-array, instance-of, iget/iput, if-test, binop/lit16)
         if (opcode == 0x20 || opcode == 0x23 || (opcode >= 0x52 && opcode <= 0x5F) ||
                 (opcode >= 0x32 && opcode <= 0x37) || (opcode >= 0xD0 && opcode <= 0xD7)) {
