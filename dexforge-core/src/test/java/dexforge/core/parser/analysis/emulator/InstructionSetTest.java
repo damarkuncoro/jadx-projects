@@ -5,6 +5,7 @@ import dexforge.core.parser.dex.service.DexFastIndexer;
 import dexforge.core.parser.dex.sections.DexStringPool;
 import dexforge.core.parser.dex.sections.DexTypePool;
 import dexforge.core.parser.dex.sections.DexFieldPool;
+import dexforge.core.parser.dex.sections.DexMethodPool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,12 +42,14 @@ class InstructionSetTest {
     private DexFastIndexer indexer;
     private InstructionSet instructionSet;
     private Map<Integer, Object> regs;
+    private MethodInvokeHandler invokeHandlerMock;
 
     @BeforeEach
     void setUp() {
         state   = mock(EmulatorState.class);
         indexer = mock(DexFastIndexer.class);
         regs    = new HashMap<>();
+        invokeHandlerMock = mock(MethodInvokeHandler.class);
 
         // Default indexer stubs
         DexStringPool sp = mock(DexStringPool.class);
@@ -59,8 +62,9 @@ class InstructionSetTest {
 
         when(sp.getSize()).thenReturn(100);
         when(tp.getSize()).thenReturn(100);
+        when(state.getRegisters()).thenReturn(regs);
 
-        instructionSet = new InstructionSet(state, indexer);
+        instructionSet = new InstructionSet(state, indexer, invokeHandlerMock);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -571,6 +575,127 @@ class InstructionSetTest {
     }
 
     // ═════════════════════════════════════════════════════════════════════════
+    // GOTO & BRANCHING
+    // ═════════════════════════════════════════════════════════════════════════
+
+    @Nested
+    @DisplayName("GOTO & BRANCHING (0x28-0x2A, 0x32-0x3D)")
+    class GotoAndBranching {
+
+        @Test
+        @DisplayName("goto (0x28) sets nextOffset")
+        void gotoSetsNextOffset() {
+            short[] units = {0x0528};
+            DexInstruction i = insn(0x0528, units, null, 0, -1);
+            when(i.getOffset()).thenReturn(10);
+            execute(0x28, i);
+            verify(state).setNextOffset(15);
+        }
+
+        @Test
+        @DisplayName("if-eqz (0x38) branch taken sets nextOffset")
+        void ifEqzBranchTaken() {
+            regs.put(2, 0);
+            short[] units = {0x0238, 5};
+            DexInstruction i = insn(0x0238, units, null, 0, -1);
+            when(i.getOffset()).thenReturn(10);
+            execute(0x38, i);
+            verify(state).setNextOffset(15);
+        }
+
+        @Test
+        @DisplayName("if-eqz (0x38) branch not taken does not set nextOffset")
+        void ifEqzBranchNotTaken() {
+            regs.put(2, 42);
+            short[] units = {0x0238, 5};
+            DexInstruction i = insn(0x0238, units, null, 0, -1);
+            when(i.getOffset()).thenReturn(10);
+            execute(0x38, i);
+            verify(state, never()).setNextOffset(anyInt());
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // COMPARISONS
+    // ═════════════════════════════════════════════════════════════════════════
+
+    @Nested
+    @DisplayName("COMPARISONS (0x2D-0x31)")
+    class Comparisons {
+
+        private DexInstruction cmpInsn(int opcode, int regA, int regB, int regC) {
+            short[] units = {
+                (short) ((opcode & 0xFF) | (regA << 8)),
+                (short) ((regB & 0xFF) | (regC << 8))
+            };
+            return insn(opcode, units, null, 0, -1);
+        }
+
+        @Test
+        @DisplayName("cmp-long (0x2D) compares two longs")
+        void cmpLong() {
+            regs.put(1, 100L);
+            regs.put(2, 50L);
+            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
+            assertEquals(1, regs.get(0));
+
+            regs.put(1, 50L);
+            regs.put(2, 100L);
+            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
+            assertEquals(-1, regs.get(0));
+
+            regs.put(1, 100L);
+            regs.put(2, 100L);
+            execute(0x2D, cmpInsn(0x2D, 0, 1, 2));
+            assertEquals(0, regs.get(0));
+        }
+
+        @Test
+        @DisplayName("cmpl-float (0x2E) handles NaN with -1")
+        void cmplFloatNaN() {
+            regs.put(1, Float.NaN);
+            regs.put(2, 1.0f);
+            execute(0x2E, cmpInsn(0x2E, 0, 1, 2));
+            assertEquals(-1, regs.get(0));
+        }
+
+        @Test
+        @DisplayName("cmpg-float (0x2F) handles NaN with 1")
+        void cmpgFloatNaN() {
+            regs.put(1, Float.NaN);
+            regs.put(2, 1.0f);
+            execute(0x2F, cmpInsn(0x2F, 0, 1, 2));
+            assertEquals(1, regs.get(0));
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // INVOKE INSTRUCTIONS
+    // ═════════════════════════════════════════════════════════════════════════
+
+    @Nested
+    @DisplayName("INVOKE (0x6E-0x78)")
+    class Invoke {
+
+        @Test
+        @DisplayName("invoke-virtual (0x6E) invokes method and records result")
+        void invokeVirtual() {
+            DexMethodPool mp = mock(DexMethodPool.class);
+            when(indexer.getMethodPool()).thenReturn(mp);
+            when(mp.getMethodSignature(5)).thenReturn("Lfoo/Bar;->test()V");
+
+            java.util.List<Object> args = java.util.Arrays.asList(1, 2);
+            when(invokeHandlerMock.getInvokeArgs(any())).thenReturn(args);
+            when(invokeHandlerMock.handleInvoke("Lfoo/Bar;->test()V", args)).thenReturn("result");
+
+            DexInstruction i = insn(0x6E, null, null, 0, 5);
+            execute(0x6E, i);
+
+            verify(state).recordResult("Lfoo/Bar;->test()V", i, "result");
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
     // EXECUTOR COVERAGE — semua opcode yang diklaim terdaftar
     // ═════════════════════════════════════════════════════════════════════════
 
@@ -584,12 +709,16 @@ class InstructionSetTest {
             0x0A, 0x0B, 0x0C,
             0x12, 0x13, 0x14, 0x15, 0x1A, 0x1C,
             0x21, 0x22, 0x23,
+            0x28, 0x29, 0x2A,
+            0x2D, 0x2E, 0x2F, 0x30, 0x31,
+            0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D,
             0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A,
             0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51,
             0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58,
             0x59, 0x5A, 0x5B, 0x5C, 0x5D, 0x5E, 0x5F,
             0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66,
             0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D,
+            0x6E, 0x6F, 0x70, 0x71, 0x72, 0x74, 0x75, 0x76, 0x77, 0x78,
             0x81, 0x8D, 0x8E, 0x8F,
             0x90, 0x91, 0x92, 0x94, 0x95, 0x96, 0x97,
             0xB0, 0xB1, 0xB2, 0xB5, 0xB6, 0xB7,

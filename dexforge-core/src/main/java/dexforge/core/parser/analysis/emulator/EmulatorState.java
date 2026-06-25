@@ -13,10 +13,24 @@ public final class EmulatorState {
     private final Map<String, Object> staticFields = new HashMap<>();
     private final Map<Object, Map<String, Object>> instanceFields = new IdentityHashMap<>();
     private Object lastResult;
+    private Integer nextOffset;
 
     public void clear() {
         registers.clear();
         lastResult = null;
+        nextOffset = null;
+    }
+
+    public Integer getNextOffset() {
+        return nextOffset;
+    }
+
+    public void setNextOffset(Integer offset) {
+        this.nextOffset = offset;
+    }
+
+    public void clearNextOffset() {
+        this.nextOffset = null;
     }
 
     public void setRegister(int reg, Object value) {

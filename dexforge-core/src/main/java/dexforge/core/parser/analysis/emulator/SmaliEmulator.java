@@ -25,12 +25,12 @@ public final class SmaliEmulator {
         this.invokeHandler = new MethodInvokeHandler(state.getRegisters());
         this.invokeHandler.setEmulator(this);
         this.cfHandler = new ControlFlowHandler(state.getRegisters());
-        this.instructionSet = new InstructionSet(state, null);
+        this.instructionSet = new InstructionSet(state, null, invokeHandler);
     }
 
     public void setIndexer(DexFastIndexer indexer) {
         this.indexer = indexer;
-        this.instructionSet = new InstructionSet(state, indexer);
+        this.instructionSet = new InstructionSet(state, indexer, invokeHandler);
         if (!allIndexers.contains(indexer)) {
             allIndexers.add(indexer);
         }
@@ -63,14 +63,14 @@ public final class SmaliEmulator {
         // Save current indexer and swap to target
         DexFastIndexer oldIndexer = this.indexer;
         this.indexer = targetIndexer;
-        this.instructionSet = new InstructionSet(state, targetIndexer);
+        this.instructionSet = new InstructionSet(state, targetIndexer, invokeHandler);
 
         try {
             return execute(instructions, initialRegisters);
         } finally {
             // Restore indexer
             this.indexer = oldIndexer;
-            this.instructionSet = new InstructionSet(state, oldIndexer);
+            this.instructionSet = new InstructionSet(state, oldIndexer, invokeHandler);
         }
     }
 
@@ -99,30 +99,18 @@ public final class SmaliEmulator {
 
             if (executor != null) {
                 executor.execute(insn, state.getRegisters());
-            } else if (DexOpcode.isInvoke(op)) {
-                if (indexer != null && insn.getIndex() >= 0) {
-                    String signature = indexer.getMethodPool().getMethodSignature(insn.getIndex());
-                    List<Object> args = invokeHandler.getInvokeArgs(insn);
-                    Object result = invokeHandler.handleInvoke(signature, args);
-                    state.recordResult(signature, insn, result);
-                }
-            } else if (op >= 0x0E && op <= 0x11) { // RETURN
-                int reg = (insn.getOpcode() >> 8) & 0xFF;
-                return state.getRegisters().get(reg);
-            } else if (op == 0x28 || op == 0x29 || op == 0x2A) { // GOTO
-                Integer targetIdx = offsetToInsnIndex.get(cfHandler.getGotoTarget(insn));
-                if (targetIdx != null) {
-                    index = targetIdx;
-                    jumped = true;
-                }
-            } else if (op >= 0x32 && op <= 0x3D) { // IF-*
-                if (cfHandler.shouldBranch(insn)) {
-                    Integer targetIdx = offsetToInsnIndex.get(cfHandler.getBranchTarget(insn));
+                Integer nextOffset = state.getNextOffset();
+                if (nextOffset != null) {
+                    Integer targetIdx = offsetToInsnIndex.get(nextOffset);
                     if (targetIdx != null) {
                         index = targetIdx;
                         jumped = true;
                     }
+                    state.clearNextOffset();
                 }
+            } else if (op >= 0x0E && op <= 0x11) { // RETURN
+                int reg = (insn.getOpcode() >> 8) & 0xFF;
+                return state.getRegisters().get(reg);
             }
 
             if (!jumped) index++;

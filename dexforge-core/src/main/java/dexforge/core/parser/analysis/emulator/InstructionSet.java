@@ -16,10 +16,18 @@ public final class InstructionSet {
 	private final Map<Integer, InstructionExecutor> executors = new HashMap<>();
 	private final EmulatorState state;
 	private final DexFastIndexer indexer;
+	private final ControlFlowHandler cfHandler;
+	private final MethodInvokeHandler invokeHandler;
 
 	public InstructionSet(EmulatorState state, DexFastIndexer indexer) {
+		this(state, indexer, null);
+	}
+
+	public InstructionSet(EmulatorState state, DexFastIndexer indexer, MethodInvokeHandler invokeHandler) {
 		this.state = state;
 		this.indexer = indexer;
+		this.cfHandler = new ControlFlowHandler(state.getRegisters());
+		this.invokeHandler = invokeHandler;
 		initExecutors();
 	}
 
@@ -186,12 +194,93 @@ public final class InstructionSet {
 			Object val = regs.get(regB);
 			if (val instanceof Number) regs.put(regA, (int) ((Number) val).shortValue()); // charValue not in Number, use short
 		});
+
+		// --- GOTO FAMILY ---
+		InstructionExecutor gotoExec = (insn, regs) -> {
+			state.setNextOffset(cfHandler.getGotoTarget(insn));
+		};
+		executors.put(0x28, gotoExec);
+		executors.put(0x29, gotoExec);
+		executors.put(0x2A, gotoExec);
+
+		// --- IF FAMILY ---
+		InstructionExecutor ifExec = (insn, regs) -> {
+			if (cfHandler.shouldBranch(insn)) {
+				state.setNextOffset(cfHandler.getBranchTarget(insn));
+			}
+		};
+		for (int op = 0x32; op <= 0x3D; op++) executors.put(op, ifExec);
+
+		// --- INVOKE FAMILY ---
+		InstructionExecutor invokeExec = (insn, regs) -> {
+			if (indexer != null && insn.getIndex() >= 0 && invokeHandler != null) {
+				String signature = indexer.getMethodPool().getMethodSignature(insn.getIndex());
+				java.util.List<Object> args = invokeHandler.getInvokeArgs(insn);
+				Object result = invokeHandler.handleInvoke(signature, args);
+				state.recordResult(signature, insn, result);
+			}
+		};
+		for (int op = 0x6E; op <= 0x78; op++) executors.put(op, invokeExec);
+
+		// --- COMPARISONS ---
+		executors.put(0x2D, (insn, regs) -> { // cmp-long
+			int[] r = getRegs23x(insn);
+			long v1 = safeLong(regs, r[1]);
+			long v2 = safeLong(regs, r[2]);
+			regs.put(r[0], Long.compare(v1, v2));
+		});
+		InstructionExecutor cmpFloat = (insn, regs) -> { // cmpl/cmpg-float
+			int[] r = getRegs23x(insn);
+			float v1 = safeFloat(regs, r[1]);
+			float v2 = safeFloat(regs, r[2]);
+			boolean isG = (insn.getOpcode() & 0xFF) == 0x2F;
+			if (Float.isNaN(v1) || Float.isNaN(v2)) {
+				regs.put(r[0], isG ? 1 : -1);
+			} else {
+				regs.put(r[0], Float.compare(v1, v2));
+			}
+		};
+		executors.put(0x2E, cmpFloat);
+		executors.put(0x2F, cmpFloat);
+		InstructionExecutor cmpDouble = (insn, regs) -> { // cmpl/cmpg-double
+			int[] r = getRegs23x(insn);
+			double v1 = safeDouble(regs, r[1]);
+			double v2 = safeDouble(regs, r[2]);
+			boolean isG = (insn.getOpcode() & 0xFF) == 0x31;
+			if (Double.isNaN(v1) || Double.isNaN(v2)) {
+				regs.put(r[0], isG ? 1 : -1);
+			} else {
+				regs.put(r[0], Double.compare(v1, v2));
+			}
+		};
+		executors.put(0x30, cmpDouble);
+		executors.put(0x31, cmpDouble);
 	}
 
 	private int safeInt(Map<Integer, Object> regs, int reg) {
 		Object val = regs.get(reg);
 		if (val instanceof Number) return ((Number) val).intValue();
 		return 0;
+	}
+
+	private long safeLong(Map<Integer, Object> regs, int reg) {
+		Object val = regs.get(reg);
+		if (val instanceof Number) return ((Number) val).longValue();
+		if (val instanceof Boolean) return ((Boolean) val) ? 1L : 0L;
+		if (val instanceof Character) return (long) ((Character) val).charValue();
+		return 0L;
+	}
+
+	private float safeFloat(Map<Integer, Object> regs, int reg) {
+		Object val = regs.get(reg);
+		if (val instanceof Number) return ((Number) val).floatValue();
+		return 0.0f;
+	}
+
+	private double safeDouble(Map<Integer, Object> regs, int reg) {
+		Object val = regs.get(reg);
+		if (val instanceof Number) return ((Number) val).doubleValue();
+		return 0.0;
 	}
 
 	private Object createNewInstance(int typeIdx) {

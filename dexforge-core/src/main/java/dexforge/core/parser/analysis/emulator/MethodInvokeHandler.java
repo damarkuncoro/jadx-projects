@@ -74,16 +74,27 @@ public final class MethodInvokeHandler {
         short[] units = insn.getUnits();
         if (units == null || units.length < 3) return args;
 
-        int regCount = (units[0] >> 12) & 0x0F;
-        int g = (units[0] >> 8) & 0x0F;
-        int c = units[2] & 0x0F;
-        int d = (units[2] >> 4) & 0x0F;
-        int e = (units[2] >> 8) & 0x0F;
-        int f = (units[2] >> 12) & 0x0F;
+        int op = insn.getOpcode() & 0xFF;
+        if (op >= 0x74 && op <= 0x78) {
+            // Format 3rc: invoke/range
+            int regCount = (units[0] >> 8) & 0xFF;
+            int startReg = units[2] & 0xFFFF;
+            for (int i = 0; i < regCount; i++) {
+                args.add(registers.get(startReg + i));
+            }
+        } else {
+            // Format 35c: invoke
+            int regCount = (units[0] >> 12) & 0x0F;
+            int g = (units[0] >> 8) & 0x0F;
+            int c = units[2] & 0x0F;
+            int d = (units[2] >> 4) & 0x0F;
+            int e = (units[2] >> 8) & 0x0F;
+            int f = (units[2] >> 12) & 0x0F;
 
-        int[] regs = {c, d, e, f, g};
-        for (int i = 0; i < Math.min(regCount, 5); i++) {
-            args.add(registers.get(regs[i]));
+            int[] regs = {c, d, e, f, g};
+            for (int i = 0; i < Math.min(regCount, 5); i++) {
+                args.add(registers.get(regs[i]));
+            }
         }
         return args;
     }
